@@ -4,6 +4,8 @@ In diesem Teil wird der erste Schritt der Erstellung einer vollständigen DB-Anw
 
 Hinweis: In der Aufgabenstellung sind die Informationen, die die zu modellierende Miniwelt beschreiben, bewußt nicht so präzise gewählt, daß Sie sie direkt (Satz für Satz) zum Entwurf benutzen könnten, sondern eher so unstrukturiert und informell, wie sie von Nicht-Fachleuten an einen DB-Administrator herangetragen werden.
 
+## Szenario
+[Media Store Szenario](szenario.md) 
 
 ## Aufgabe 1a
 
