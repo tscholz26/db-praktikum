@@ -36,4 +36,6 @@ Bitte geben Sie stets die ihre Gruppennummer z.B. dbprak22/23 im Betreff der Ema
 - Testat 3: Absprache mit Betreuer spätestens Ende des Semesters
 
 ## Teile
-teil_1.md[Teil 1]
+- [Teil 1](teil_1.md)
+- [Teil 2](teil_2.md)
+- [Teil 3](teil_3.md)
