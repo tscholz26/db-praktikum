@@ -34,3 +34,6 @@ Bitte geben Sie stets die ihre Gruppennummer z.B. dbprak22/23 im Betreff der Ema
 - Testat 1: 31.05.2021 - 04.06.2021
 - Testat 2: 05.07.2021 - 09.07.2021
 - Testat 3: Absprache mit Betreuer spätestens Ende des Semesters
+
+## Teile
+[Teil 1]teil_1.md
