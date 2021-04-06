@@ -35,10 +35,10 @@ Potentielle Ursachen für Inkonsistenzen sind:
 - Werte müssen sinnvoll sein, z.B. bzgl. des aktuellen Datums, Altersangaben, etc.
 
 ## Abgabe
-**Für Teil 1a **
+**Für Teil 1a**
 Relationenmodell mit Primärschlüssel und Fremdschlüsselbeziehungen
 
-** Für Teil 1b **
+**Für Teil 1b**
 
 - Datei zur Erzeugung Ihres Datenbankschemas, inklusive aller dort enthaltenen Statements zur Integritätssicherung
 - kommentiertes Java-Ladeprogramm bzw. SQL Statements zur XML-Transformation
