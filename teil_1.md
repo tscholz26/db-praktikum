@@ -36,6 +36,7 @@ Potentielle Ursachen für Inkonsistenzen sind:
 
 ## Abgabe
 **Für Teil 1a**
+
 Relationenmodell mit Primärschlüssel und Fremdschlüsselbeziehungen
 
 **Für Teil 1b**
