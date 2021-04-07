@@ -1,4 +1,4 @@
-# Teil 3
+# Aufgabenstellung
 Diese abschließende Teilaufgabe des Datenbank-Praktikums umfasst die Erstellung einer Konsolenanwendung oder GUI-Applikation. Ihre Aufgabe ist die Implementierung dieser Schnittstelle unter Verwendung von Hibernate, um der Applikation den Zugriff auf die Datenbank zu ermöglichen. Ziel ist es, Ihnen die Technik von 3-Ebenen- Anwendungen (Frontend, Mittelschicht, Backend/Datenbank) näher zu bringen, weitere Möglichkeiten des datenbankunabhängigen Zugriffs mittels erweiterte SQL-Konzepte (z.B. Objekt-Relationales-Mapping mittels Hibernate) anzuwenden.
 
 ## Die Applikation
