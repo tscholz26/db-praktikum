@@ -53,7 +53,7 @@ Diese Methode liefert für ein Produkt(Id) eine List von Produkten, die in der s
     addNewReview
 Die Rahmenapplikation erlaubt sowohl das Ansehen als auch Hinzufügen von Reviews. MIt Hilfe der Methode wird ein neues Review in der Datenbank gespeichert.
 
-    getTroller
+    getTrolls
 Die Methode soll eine Liste von Nutzern ausgeben, deren Durchschnittsbewertung unter einem spezifizierten Rating ist.
     
     getOffers
