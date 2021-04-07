@@ -51,9 +51,14 @@ Nach Angabe einer Kategorie (definiert durch den Pfad von der Wurzel zu sich sel
     getTopProducts
 Diese Methode liefert eine Liste aller Produkte zurück, die unter den Top k sind basierend auf dem Rating.
 
-    addNewReview
+    getSimilarCheaperProduct
+Diese Methode liefert für ein Produkt(Id) eine List von Produkten, die in der selben Kategorie sind und billiger sind als das spezifizierte.     
 
+    addNewReview
 Die Rahmenapplikation erlaubt sowohl das Ansehen als auch Hinzufügen von Reviews. MIt Hilfe der Methode wird ein neues Review in der Datenbank gespeichert.
+
+    getTroller
+Die Methode soll eine Liste von Nutzern ausgeben, deren Durchschnittsbewertung unter einem spezifizierten Rating ist.
     
     getOffers
 Für das übergegebene Produkt(Id) werden alle verfügbaren Angebote zurückgeliefert.
