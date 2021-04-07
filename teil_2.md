@@ -49,12 +49,12 @@ Zum Zeitpunkt der Fertigstellung (spätestens 24h vor dem Testat) sollen die nac
 
 Für Teil 2a
 
-    Eine Datei, die die SQL-Anfragen und Antworten enthält. Die Anfragen sind zu nummerieren und gut lesbar zu formatieren.
+- Eine Datei, die die SQL-Anfragen und Antworten enthält. Die Anfragen sind zu nummerieren und gut lesbar zu formatieren.
 
 Für Teil 2b
 
-    Datei mit notwendigen SQL-Statements (für ein ausgewähltes Beispiel)
+- Datei mit notwendigen SQL-Statements (für ein ausgewähltes Beispiel)
 
-    Datei mit Anweisungen zur Integritätssicherung
+- Datei mit Anweisungen zur Integritätssicherung
 
 
