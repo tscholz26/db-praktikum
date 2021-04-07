@@ -48,7 +48,7 @@ Nach Angabe einer Kategorie (definiert durch den Pfad von der Wurzel zu sich sel
 Diese Methode liefert eine Liste aller Produkte zurück, die unter den Top k sind basierend auf dem Rating.
 
     getSimilarCheaperProduct
-Diese Methode liefert für ein Produkt(Id) eine List von Produkten, die in der selben Kategorie sind und billiger sind als das spezifizierte.     
+Diese Methode liefert für ein Produkt(Id) eine List von Produkten, die ähnlich und billiger sind als das spezifizierte.     
 
     addNewReview
 Die Rahmenapplikation erlaubt sowohl das Ansehen als auch Hinzufügen von Reviews. MIt Hilfe der Methode wird ein neues Review in der Datenbank gespeichert.
