@@ -1,5 +1,5 @@
 # Teil 3
-Diese abschließende Teilaufgabe des Datenbank-Praktikums umfasst die Erstellung einer Konsolenanwendung oder GUI-Applikation. Ihre Aufgabe ist die Implementierung dieser Schnittstelle unter Verwendung von Hibernate, um der Applikation den Zugriff auf die Datenbank zu ermöglichen. Ziel ist es, Ihnen die Technik von 3-Ebenen- Anwendungen (Frontend, Mittelschicht, Backend/Datenbank) näher zu bringen, weitere Möglichkeiten des datenbankunabhängigen Zugriffs mittels JDBC kennenzulernen sowie erweiterte SQL-Konzepte (z.B. Objekt-Relationales-Mapping mittels Hibernate) anzuwenden.
+Diese abschließende Teilaufgabe des Datenbank-Praktikums umfasst die Erstellung einer Konsolenanwendung oder GUI-Applikation. Ihre Aufgabe ist die Implementierung dieser Schnittstelle unter Verwendung von Hibernate, um der Applikation den Zugriff auf die Datenbank zu ermöglichen. Ziel ist es, Ihnen die Technik von 3-Ebenen- Anwendungen (Frontend, Mittelschicht, Backend/Datenbank) näher zu bringen, weitere Möglichkeiten des datenbankunabhängigen Zugriffs mittels erweiterte SQL-Konzepte (z.B. Objekt-Relationales-Mapping mittels Hibernate) anzuwenden.
 
 ## Die Applikation
 
@@ -7,9 +7,7 @@ Die Anwendung selbst hat keinen direkten Zugriff auf die Datenbank, sondern läd
 
 ## Implementierungsrichtlinien
 
-Es sollen keine Parameter im Quellcode fest vorgegeben werden. Hierzu gehören auch der Klassenname des JDBC-Treibers, die JDBC-URL, Logininformationen usw. Hierfür sollte eine property Datei bereitgestellt werden, die beim Start der Applikation eingelesen wird. Dies ist eine wesentliche Voraussetzung, um ein datenbankunabhängiges Programm zu erstellen. Ein Datenbankwechsel kann dann im günstigsten Fall einfach durch Ändern der Parameter in der Property-Datei vollzogen werden.
-
-Bei jedem Methodenaufruf soll auf die Daten der Datenbank zurückgegriffen werden
+Es sollen keine Parameter im Quellcode fest vorgegeben werden. Hierzu gehören auch der Klassenname des JDBC-Treibers, die JDBC-URL, Logininformationen usw. Hierfür sollte eine property Datei bereitgestellt werden, die beim Start der Applikation eingelesen wird. Dies ist eine wesentliche Voraussetzung, um ein datenbankunabhängiges Programm zu erstellen. Ein Datenbankwechsel kann dann im günstigsten Fall einfach durch Ändern der Parameter in der Property-Datei vollzogen werden. 
 
 
 ## Testat
@@ -17,9 +15,7 @@ Bei jedem Methodenaufruf soll auf die Daten der Datenbank zurückgegriffen werde
 Zum Fertigstellungstermin soll die Applikation voll funktionsfähig gemäß Aufgabenstellung nutzbar sein. Hierzu gehört auch das zu erstellende Hibernate-Mapping. Zum Testat ist das Hibernate-Mapping sowie die Applikation mit den zu implementierenden Methoden vorzustellen.
 
 
-## Funktionalität
-
-Applikation “Media Store”
+## Anforderung
 
 Die Applikation soll folgende Methoden umfassen. Definieren Sie hierfür vorab ein Interface welches alle Methoden umfasst. Für die Bestimmung der Ergebnisse soll **kein SQL** verwendet werden, sondern lediglich Hibernate inklusive der Hibernate Query Language.
 
