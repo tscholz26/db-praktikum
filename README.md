@@ -1,10 +1,9 @@
 # DBPraktikum MediaStore
 
 ## Anmeldung u. Präsenzveranstaltungen
-Anmeldung auf unserer Webseite unbedingt erforderlich: nach (Registrierung und) Einloggen unter Mein Konto > Gruppen
-Einführungsveranstaltung: 26.04.2021, 11:15 Uhr, Moodle-Kurs
-Gruppenzuweisung im Moodle bis 28.04.2021
-    Betreuer: Martin Franke, Victor Christen, Ziad Sehili
+- Einführungsveranstaltung: 23.04.2021, 11:15 Uhr, Moodle-Kurs
+- Gruppenzuweisung im Moodle bis 26.04.2021
+- Betreuer: Martin Franke, Victor Christen, Ziad Sehili
 
 ## Übersicht
 
