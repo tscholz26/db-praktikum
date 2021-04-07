@@ -21,10 +21,10 @@ Zum Fertigstellungstermin soll die Applikation voll funktionsfähig gemäß Aufg
 
 Applikation “Media Store”
 
-Die Applikation soll folgende Methoden umfassen. Definieren Sie hierfür vorab ein Interface welches alle Methoden umfasst.
+Die Applikation soll folgende Methoden umfassen. Definieren Sie hierfür vorab ein Interface welches alle Methoden umfasst. Für die Bestimmung der Ergebnisse soll **kein SQL** verwendet werden, sondern lediglich Hibernate inklusive der Hibernate Query Language.
 
-Das von Ihnen zu implementierende Modul stellt die Verbindung zwischen Anwendung und Datenbank her. Dazu muss es die Schnittstelle media.definitions.MediaDbInterface implementieren.
-Methoden der Schnittstelle
+
+**Methoden der Schnittstelle**
 
 
     init
