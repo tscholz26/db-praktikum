@@ -1,5 +1,10 @@
 # DBPraktikum MediaStore
 
+## Anmeldung u. Präsenzveranstaltungen
+- Einführungsveranstaltung: 23.04.2021, 11:15 Uhr, Moodle-Kurs
+- Gruppenzuweisung im Moodle bis 26.04.2021
+- Betreuer: Martin Franke, Victor Christen, Ziad Sehili
+
 ## Übersicht
 
 Das Praktikum beinhaltet den Entwurf einer Datenbank sowie die Realisierung von Datenbankanwendungen unter praxisnahen Bedingungen. Die Aufgaben sind mit einem einer lokalen postgres Datenbank zu bearbeiten. Im einzelnen sind folgende Teilaufgaben zu lösen:
@@ -9,17 +14,30 @@ Das Praktikum beinhaltet den Entwurf einer Datenbank sowie die Realisierung von 
 2. Es sollen verschiedene Anfragen formuliert werden.
 3.  Realisierung einer Middleware in Java unter Verwendung von Hibernate zur Anbindung einer Konsolenanwendung oder GUI-Anwendung.
 
-## Lösungen
-
-### Teil 1
-- Beschreibung [Teil 1](teil_1.md)
-- SQL-Skript zum Erstellen [sql/create.sql](sql/create.sql)
-- Import Klassen: Für die Shops und Kategorie XML-Dateien existieren die Klassen   `de.uni_leipzig.dbs.io.handler.ShopHandler` und `de.uni_leipzig.dbs.io.handler.CategoryHandler`. Für das Parsen der Reviews wird eine CSV-Datei ausgelesen. Hierfür folgende Klasse `de.uni_leipzig.dbs.io.handler.ReviewParser`. Der Import erfolgt mittels jdbc und der `de.uni_leipzig.dbs.io.DBWriter` Klasse.
-
-### Teil 2
-[Teil 2](teil_2.md)
+## Erwartete Vorkenntnisse
 
 
+- Übungsschein DBS1, insbesondere sichere Kenntnisse bei Datenmodellierung (Entity-Relationship-Diagramm, relationales Modell) und SQL-Anfragen
+- Kenntnisse der Sprache Java sind unbedingt notwendig
+- Kenntnisse des objekt-relationalen Mapping-Frameworks Hibernate
 
-### Teil 3
-[Teil 3](teil_3.md)
+## Teilnehmerkreis
+
+Bachelor-Studiengänge Informatik und Wirtschaftsmathematik. (Interessenten anderer Studiengänge werden selbstverständlich bei noch freien Plätzen berücksichtigt.) Die Teilnahme erfolgt in 2-er Gruppen, die Teilnehmerzahl ist beschränkt (max. 40 Studenten). Bei zu großer Teilnehmerzahl erfolgt die endgültige Vergabe der Praktikumsplätze während der Einführungsveranstaltung. Dabei werden Studenten, die sich online angemeldet haben bevorzugt.
+
+## Testate
+
+Nach jeder der drei Teilaufgaben wird ein Testat durchgeführt. Zum erfolgreichen Absolvieren des Praktikums müssen alle drei Testate erfolgreich abgelegt werden. Wird ein Termin nicht eingehalten, verfallen die bereits erbrachten Teilleistungen. Die konkreten Termine sind mit dem Betreuer per E-Mail zu vereinbaren.
+Bitte geben Sie stets die ihre Gruppennummer z.B. dbprak22/23 im Betreff der Email an. Folgende Restriktionen sind einzuhalten:
+
+- Testat 1: 31.05.2021 - 04.06.2021
+- Testat 2: 05.07.2021 - 09.07.2021
+- Testat 3: Absprache mit Betreuer spätestens Ende des Semesters
+
+## Teile
+- [Teil 1](teil_1.md)
+- [Teil 2](teil_2.md)
+- [Teil 3](teil_3.md)
+
+
+
