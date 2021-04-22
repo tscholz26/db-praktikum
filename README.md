@@ -14,7 +14,7 @@ Das Praktikum beinhaltet den Entwurf einer Datenbank sowie die Realisierung von 
 ### Teil 1
 - Beschreibung [Teil 1](teil_1.md)
 - SQL-Skript zum Erstellen [sql/create.sql](sql/create.sql)
-- Import Klassen: Für die Shops und Kategorie XML-Dateien existieren die Klassen   ´de.uni_leipzig.dbs.io.handler.ShopHandler´ und ´de.uni_leipzig.dbs.io.handler.CategoryHandler´. Für das Parsen der Reviews wird eine CSV-Datei ausgelesen. Hierfür folgende Klasse ´de.uni_leipzig.dbs.io.handler.ReviewParser´. Der Import erfolgt mittels jdbc und der ´de.uni_leipzig.dbs.io.DBWriter´ Klasse.
+- Import Klassen: Für die Shops und Kategorie XML-Dateien existieren die Klassen   `de.uni_leipzig.dbs.io.handler.ShopHandler` und `de.uni_leipzig.dbs.io.handler.CategoryHandler`. Für das Parsen der Reviews wird eine CSV-Datei ausgelesen. Hierfür folgende Klasse `de.uni_leipzig.dbs.io.handler.ReviewParser`. Der Import erfolgt mittels jdbc und der `de.uni_leipzig.dbs.io.DBWriter` Klasse.
 
 ### Teil 2
 [Teil 2](teil_2.md)
