@@ -6,7 +6,7 @@ Der "Media Store" enthält eine Vielzahl von Produkten, die durch Titel, Rating,
 
 Zur besseren Orientierung im Produktkatalog ist jedes Produkt einer Kategorie oder mehreren Kategorien zugeordnet. Jede Kategorie hat einen Namen. Des Weiteren sind die Kategorien hierarchisch angeordnet, d.h. eine Kategorie kann eine oder mehrere Unterkategorien besitzen. Kategorien, die selbst keine Unterkategorie einer anderen Kategorie sind, werden Hauptkategorien genannt. Zu jedem Produkt kann es eine Menge ähnlicher Produkte geben.
 
-Produkte im "Media Store" werden von verschiedenen Fillialen (charakterisiert durch Namen und Anschrift) zu unterschiedlichen Konditionen (Preis, Verfügbarkeit, Zustand) angeboten, so dass Kunden diese über einen Online-Shop kaufen können. Jeder Kunde kann - nach Angabe von Lieferadresse und Kontonummer - mehrere Produkte zu verschiedenen Zeiten kaufen. Der Online-Shop des "Media Stores" bietet Kunden weiterhin die Möglichkeit, Produkte zu bewerten. Dazu können sie eine Kundenrezension schreiben und für das Produkt ein bis fünf Punkte vergeben.
+Produkte im "Media Store" werden von verschiedenen Fillialen (charakterisiert durch Namen und Anschrift) zu unterschiedlichen Konditionen (Preis, Verfügbarkeit, Zustand) angeboten, so dass Kunden diese über einen Online-Shop kaufen können. Die Verfügbarkeit ist dadurch gekennzeichnet, ob ein Preis vorliegt oder nicht. Jeder Kunde kann - nach Angabe von Lieferadresse und Kontonummer - mehrere Produkte zu verschiedenen Zeiten kaufen. Der Online-Shop des "Media Stores" bietet Kunden weiterhin die Möglichkeit, Produkte zu bewerten. Dazu können sie eine Kundenrezension schreiben und für das Produkt ein bis fünf Punkte vergeben.
 
 ## Hinweise
 
