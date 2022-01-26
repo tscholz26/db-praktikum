@@ -1,9 +1,9 @@
 # DBPraktikum MediaStore
 
 ## Anmeldung u. Präsenzveranstaltungen
-- Einführungsveranstaltung: 23.04.2021, 11:15 Uhr, Moodle-Kurs
-- Gruppenzuweisung im Moodle bis 26.04.2021
-- Betreuer: Martin Franke, Victor Christen, Ziad Sehili
+- Einführungsveranstaltung: tba, Moodle-Kurs
+- Gruppenzuweisung im Moodle bis tba
+- Betreuer: Martin Franke, Lucas Lange, Christopher Rost, Victor Christen
 
 ## Übersicht
 
@@ -30,8 +30,8 @@ Bachelor-Studiengänge Informatik und Wirtschaftsmathematik. (Interessenten ande
 Nach jeder der drei Teilaufgaben wird ein Testat durchgeführt. Zum erfolgreichen Absolvieren des Praktikums müssen alle drei Testate erfolgreich abgelegt werden. Wird ein Termin nicht eingehalten, verfallen die bereits erbrachten Teilleistungen. Die konkreten Termine sind mit dem Betreuer per E-Mail zu vereinbaren.
 Bitte geben Sie stets die ihre Gruppennummer z.B. dbprak22/23 im Betreff der Email an. Folgende Restriktionen sind einzuhalten:
 
-- Testat 1: 31.05.2021 - 04.06.2021
-- Testat 2: 05.07.2021 - 09.07.2021
+- Testat 1: 30.05.2021 - 03.06.2021
+- Testat 2: 04.07.2021 - 08.07.2021
 - Testat 3: Absprache mit Betreuer spätestens Ende des Semesters
 
 ## Teile
