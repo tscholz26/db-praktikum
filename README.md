@@ -30,8 +30,8 @@ Bachelor-Studiengänge Informatik und Wirtschaftsmathematik. (Interessenten ande
 Nach jeder der drei Teilaufgaben wird ein Testat durchgeführt. Zum erfolgreichen Absolvieren des Praktikums müssen alle drei Testate erfolgreich abgelegt werden. Wird ein Termin nicht eingehalten, verfallen die bereits erbrachten Teilleistungen. Die konkreten Termine sind mit dem Betreuer per E-Mail zu vereinbaren.
 Bitte geben Sie stets die ihre Gruppennummer z.B. dbprak22/23 im Betreff der Email an. Folgende Restriktionen sind einzuhalten:
 
-- Testat 1: 30.05.2021 - 03.06.2021
-- Testat 2: 04.07.2021 - 08.07.2021
+- Testat 1: 30.05.2022 - 03.06.2022
+- Testat 2: 04.07.2022 - 08.07.2022
 - Testat 3: Absprache mit Betreuer spätestens Ende des Semesters
 
 ## Teile
