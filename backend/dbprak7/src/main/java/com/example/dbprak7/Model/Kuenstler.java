@@ -9,21 +9,15 @@ import org.hibernate.annotations.OnDeleteAction;
 @Getter
 @Setter
 @Entity
-@Table(name = "produkt_kategorie", schema = "public")
-public class ProduktKategorie {
+@Table(name = "kuenstler", schema = "public")
+public class Kuenstler {
     @EmbeddedId
-    private ProduktKategorieId id;
+    private KuenstlerId id;
 
     @MapsId("produktnr")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "produktnr", nullable = false)
-    private Produkt produktnr;
-
-    @MapsId("kategorieid")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "kategorieid", nullable = false)
-    private Kategorie kategorieid;
+    private MusikCd produktnr;
 
 }

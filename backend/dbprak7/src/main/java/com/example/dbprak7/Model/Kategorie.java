@@ -1,20 +1,28 @@
 package com.example.dbprak7.Model;
-import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+@Getter
+@Setter
 @Entity
+@Table(name = "kategorie", schema = "public")
 public class Kategorie {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer kategorieID;
+    @ColumnDefault("nextval('kategorie_kategorieid_seq')")
+    @Column(name = "kategorieid", nullable = false)
+    private Integer id;
 
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "oberkategorieID")
-    private Kategorie oberkategorie;
-}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "oberkategorieid")
+    private Kategorie oberkategorieid;
 
+}

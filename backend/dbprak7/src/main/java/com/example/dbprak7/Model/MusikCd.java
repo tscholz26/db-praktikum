@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "buch", schema = "public")
-public class Buch {
+@Table(name = "musik_cd", schema = "public")
+public class MusikCd {
     @Id
     @Column(name = "produktnr", nullable = false, length = 50)
     private String produktnr;
@@ -23,14 +23,8 @@ public class Buch {
     @JoinColumn(name = "produktnr", nullable = false)
     private Produkt produkt;
 
-    @Column(name = "isbn", nullable = false, length = 20)
-    private String isbn;
-
-    @Column(name = "seitenzahl")
-    private Integer seitenzahl;
-
-    @Column(name = "verlag")
-    private String verlag;
+    @Column(name = "label")
+    private String label;
 
     @Column(name = "erscheinungsdatum")
     private LocalDate erscheinungsdatum;

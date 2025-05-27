@@ -1,15 +1,29 @@
 package com.example.dbprak7.Model;
-import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+@Getter
+@Setter
 @Entity
-@IdClass(ProduktAehnlichkeitId.class)
+@Table(name = "produkt_aehnlichkeit", schema = "public")
 public class ProduktAehnlichkeit {
-    @Id
-    private String produktNr1;
-    @Id
-    private String produktNr2;
+    @EmbeddedId
+    private ProduktAehnlichkeitId id;
+
+    @MapsId("produktnr1")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "produktnr1", nullable = false)
+    private Produkt produktnr1;
+
+    @MapsId("produktnr2")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "produktnr2", nullable = false)
+    private Produkt produktnr2;
+
 }

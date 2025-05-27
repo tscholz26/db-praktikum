@@ -10,19 +10,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "produkt", schema = "public")
-public class Produkt {
+@Table(name = "errordata", schema = "public")
+public class Errordatum {
     @Id
     @Column(name = "pnr", nullable = false, length = 50)
     private String pnr;
 
-    @Column(name = "verkaufsrang")
-    private Integer verkaufsrang;
-
-    @Column(name = "bild", length = Integer.MAX_VALUE)
-    private String bild;
-
-    @Column(name = "titel")
-    private String titel;
+    @Column(name = "fehlermeldung", nullable = false, length = Integer.MAX_VALUE)
+    private String fehlermeldung;
 
 }
