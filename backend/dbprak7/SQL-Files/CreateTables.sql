@@ -12,8 +12,17 @@ CREATE TABLE Musik_CD (
                               REFERENCES Produkt(PNr)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
-                          Label             VARCHAR(255) NOT NULL,
                           Erscheinungsdatum DATE
+);
+
+-- Label als eigene Relation, da in XML-Datei sehr oft mehrere Labels vorkommen
+CREATE TABLE Label (
+                      ProduktNr   VARCHAR(50) NOT NULL
+                          REFERENCES Musik_CD(ProduktNr)
+                              ON DELETE CASCADE
+                              ON UPDATE CASCADE,
+                      Labelname   VARCHAR(255) NOT NULL,
+                      PRIMARY KEY (ProduktNr, Labelname)
 );
 
 -- 2a. Songs als eigene Relation
