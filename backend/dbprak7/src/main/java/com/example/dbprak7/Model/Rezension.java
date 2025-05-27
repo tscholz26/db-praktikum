@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Check;
 
 @Getter
 @Setter
+@Check(constraints = "bewertung >= 1 AND bewertung <= 5")
 @Entity
 @Table(name = "rezension", schema = "public")
 public class Rezension {
