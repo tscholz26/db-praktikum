@@ -52,7 +52,7 @@ CREATE TABLE DVD (
                              ON DELETE CASCADE
                              ON UPDATE CASCADE,
                      Regioncode  INTEGER,
-                     Format      VARCHAR(100),
+                     Format      VARCHAR(100) DEFAULT 'not specified',
                      Laufzeit    INTEGER
 );
 
