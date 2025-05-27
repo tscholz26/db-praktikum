@@ -138,5 +138,10 @@ CREATE TABLE Produkt_Aehnlichkeit (
                                           REFERENCES Produkt(PNr)
                                               ON DELETE CASCADE
                                               ON UPDATE CASCADE,
-                                      PRIMARY KEY (ProduktNr1, ProduktNr2)
-);
+                                      PRIMARY KEY (ProduktNr1, ProduktNr2) );
+
+CREATE TABLE ErrorData (
+                                          Pnr            VARCHAR(50) NOT NULL PRIMARY KEY,
+                                            Fehlermeldung  TEXT NOT NULL
+
+     );
