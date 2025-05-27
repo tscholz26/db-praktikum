@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 
 @Getter
@@ -29,9 +30,8 @@ public class Kauf {
     @JoinColumn(name = "produktnr", nullable = false)
     private Produkt produktnr;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "kaufzeit", nullable = false)
-    private Instant kaufzeit;
+    @Column(name = "kaufzeit", nullable = true)
+    private Timestamp kaufzeit;
 
     @Column(name = "menge", nullable = false)
     private Integer menge;

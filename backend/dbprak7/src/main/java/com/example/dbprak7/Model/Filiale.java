@@ -1,9 +1,6 @@
 package com.example.dbprak7.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -11,7 +8,12 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Entity
-@Table(name = "filiale", schema = "public")
+@Table(name = "filiale", schema = "public",
+        indexes = {
+                @Index(name = "idx_filiale_ort", columnList = "ort"),
+                @Index(name = "idx_filiale_name", columnList = "name"),
+        }
+)
 public class Filiale {
     @Id
     @ColumnDefault("nextval('filiale_filialeid_seq')")

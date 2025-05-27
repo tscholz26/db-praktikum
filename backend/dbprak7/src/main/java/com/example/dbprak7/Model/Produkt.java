@@ -1,16 +1,17 @@
 package com.example.dbprak7.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "produkt", schema = "public")
+@Table(name = "produkt", schema = "public",
+        indexes = {
+                @Index(name = "idx_produkt_titel", columnList = "titel"),
+        }
+        )
 public class Produkt {
     @Id
     @Column(name = "pnr", nullable = false, length = 50)

@@ -11,7 +11,11 @@ import org.hibernate.annotations.Check;
 @Setter
 @Check(constraints = "bewertung >= 1 AND bewertung <= 5")
 @Entity
-@Table(name = "rezension", schema = "public")
+@Table(name = "rezension", schema = "public",
+        indexes = {
+                @Index(name = "idx_rezension_bewertung", columnList = "bewertung")
+        }
+)
 public class Rezension {
     @EmbeddedId
     private RezensionId id;

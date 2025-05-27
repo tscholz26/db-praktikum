@@ -9,7 +9,11 @@ import org.hibernate.annotations.OnDeleteAction;
 @Getter
 @Setter
 @Entity
-@Table(name = "dvd", schema = "public")
+@Table(name = "dvd", schema = "public",
+        indexes = {
+                @Index(name = "idx_dvd_laufzeit", columnList = "laufzeit"),
+        }
+)
 public class Dvd {
     @Id
     @Column(name = "produktnr", nullable = false, length = 50)

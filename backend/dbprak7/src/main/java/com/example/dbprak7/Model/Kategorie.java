@@ -10,7 +10,11 @@ import org.hibernate.annotations.OnDeleteAction;
 @Getter
 @Setter
 @Entity
-@Table(name = "kategorie", schema = "public")
+@Table(name = "kategorie", schema = "public",
+        indexes = {
+                @Index(name = "idx_kategorie_name", columnList = "name"),
+        }
+)
 public class Kategorie {
     @Id
     @ColumnDefault("nextval('kategorie_kategorieid_seq')")

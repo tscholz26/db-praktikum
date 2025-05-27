@@ -11,7 +11,11 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-@Table(name = "angebot", schema = "public")
+@Table(name = "angebot", schema = "public",
+        indexes = {
+                @Index(name = "idx_angebot_preis", columnList = "preis")
+        }
+)
 public class Angebot {
     @EmbeddedId
     private AngebotId id;

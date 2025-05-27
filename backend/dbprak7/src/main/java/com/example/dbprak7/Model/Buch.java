@@ -11,7 +11,11 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "buch", schema = "public")
+@Table(name = "buch", schema = "public",
+        indexes = {
+                @Index(name = "idx_buch_verlag", columnList = "verlag")
+        }
+)
 public class Buch {
     @Id
     @Column(name = "produktnr", nullable = false, length = 50)
