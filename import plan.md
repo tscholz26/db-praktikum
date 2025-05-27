@@ -1,5 +1,5 @@
 # SCHRITT 1: dresden.xml und leipzig_transformed.xml
-#### -> Erstellte Tables: Filiale, Produkt, Buch, DVD, Musik-CD, Angebot, Autoren, Produkt_Aehnlicheit, Songs, Künstler
+#### -> Erstellte Tables: Filiale, Produkt, Buch, DVD, Musik-CD, Angebot, Autoren, Produkt_Aehnlicheit, Songs, Künstler, Labels, Actor, Creator, Director
 ## Schritt 1.1: Filialen erstellen
 - die XML files sind so aufgebaut, das als größte oberkategorie \<shop> steht, anhand dessen kann man die Filialen erstellen
 - später kann man dann die Produkte zu den Filialen zufügen (wird in Tabelle Angebot gespeichert, siehe Schritt 1.4)
@@ -76,7 +76,10 @@
 - eventuell prüfen, ob angegebener titel in der relation sim_product auch mit titel übereinstimmt der in produkt relation hinterlegt ist
 
 ## Schritt 1.4: Angebot erstellen
-- nochmal die zwei XMLS durchlaufen und die Produkte, die erstellt wurden, zu den Filialen zufügen
+- nochmal die zwei XMLS durchlaufen und die Produkte, die in Tabelle "Produkt" erstellt wurden mit enstprechendem Preis/Zustand/Filiale in Tabelle "Angebot" einfügen:
+- Preis: wenn bei preis.text nicht null steht: wert mal 0.01 multiplizieren, diesen Zahlenwert in Angebot.Preis einfügen; falls nullwert oder spalte nicht existent: NULL eintragen
+- Filiale: einfach aus Tabelle "Produkt" übernehmen (-> Achtung: hier soll ID eingetragen weren)
+- Zustand: einfach aus Tabelle "Produkt" übernehmen
 
 # SCHRITT 2: categories.xml
 #### -> Erstellte Tables: Kategorie, Produkt_Kategorie
@@ -88,6 +91,7 @@
 
 # SCHRITT 3: reviews.csv
 #### -> Erstellte Tables: Rezension, Kunde
-- für jeden neuen Username einen Kunde in der Relation anlegen
-- Reviews mit laufender ID speichern, bei Kunde null-wert möglich (guest)
-- mehr Kundendaten als die Usernames gibt es nicht, da keine Daten über Verkäufe/Kontonummern/... existieren
+- für jeden neuen Username einen Kunde in der Relation anlegen (Nutzername übernehmen, künstliche fortlaufende ID)
+- Reviews mit laufender ID speichern, bei Kunde ist null-wert möglich (guest) (-> eventuell guest als default wert??)
+- bewertung/rezension: einfach übernehmen
+- -> mehr Kundendaten als die Usernames gibt es nicht, da keine Daten über Verkäufe/Kontonummern/... existieren
