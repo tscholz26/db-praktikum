@@ -1,0 +1,9 @@
+CREATE INDEX IF NOT EXISTS idx_produkt_titel ON produkt (titel);
+CREATE INDEX IF NOT EXISTS idx_dvd_laufzeit ON dvd (laufzeit);
+CREATE INDEX IF NOT EXISTS idx_buch_verlag ON buch (verlag);
+CREATE INDEX IF NOT EXISTS idx_kategorie_name ON kategorie (name);
+CREATE INDEX IF NOT EXISTS idx_filiale_ort ON filiale (ort);
+CREATE INDEX IF NOT EXISTS idx_filiale_name ON filiale (name);
+CREATE INDEX IF NOT EXISTS idx_angebot_preis ON angebot (preis);
+CREATE INDEX IF NOT EXISTS idx_rezension_bewertung ON rezension (bewertung);
+CREATE INDEX IF NOT EXISTS idx_error_fehlermeldung ON errordata (fehlermeldung);

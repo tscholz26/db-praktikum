@@ -160,7 +160,7 @@ CREATE TABLE Kauf (
                           REFERENCES Produkt(PNr)
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
-                      Kaufzeit  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                      Kaufzeit  TIMESTAMP,
                       Menge     INTEGER   NOT NULL,
                       Name      VARCHAR(255),
                       Adresse   VARCHAR(255),
