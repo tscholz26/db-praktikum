@@ -177,7 +177,7 @@ CREATE TABLE Rezension (
                                REFERENCES Produkt(PNr)
                                    ON DELETE CASCADE
                                    ON UPDATE CASCADE,
-                           Bewertung INTEGER,
+                           Bewertung INTEGER CHECK ( Bewertung between 1 AND 5),
                            Rezension TEXT,
                            PRIMARY KEY (KundenID, ProduktNr)
 );

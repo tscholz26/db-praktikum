@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "errordata", schema = "public")
-public class Errordatum {
+public class Errordata {
     @Id
     @Column(name = "pnr", nullable = false, length = 50)
     private String pnr;
