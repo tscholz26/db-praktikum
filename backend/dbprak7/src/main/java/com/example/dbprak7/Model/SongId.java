@@ -12,26 +12,26 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
-public class ProduktKategorieId implements Serializable {
-    private static final long serialVersionUID = -4304902752239884577L;
+public class SongId implements Serializable {
+    private static final long serialVersionUID = 8745337289664919952L;
     @Column(name = "produktnr", nullable = false, length = 50)
     private String produktnr;
 
-    @Column(name = "kategorieid", nullable = false)
-    private Integer kategorieid;
+    @Column(name = "songtitel", nullable = false, length = Integer.MAX_VALUE)
+    private String songtitel;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ProduktKategorieId entity = (ProduktKategorieId) o;
-        return Objects.equals(this.produktnr, entity.produktnr) &&
-                Objects.equals(this.kategorieid, entity.kategorieid);
+        SongId entity = (SongId) o;
+        return Objects.equals(this.songtitel, entity.songtitel) &&
+                Objects.equals(this.produktnr, entity.produktnr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(produktnr, kategorieid);
+        return Objects.hash(songtitel, produktnr);
     }
 
 }

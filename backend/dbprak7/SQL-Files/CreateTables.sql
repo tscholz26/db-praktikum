@@ -86,7 +86,8 @@ CREATE TABLE Buch (
                       ISBN              VARCHAR(20) NOT NULL,
                       Seitenzahl        INTEGER,
                       Verlag            VARCHAR(255),
-                      Erscheinungsdatum DATE
+                      Erscheinungsdatum DATE,
+                      Auflage            INTEGER
 );
 
 -- 4a. Autor als eigene Relation
@@ -160,7 +161,7 @@ CREATE TABLE Kauf (
                           REFERENCES Produkt(PNr)
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
-                      Kaufzeit  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                      Kaufzeit  TIMESTAMP,
                       Menge     INTEGER   NOT NULL,
                       Name      VARCHAR(255),
                       Adresse   VARCHAR(255),
@@ -177,7 +178,7 @@ CREATE TABLE Rezension (
                                REFERENCES Produkt(PNr)
                                    ON DELETE CASCADE
                                    ON UPDATE CASCADE,
-                           Bewertung INTEGER,
+                           Bewertung INTEGER CHECK ( Bewertung between 1 AND 5),
                            Rezension TEXT,
                            PRIMARY KEY (KundenID, ProduktNr)
 );

@@ -1,16 +1,23 @@
 package com.example.dbprak7.Model;
-import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+@Getter
+@Setter
 @Entity
+@Table(name = "kunde", schema = "public", uniqueConstraints = {
+        @UniqueConstraint(name = "kunde_nutzername_key", columnNames = {"nutzername"})
+})
 public class Kunde {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer kundenID;
+    @ColumnDefault("nextval('kunde_kundenid_seq')")
+    @Column(name = "kundenid", nullable = false)
+    private Integer id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "nutzername", nullable = false, length = 100)
     private String nutzername;
+
 }

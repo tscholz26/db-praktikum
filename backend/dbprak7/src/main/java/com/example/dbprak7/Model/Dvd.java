@@ -6,17 +6,15 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 @Entity
-@Table(name = "buch", schema = "public",
+@Table(name = "dvd", schema = "public",
         indexes = {
-                @Index(name = "idx_buch_verlag", columnList = "verlag")
+                @Index(name = "idx_dvd_laufzeit", columnList = "laufzeit"),
         }
 )
-public class Buch {
+public class Dvd {
     @Id
     @Column(name = "produktnr", nullable = false, length = 50)
     private String produktnr;
@@ -27,19 +25,13 @@ public class Buch {
     @JoinColumn(name = "produktnr", nullable = false)
     private Produkt produkt;
 
-    @Column(name = "isbn", nullable = false, length = 20)
-    private String isbn;
+    @Column(name = "regioncode")
+    private Integer regioncode;
 
-    @Column(name = "seitenzahl")
-    private Integer seitenzahl;
+    @Column(name = "format", length = 100)
+    private String format;
 
-    @Column(name = "verlag")
-    private String verlag;
-
-    @Column(name = "erscheinungsdatum")
-    private LocalDate erscheinungsdatum;
-
-    @Column(name = "auflage")
-    private Integer auflage;
+    @Column(name = "laufzeit")
+    private Integer laufzeit;
 
 }
