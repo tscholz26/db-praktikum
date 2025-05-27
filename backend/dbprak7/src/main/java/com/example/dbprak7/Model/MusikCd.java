@@ -23,7 +23,7 @@ public class MusikCd {
     @JoinColumn(name = "produktnr", nullable = false)
     private Produkt produkt;
 
-    @Column(name = "label")
+    @Column(name = "label", nullable = false)
     private String label;
 
     @Column(name = "erscheinungsdatum")

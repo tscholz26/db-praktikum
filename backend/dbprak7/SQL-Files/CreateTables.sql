@@ -12,7 +12,7 @@ CREATE TABLE Musik_CD (
                               REFERENCES Produkt(PNr)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
-                          Label             VARCHAR(255),
+                          Label             VARCHAR(255) NOT NULL,
                           Erscheinungsdatum DATE
 );
 
