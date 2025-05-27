@@ -39,4 +39,7 @@ public class Buch {
     @Column(name = "erscheinungsdatum")
     private LocalDate erscheinungsdatum;
 
+    @Column(name = "auflage")
+    private Integer auflage;
+
 }

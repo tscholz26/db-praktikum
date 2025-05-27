@@ -86,7 +86,8 @@ CREATE TABLE Buch (
                       ISBN              VARCHAR(20) NOT NULL,
                       Seitenzahl        INTEGER,
                       Verlag            VARCHAR(255),
-                      Erscheinungsdatum DATE
+                      Erscheinungsdatum DATE,
+                      Auflage            INTEGER
 );
 
 -- 4a. Autor als eigene Relation
