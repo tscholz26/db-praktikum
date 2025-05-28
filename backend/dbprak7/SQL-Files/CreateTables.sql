@@ -157,7 +157,7 @@ CREATE TABLE Angebot (
 -- 7. Kunden, Käufe und Rezensionen
 CREATE TABLE Kunde (
                        KundenID   SERIAL PRIMARY KEY,
-                       Nutzername VARCHAR(100) UNIQUE NOT NULL
+                       Nutzername VARCHAR(100) NOT NULL DEFAULT 'guest'
 );
 
 CREATE TABLE Kauf (
