@@ -159,14 +159,13 @@ CREATE TABLE Angebot (
 
 -- 7. Kunden, Käufe und Rezensionen
 CREATE TABLE Kunde (
-                       KundenID   SERIAL PRIMARY KEY,
-                       Nutzername VARCHAR(100) NOT NULL DEFAULT 'guest'
+                      Nutzername VARCHAR(100) PRIMARY KEY
 );
 
 CREATE TABLE Kauf (
                       KaufID    SERIAL PRIMARY KEY,
-                      KundenID  INTEGER NOT NULL
-                          REFERENCES Kunde(KundenID)
+                      Nutzername  VARCHAR(100)
+                          REFERENCES Kunde(Nutzername)
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
                       ProduktNr VARCHAR(50) NOT NULL
@@ -182,13 +181,18 @@ CREATE TABLE Kauf (
 );
 
 CREATE TABLE Rezension (
+                           RezensionsID SERIAL UNIQUE NOT NULL,
                            ProduktNr VARCHAR(50) NOT NULL
                                REFERENCES Produkt(PNr)
                                    ON DELETE CASCADE
                                    ON UPDATE CASCADE,
+                           Nutzername VARCHAR(100) NOT NULL
+                               REFERENCES Kunde(Nutzername)
+                                   ON DELETE CASCADE
+                                   ON UPDATE CASCADE,
                            Bewertung INTEGER CHECK (Bewertung between 1 AND 5),
                            Rezension TEXT,
-                           PRIMARY KEY (ProduktNr)
+                           PRIMARY KEY (RezensionsID)
 );
 
 -- 8. Produkt-Ähnlichkeiten

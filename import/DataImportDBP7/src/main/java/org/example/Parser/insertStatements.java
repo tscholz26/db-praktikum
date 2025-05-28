@@ -20,19 +20,19 @@ public class insertStatements {
             System.out.println("Item inserted successfully");
         }
     }
-    protected static void insertRezension(Connection con, String asin, int Bewertung, String Rezension) throws SQLException {
-        String query = "INSERT INTO rezension (pnr, bewertung, rezension) VALUES (?, ?, ?)";
-        try (PreparedStatement pstmt = con.prepareStatement(query)) {
-            pstmt.setString(1, asin);
-            pstmt.setInt(2, Bewertung);
-            pstmt.setString(3, Rezension);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            System.out.println("Rezension inserted successfully");
-        }
-
-    }
+//    protected static void insertRezension(Connection con, String asin, int Bewertung, String Rezension) throws SQLException {
+//        String query = "INSERT INTO rezension (pnr, bewertung, rezension) VALUES (?, ?, ?)";
+//        try (PreparedStatement pstmt = con.prepareStatement(query)) {
+//            pstmt.setString(1, asin);
+//            pstmt.setInt(2, Bewertung);
+//            pstmt.setString(3, Rezension);
+//            pstmt.executeUpdate();
+//        } catch (SQLException e) {
+//            throw e;
+//        } finally {
+//            System.out.println("Rezension inserted successfully");
+//        }
+//
+//    }
 
 }

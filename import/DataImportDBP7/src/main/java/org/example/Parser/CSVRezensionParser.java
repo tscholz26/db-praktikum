@@ -7,54 +7,69 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class CSVRezensionParser {
 
     private static final String CSV_FILE = "data/reviews.csv";
 
-    public static void parse(Connection con){
-        try(CSVReader reader = new CSVReader(new FileReader(CSV_FILE))) {
-            reader.readNext(); // Skip header row
+    public static void parse(Connection con) {
+        String insertKundeSql =
+                "INSERT INTO Kunde (nutzername) VALUES (?)";
+        String kundenid = "SELECT kundenid FROM kunde WHERE nutzername = ?";
+        String insertRezensionSql =
+                "INSERT INTO rezension (produktnr, nutzername, bewertung, rezension) VALUES (?, ?, ?, ?)";
+
+        try (CSVReader reader = new CSVReader(new FileReader(CSV_FILE));
+             PreparedStatement stmtKunde = con.prepareStatement(insertKundeSql);
+             PreparedStatement stmtKundenid = con.prepareStatement(kundenid);
+             PreparedStatement stmtRezension = con.prepareStatement(insertRezensionSql)) {
+
+            reader.readNext(); // Kopfzeile überspringen
             String[] line;
             while ((line = reader.readNext()) != null) {
                 String username = line[4];
-                if(!username.equals("guest")){
-                    PreparedStatement pstmtKunde = con.prepareStatement(
-                            "INSERT INTO Kunde (nutzername) VALUES (?)"
-                    );
-                    pstmtKunde.setString(1, username);
-                    pstmtKunde.executeUpdate();
-                    System.out.println("Inserted Kunde successfully");
-                }
-
                 String produktnr = line[0];
-                int bewertung = Integer.parseInt(line[1]);
+                String ratingStr = line[1];
                 String rezension = line[6];
 
-                // Insert into rezension table
-                PreparedStatement pstmtRezension = con.prepareStatement(
-                        "INSERT INTO rezension (produktnr, bewertung, rezension)" +
-                                " VALUES (?, ?, ?)"
-                );
-                pstmtRezension.setString(1, produktnr);
-                pstmtRezension.setInt(2, bewertung);
-                pstmtRezension.setString(3, rezension);
-                pstmtRezension.executeUpdate();
-                System.out.println("Inserted review successfully");
+                // 1) Kunde einfügen, falls nicht "guest"
+
+                    try {
+                        stmtKunde.setString(1, username);
+                        stmtKunde.executeUpdate();
+                    } catch (SQLException e) {}
+
+
+                    // 2) Bewertung parsen und in DB
+                    int bewertung;
+                    try {
+                        bewertung = Integer.parseInt(ratingStr);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Ungültiges Rating '" + ratingStr + "' – Zeile übersprungen.");
+                        continue;
+                    }
+                    // 3) Rezension einfügen
+                    try {
+                        stmtRezension.setString(1, produktnr);
+                        stmtRezension.setString(2, username);
+                        stmtRezension.setInt(3, bewertung);
+                        stmtRezension.setString(4, rezension);
+                        stmtRezension.executeUpdate();
+                    } catch (SQLException e) {
+
+                        System.err.println("Rezension insert failed for product=" + produktnr +
+                                ", user=" + username + ": " + e.getMessage());
+                    }
+
             }
 
-        } catch (IOException e) {
+            System.out.println("Rezension and Kunde parsed succesfull.");
+        } catch (IOException | CsvValidationException | SQLException e) {
+            // Nur Fehler, die vor der Schleife auftreten (z.B. Datei nicht gefunden)
             e.printStackTrace();
-            System.out.println("Error reading CSV file: " + e.getMessage());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error inserting data into database: " + e.getMessage());
-        } catch (CsvValidationException e) {
-            e.printStackTrace();
-            System.out.println("Error validating CSV data: " + e.getMessage());
         }
     }
 }
