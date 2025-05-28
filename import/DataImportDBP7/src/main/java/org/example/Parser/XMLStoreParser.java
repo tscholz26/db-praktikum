@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.Parser.insertStatements;
+
+
 public class XMLStoreParser {
 
     public static void main(Connection con) {
@@ -21,7 +24,7 @@ public class XMLStoreParser {
         //Items have now been parsed and stored in Array allItems, now we need to insert them into the database
         for (ShopItem item : allItems) {
             try {
-                insertItem(con, item.getAsin(), item.getTitle(), 1, "picture");
+                insertStatements.insertItem(con, item.getAsin(), item.getTitle(), 1, "picture");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -30,18 +33,7 @@ public class XMLStoreParser {
 
     }
 
-    private static void insertItem(Connection con, String asin, String title, int salesrank, String picture) throws SQLException {
-        String query = "INSERT INTO produkt (pnr, titel, verkaufsrang, bild) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement statement = con.prepareStatement(query)) {
-            statement.setString(1, asin);
-            statement.setString(2, title);
-            statement.setInt(3, salesrank);
-            statement.setString(4, picture);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        }
-    }
+
 
     private static List<ShopItem> parseFile(String filepath) {
         List<ShopItem> items = new ArrayList<>();
