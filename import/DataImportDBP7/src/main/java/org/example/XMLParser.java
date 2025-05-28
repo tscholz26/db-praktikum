@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.Parser.XMLStoreParser;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,9 +21,12 @@ public class XMLParser {
                 System.out.println("Failed to make connection!");
             }
 
+
             // Here you can call your XML parsing methods or classes
             // ******************************************************
             // ******************************************************
+            //Call Store Parsed
+            XMLStoreParser.main(con);
             // ******************************************************
             // ******************************************************
             // ******************************************************

@@ -1,5 +1,6 @@
 package org.example.Parser;
 
+import java.sql.Connection;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.File;
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class XMLStoreParser {
 
-    public static void main(String[] args) {
+    public static void main(Connection con) {
         List<ShopItem> allItems = new ArrayList<>();
         allItems.addAll(parseFile("data/leipzig_transformed.xml"));
         allItems.addAll(parseFile("data/dresden.xml"));
