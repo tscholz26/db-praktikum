@@ -12,7 +12,7 @@ public class XmlToArrayExample {
     public static void main(String[] args) {
         List<ShopItem> allItems = new ArrayList<>();
         //allItems.addAll(parseFile("resources/leipzig_transformed.xml"));
-        allItems.addAll(parseFile("resources/dresden.xml"));
+        allItems.addAll(parseFile("dbprak7/data/dresden.xml"));
 
         for (ShopItem item : allItems) {  System.out.println(item);  }
     }
