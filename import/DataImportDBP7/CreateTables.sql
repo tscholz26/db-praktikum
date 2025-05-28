@@ -182,17 +182,13 @@ CREATE TABLE Kauf (
 );
 
 CREATE TABLE Rezension (
-                           KundenID  INTEGER NOT NULL
-                               REFERENCES Kunde(KundenID)
-                                   ON DELETE CASCADE
-                                   ON UPDATE CASCADE,
                            ProduktNr VARCHAR(50) NOT NULL
                                REFERENCES Produkt(PNr)
                                    ON DELETE CASCADE
                                    ON UPDATE CASCADE,
-                           Bewertung INTEGER CHECK ( Bewertung between 1 AND 5),
+                           Bewertung INTEGER CHECK (Bewertung between 1 AND 5),
                            Rezension TEXT,
-                           PRIMARY KEY (KundenID, ProduktNr)
+                           PRIMARY KEY (ProduktNr)
 );
 
 -- 8. Produkt-Ähnlichkeiten
