@@ -4,6 +4,8 @@ import java.sql.Connection;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.File;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,31 @@ public class XMLStoreParser {
         allItems.addAll(parseFile("data/leipzig_transformed.xml"));
         allItems.addAll(parseFile("data/dresden.xml"));
 
-        for (ShopItem item : allItems) {  System.out.println(item);  }
+        //for (ShopItem item : allItems) {  System.out.println(item);  }
+
+        //Items have now been parsed and stored in Array allItems, now we need to insert them into the database
+        for (ShopItem item : allItems) {
+            try {
+                insertItem(con, item.getAsin(), item.getTitle(), 1, "picture");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    private static void insertItem(Connection con, String asin, String title, int salesrank, String picture) throws SQLException {
+        String query = "INSERT INTO produkt (pnr, titel, verkaufsrang, bild) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            statement.setString(1, asin);
+            statement.setString(2, title);
+            statement.setInt(3, salesrank);
+            statement.setString(4, picture);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
     }
 
     private static List<ShopItem> parseFile(String filepath) {
