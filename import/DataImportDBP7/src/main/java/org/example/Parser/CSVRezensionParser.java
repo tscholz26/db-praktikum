@@ -18,14 +18,18 @@ public class CSVRezensionParser {
     public static void parse(Connection con) {
         String insertKundeSql =
                 "INSERT INTO Kunde (nutzername) VALUES (?)";
-        String kundenid = "SELECT kundenid FROM kunde WHERE nutzername = ?";
         String insertRezensionSql =
                 "INSERT INTO rezension (produktnr, nutzername, bewertung, rezension) VALUES (?, ?, ?, ?)";
+        String insertErrorDataCSV =
+                "INSERT INTO ErrorDataCSV (produkt, bewertung, helpful, reviewdate, summary, content, fehlermeldung) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+
 
         try (CSVReader reader = new CSVReader(new FileReader(CSV_FILE));
              PreparedStatement stmtKunde = con.prepareStatement(insertKundeSql);
-             PreparedStatement stmtKundenid = con.prepareStatement(kundenid);
-             PreparedStatement stmtRezension = con.prepareStatement(insertRezensionSql)) {
+             PreparedStatement stmtRezension = con.prepareStatement(insertRezensionSql);
+             PreparedStatement stmtErrorDataCSV = con.prepareStatement(insertErrorDataCSV)) {
 
             reader.readNext(); // Kopfzeile überspringen
             String[] line;
@@ -34,8 +38,12 @@ public class CSVRezensionParser {
                 String produktnr = line[0];
                 String ratingStr = line[1];
                 String rezension = line[6];
+                String helpful = line[2];
+                String reviewdate = line[3];
+                String summary = line[5];
 
-                // 1) Kunde einfügen, falls nicht "guest"
+
+                // 1) Kunde einfügen
 
                     try {
                         stmtKunde.setString(1, username);
@@ -59,9 +67,15 @@ public class CSVRezensionParser {
                         stmtRezension.setString(4, rezension);
                         stmtRezension.executeUpdate();
                     } catch (SQLException e) {
-
-                        System.err.println("Rezension insert failed for product=" + produktnr +
+                        stmtErrorDataCSV.setString(1, produktnr);
+                        stmtErrorDataCSV.setInt(2, bewertung);
+                        stmtErrorDataCSV.setInt(3, Integer.parseInt(helpful));
+                        stmtErrorDataCSV.setString(4, reviewdate);
+                        stmtErrorDataCSV.setString(5, summary);
+                        stmtErrorDataCSV.setString(6, rezension);
+                        stmtErrorDataCSV.setString(7, "Rezension insert failed for product=" + produktnr +
                                 ", user=" + username + ": " + e.getMessage());
+                        stmtErrorDataCSV.executeUpdate();
                     }
 
             }

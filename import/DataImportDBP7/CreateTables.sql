@@ -209,9 +209,15 @@ CREATE TABLE Produkt_Aehnlichkeit (
 );
 
 -- 9. ErrorData
-CREATE TABLE ErrorData (
-                           Pnr           VARCHAR(50) PRIMARY KEY,
-                           Fehlermeldung TEXT      NOT NULL
+CREATE TABLE ErrorDataCSV (
+                            RezensionsID SERIAL PRIMARY KEY,
+                            Produkt           VARCHAR(50) NOT NULL,
+                            Bewertung     Integer,
+                            Helpful  Integer,
+                            reviewDate  VARCHAR(50),
+                            summary      TEXT,
+                            content      TEXT,
+                            Fehlermeldung TEXT
 );
 
 -- CREATE INDEXES
@@ -223,4 +229,4 @@ CREATE INDEX IF NOT EXISTS idx_filiale_ort ON filiale (ort);
 CREATE INDEX IF NOT EXISTS idx_filiale_name ON filiale (name);
 CREATE INDEX IF NOT EXISTS idx_angebot_preis ON angebot (preis);
 CREATE INDEX IF NOT EXISTS idx_rezension_bewertung ON rezension (bewertung);
-CREATE INDEX IF NOT EXISTS idx_error_fehlermeldung ON errordata (fehlermeldung);
+CREATE INDEX IF NOT EXISTS idx_error_fehlermeldung ON errordatacsv (fehlermeldung);
