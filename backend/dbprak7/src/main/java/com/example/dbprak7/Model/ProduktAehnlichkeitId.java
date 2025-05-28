@@ -6,17 +6,23 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
+import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
 @Embeddable
+@XmlAccessorType(XmlAccessType.FIELD) // Gibt an, dass JAXB die Felder direkt bindet
+@XmlType(propOrder = {"produktnr1", "produktnr2"}) // Bestimmt die Reihenfolge im XML
 public class ProduktAehnlichkeitId implements Serializable {
     private static final long serialVersionUID = 4330940335764384605L;
+
+    @XmlElement(name = "produktnr1", required = true) // XML-Tag-Name für produktnr1
     @Column(name = "produktnr1", nullable = false, length = 50)
     private String produktnr1;
 
+    @XmlElement(name = "produktnr2", required = true) // XML-Tag-Name für produktnr2
     @Column(name = "produktnr2", nullable = false, length = 50)
     private String produktnr2;
 
@@ -33,5 +39,5 @@ public class ProduktAehnlichkeitId implements Serializable {
     public int hashCode() {
         return Objects.hash(produktnr2, produktnr1);
     }
-
 }
+
