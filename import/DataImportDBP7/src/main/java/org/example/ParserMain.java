@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Parser.CSVRezensionParser;
 import org.example.Parser.XMLStoreParser;
 
 import java.io.BufferedReader;
@@ -10,7 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class XMLParser {
+public class ParserMain {
     public static void main(String[] args) {
         try {
             //Database connection
@@ -39,6 +40,8 @@ public class XMLParser {
             XMLStoreParser.main(con);
             // ******************************************************
             // ******************************************************
+            // Call CSV Parsing
+            CSVRezensionParser.parse(con);
             // ******************************************************
             // ******************************************************
 
