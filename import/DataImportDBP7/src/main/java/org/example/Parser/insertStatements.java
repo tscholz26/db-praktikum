@@ -48,14 +48,23 @@ public class insertStatements {
         System.out.println("Rezension inserted successfully");
     }
 
-    protected static void insertKunde(Connection con, String username) throws SQLException {
+    protected static void insertKunde(Connection con, String username, String entityname) throws SQLException {
         String insertKundeSql =
                 "INSERT INTO Kunde (nutzername) VALUES (?)";
+        String insertErrorData =
+                "INSERT INTO ErrorData (entityname, fehlermeldung, fehlerattribut) " +
+                        "VALUES (?, ?, ?)";
         try {
             PreparedStatement stmtKunde = con.prepareStatement(insertKundeSql);
             stmtKunde.setString(1, username);
             stmtKunde.executeUpdate();
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+            PreparedStatement stmtErrorData = con.prepareStatement(insertErrorData);
+            stmtErrorData.setString(1, entityname);
+            stmtErrorData.setString(2, e.getMessage());
+            stmtErrorData.setString(3, "username");
+            stmtErrorData.executeUpdate();
+        }
         System.out.println("Kunde inserted successfully");
     }
 
