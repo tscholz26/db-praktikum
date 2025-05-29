@@ -192,8 +192,6 @@ CREATE TABLE Rezension (
                                    ON UPDATE CASCADE,
                            Bewertung INTEGER CHECK (Bewertung between 1 AND 5),
                            Rezension TEXT,
-                           CONSTRAINT rezension_no_amp_hash_dollar
-                               CHECK (Rezension !~ '[&#$]'),
                            PRIMARY KEY (RezensionsID)
 );
 
@@ -211,15 +209,11 @@ CREATE TABLE Produkt_Aehnlichkeit (
 );
 
 -- 9. ErrorData
-CREATE TABLE ErrorDataCSV (
-                            RezensionsID SERIAL PRIMARY KEY,
-                            Produkt           VARCHAR(50) NOT NULL,
-                            Bewertung     Integer,
-                            Helpful  Integer,
-                            reviewDate  VARCHAR(50),
-                            summary      TEXT,
-                            content      TEXT,
-                            Fehlermeldung TEXT
+CREATE TABLE ErrorData (
+                            ErrorID SERIAL PRIMARY KEY,
+                            EntityName VARCHAR(100) NOT NULL,
+                            FehlerAttribut VARCHAR(100) NOT NULL,
+                            Fehlermeldung TEXT NOT NULL
 );
 
 -- CREATE INDEXES

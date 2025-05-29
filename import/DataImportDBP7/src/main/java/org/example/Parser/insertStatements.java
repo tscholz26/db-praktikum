@@ -20,12 +20,12 @@ public class insertStatements {
             System.out.println("Item inserted successfully");
         }
     }
-    protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String helpful, String summary, String reviewdate) throws SQLException {
+    protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String entityname) throws SQLException {
         String insertRezensionSql =
                 "INSERT INTO rezension (produktnr, nutzername, bewertung, rezension) VALUES (?, ?, ?, ?)";
         String insertErrorDataCSV =
-                "INSERT INTO ErrorDataCSV (produkt, bewertung, helpful, reviewdate, summary, content, fehlermeldung) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO ErrorData (entityname, fehlermeldung, fehlerattribut) " +
+                        "VALUES (?, ?, ?)";
         // 3) Rezension einfügen
         try {
             PreparedStatement stmtRezension = con.prepareStatement(insertRezensionSql);
@@ -36,14 +36,13 @@ public class insertStatements {
             stmtRezension.executeUpdate();
         } catch (SQLException e) {
             PreparedStatement stmtErrorDataCSV = con.prepareStatement(insertErrorDataCSV);
-            stmtErrorDataCSV.setString(1, produktnr);
-            stmtErrorDataCSV.setInt(2, Integer.parseInt(bewertung));
-            stmtErrorDataCSV.setInt(3, Integer.parseInt(helpful));
-            stmtErrorDataCSV.setString(4, reviewdate);
-            stmtErrorDataCSV.setString(5, summary);
-            stmtErrorDataCSV.setString(6, rezension);
-            stmtErrorDataCSV.setString(7, "Rezension insert failed for product=" + produktnr +
-                    ", user=" + username + ": " + e.getMessage());
+            stmtErrorDataCSV.setString(1, entityname);
+            stmtErrorDataCSV.setString(2, e.getMessage());
+            if (e.getMessage().contains("violates foreign key constraint")) {
+                stmtErrorDataCSV.setString(3, "product");
+            } else if (e.getMessage().contains("violates check constraint \"rezension_bewertung_check\"")) {
+                stmtErrorDataCSV.setString(3, "rating");
+            }
             stmtErrorDataCSV.executeUpdate();
         }
         System.out.println("Rezension inserted successfully");

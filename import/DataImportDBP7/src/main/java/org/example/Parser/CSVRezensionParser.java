@@ -44,7 +44,7 @@ public class CSVRezensionParser {
 
                     // 3) Rezension einfügen
                     try {
-                        insertRezension(con, produktnr, username, bewertung, rezension, helpful, summary, reviewdate);
+                        insertRezension(con, produktnr, username, bewertung, rezension, "Rezension");
                     } catch (SQLException e) {
                         // Fehler beim Einfügen der Rezension, in ErrorDataCSV speichern
                         String errorMessage = "Rezension insert failed for product=" + produktnr +
