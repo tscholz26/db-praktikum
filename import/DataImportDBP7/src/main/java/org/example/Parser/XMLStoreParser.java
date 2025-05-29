@@ -4,6 +4,7 @@ import java.sql.Connection;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.File;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,10 +24,33 @@ public class XMLStoreParser {
 
         //Items have now been parsed and stored in Array allItems, now we need to insert them into the database
         for (ShopItem item : allItems) {
+
             try {
+                //add item to table "produkt"
                 insertStatements.insertItem(con, item.getAsin(), item.getTitle(), 1, "picture");
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                //add item to table book/dvd/music
+                switch (item.getPgroup()) {
+                    case "Book":
+                        try {
+                            insertStatements.insertBook(con, item.getAsin(), item.getIsbn(), 1, item.getPublisher(), null, "auflage xxx");
+
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            //If book failed to be inserted, remove item from "produkt" table aswell
+                            try {
+                                insertStatements.deleteItem(con, item.getAsin());
+                            } catch (SQLException e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                        break;
+                    default:
+                        System.out.println("unknown category: " + item.getPgroup());
+                }
+
             }
         }
 

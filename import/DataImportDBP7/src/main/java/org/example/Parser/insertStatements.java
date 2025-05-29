@@ -1,6 +1,7 @@
 package org.example.Parser;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -16,10 +17,37 @@ public class insertStatements {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw e;
-        } finally {
-            System.out.println("Item inserted successfully");
         }
     }
+
+    protected static void deleteItem(Connection con, String asin) throws SQLException {
+        String query = "DELETE FROM produkt WHERE (pnr = ?)";
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            statement.setString(1, asin);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            System.out.println("Produkt mit ASIN " + asin + " wurde gelöscht.");
+        }
+    }
+
+    protected static void insertBook(Connection con, String produktnr, String isbn, int seitenzahl, String verlag, Date erscheinungsdatum, String auflage) throws SQLException {
+        String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, verlag, erscheinungsdatum, auflage) VALUES (?,?,?,?,?,?)";
+        try {
+            PreparedStatement stmt = con.prepareStatement(insertBookSql);
+            stmt.setString(1, produktnr);
+            stmt.setString(2, isbn);
+            stmt.setInt(3, seitenzahl);
+            stmt.setString(4, verlag);
+            stmt.setDate(5, erscheinungsdatum);
+            stmt.setString(6, auflage);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
     protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String entityname) throws SQLException {
         String insertRezensionSql =
                 "INSERT INTO rezension (produktnr, nutzername, bewertung, rezension) VALUES (?, ?, ?, ?)";
@@ -45,7 +73,6 @@ public class insertStatements {
             }
             stmtErrorDataCSV.executeUpdate();
         }
-        System.out.println("Rezension inserted successfully");
     }
 
     protected static void insertKunde(Connection con, String username, String entityname) throws SQLException {
@@ -65,7 +92,6 @@ public class insertStatements {
             stmtErrorData.setString(3, "username");
             stmtErrorData.executeUpdate();
         }
-        System.out.println("Kunde inserted successfully");
     }
 
 }
