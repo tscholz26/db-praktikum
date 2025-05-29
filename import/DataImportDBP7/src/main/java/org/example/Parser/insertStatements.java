@@ -1,5 +1,9 @@
 package org.example.Parser;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -32,16 +36,67 @@ public class insertStatements {
         }
     }
 
-    protected static void insertBook(Connection con, String produktnr, String isbn, int seitenzahl, String verlag, Date erscheinungsdatum, String auflage) throws SQLException {
-        String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, verlag, erscheinungsdatum, auflage) VALUES (?,?,?,?,?,?)";
+    protected static void insertBook(Connection con, String produktnr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege) throws SQLException {
+        String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, erscheinungsdatum, auflage) VALUES (?,?,?,?,?)";
+        System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " seitenzahl: " + seitenzahl + " erscheinungsdatum: " + erscheinungsdatum + " auflage: " + auflage);
         try {
             PreparedStatement stmt = con.prepareStatement(insertBookSql);
             stmt.setString(1, produktnr);
+
+            if (isbn.isEmpty()) {
+                throw new SQLException("ISBN is empty");
+            }
             stmt.setString(2, isbn);
-            stmt.setInt(3, seitenzahl);
-            stmt.setString(4, verlag);
-            stmt.setDate(5, erscheinungsdatum);
-            stmt.setString(6, auflage);
+
+            if (seitenzahl != null) {
+                stmt.setInt(3, seitenzahl);
+            } else {
+                stmt.setNull(3, java.sql.Types.INTEGER);
+            }
+
+            stmt.setDate(4, Date.valueOf(erscheinungsdatum));
+            stmt.setString(5, auflage);
+            stmt.executeUpdate();
+
+            if (!(verlaege.getLength() > 0)) {
+                throw new SQLException("No publisher found");
+            } else {
+                for (int i = 0; i < verlaege.getLength(); i++) {
+                    try {
+                        Node node = verlaege.item(i);
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element verlagElement = (Element) node;
+
+                            // Leipzig: verlag name is stored under attribute "name" of <publisher>
+                            String verlagName = verlagElement.getAttribute("name");
+
+                            // Dresden: verlag name is stored in content of container <publisher>
+                            if (verlagName == null || verlagName.trim().isEmpty()) {
+                                verlagName = verlagElement.getTextContent().trim();
+                            }
+
+                            // Only insert non-empty publisher names
+                            if (verlagName != null && !verlagName.isEmpty()) {
+                                insertVerlagBuch(con, produktnr, verlagName);
+                            }
+                        }
+                    } catch (SQLException e) {
+                        throw e;
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    protected static void insertVerlagBuch(Connection con, String produktnr, String verlag) throws SQLException {
+        String insertVerlagBuchSql = "INSERT INTO Buch_Verlag (Produktnr, verlag) VALUES (?,?)";
+        try {
+            PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
+            stmt.setString(1, produktnr);
+            stmt.setString(2, verlag);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw e;

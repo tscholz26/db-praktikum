@@ -97,9 +97,15 @@ CREATE TABLE Buch (
                               ON UPDATE CASCADE,
                       ISBN              VARCHAR(20) NOT NULL,
                       Seitenzahl        INTEGER,
-                      Verlag            VARCHAR(255),
                       Erscheinungsdatum DATE,
                       Auflage           VARCHAR(20)
+);
+
+CREATE TABLE Buch_Verlag (
+                      ProduktNr VARCHAR(50),
+                      Verlag VARCHAR(255),
+                      PRIMARY KEY (ProduktNr, Verlag),
+                      FOREIGN KEY (ProduktNr) REFERENCES Buch(ProduktNr) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- 4a. Autor als eigene Relation
@@ -219,7 +225,6 @@ CREATE TABLE ErrorData (
 -- CREATE INDEXES
 CREATE INDEX IF NOT EXISTS idx_produkt_titel ON produkt (titel);
 CREATE INDEX IF NOT EXISTS idx_dvd_laufzeit ON dvd (laufzeit);
-CREATE INDEX IF NOT EXISTS idx_buch_verlag ON buch (verlag);
 CREATE INDEX IF NOT EXISTS idx_kategorie_name ON kategorie (name);
 CREATE INDEX IF NOT EXISTS idx_filiale_ort ON filiale (ort);
 CREATE INDEX IF NOT EXISTS idx_filiale_name ON filiale (name);
