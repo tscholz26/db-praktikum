@@ -54,6 +54,23 @@ public class XMLStoreParser {
 
                 //Nur Nodes des Typs ELEMENT werden eingelesen, Textknoten wie zB Zeilenumbrüche sind irrelevant
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
+
+                    //FILTER: ITEMS DIE KEINE CHILD ELEMENTS HABEN, WERDEN NICHT EINGELESEN (zB sub-items in <similars>)
+                    Element itemElement = (Element) node;
+                    boolean hasChild = false;
+                    NodeList children = itemElement.getChildNodes();
+                    for (int j = 0; j < children.getLength(); j++) {
+                        Node child = children.item(j);
+                        if (child.getNodeType() == Node.ELEMENT_NODE) {
+                            hasChild = true;
+                            break;
+                        }
+                    }
+                    if (!hasChild) {
+                        continue;   //Item überspringen falls es keine child elements hat
+                    }
+
+
                     //Einzelne Node wird zu Typ Element gecastet und einzeln geparsed, danach zur Liste hinzugefügt
                     ShopItem parsedItem = parseItem((Element) node);
                     if (parsedItem != null) {
@@ -76,68 +93,60 @@ public class XMLStoreParser {
 
         //Achtung: <item> tritt auch verschachtelt in <item> auf, zB in <similars>, deswegen werden hier nur die uebernommen die eine pggroup haben weil
         //das die eigentlichen items sind und keine nested items innerhalb der richtigen items
-        if (pgroup.isEmpty()) {
-            return null;    //nested item gefunden
-        } else {
 
-            item.setPgroup(pgroup);
-            item.setAsin(itemElement.getAttribute("asin"));
+        item.setPgroup(pgroup);
+        item.setAsin(itemElement.getAttribute("asin"));
 
-            // title
-            NodeList titleNodes = itemElement.getElementsByTagName("title");
-            if (titleNodes.getLength() > 0) {
-                item.setTitle(titleNodes.item(0).getTextContent());
-            }
-
-            // price
-            NodeList priceNodes = itemElement.getElementsByTagName("price");
-            if (priceNodes.getLength() > 0) {
-                Element priceSpec = (Element) priceNodes.item(0);
-                item.setPriceRaw(priceSpec.getTextContent().trim());
-                item.setPriceCurrency(priceSpec.getAttribute("currency"));
-                item.setPriceMult(priceSpec.getAttribute("mult"));
-                item.setState(priceSpec.getAttribute("state"));
-            }
-
-            // bookspec
-            NodeList bookSpecList = itemElement.getElementsByTagName("bookspec");
-            if (bookSpecList.getLength() > 0) {
-                Element bookSpec = (Element) bookSpecList.item(0);
-                item.setBinding(getTextContent(bookSpec, "binding"));
-                item.setIsbn(getAttr(bookSpec, "isbn", "val"));
-                item.setPages(getTextContent(bookSpec, "pages"));
-                item.setPubDate(getAttr(bookSpec, "publication", "date"));
-            }
-
-            // dvdspec
-            NodeList dvdSpecList = itemElement.getElementsByTagName("dvdspec");
-            if (dvdSpecList.getLength() > 0) {
-                Element dvdSpec = (Element) dvdSpecList.item(0);
-                item.setDvdFormat(getTextContent(dvdSpec, "format"));
-                item.setRegionCode(getTextContent(dvdSpec, "regioncode"));
-                item.setDvdRelease(getTextContent(dvdSpec, "releasedate"));
-                item.setRunningTime(getTextContent(dvdSpec, "runningtime"));
-            }
-
-            // musicspec
-            NodeList musicSpecList = itemElement.getElementsByTagName("musicspec");
-            if (musicSpecList.getLength() > 0) {
-                Element musicSpec = (Element) musicSpecList.item(0);
-                item.setMusicBinding(getTextContent(musicSpec, "binding"));
-                item.setMusicFormat(getAttr(musicSpec, "format", "value"));
-                item.setMusicRelease(getTextContent(musicSpec, "releasedate"));
-                item.setUpc(getTextContent(musicSpec, "upc"));
-            }
-
-            // publisher
-            NodeList pubList = itemElement.getElementsByTagName("publisher");
-            if (pubList.getLength() > 0) {
-                Element pub = (Element) pubList.item(0);
-                item.setPublisher(pub.getAttribute("name"));
-            }
-
-            return (item);
+        // title
+        NodeList titleNodes = itemElement.getElementsByTagName("title");
+        if (titleNodes.getLength() > 0) {
+            item.setTitle(titleNodes.item(0).getTextContent());
         }
+
+        // price
+        NodeList priceNodes = itemElement.getElementsByTagName("price");
+        if (priceNodes.getLength() > 0) {
+            Element priceSpec = (Element) priceNodes.item(0);
+            item.setPriceRaw(priceSpec.getTextContent().trim());
+            item.setPriceCurrency(priceSpec.getAttribute("currency"));
+            item.setPriceMult(priceSpec.getAttribute("mult"));
+            item.setState(priceSpec.getAttribute("state"));
+        }
+         // bookspec
+        NodeList bookSpecList = itemElement.getElementsByTagName("bookspec");
+        if (bookSpecList.getLength() > 0) {
+            Element bookSpec = (Element) bookSpecList.item(0);
+            item.setBinding(getTextContent(bookSpec, "binding"));
+            item.setIsbn(getAttr(bookSpec, "isbn", "val"));
+            item.setPages(getTextContent(bookSpec, "pages"));
+            item.setPubDate(getAttr(bookSpec, "publication", "date"));
+        }
+         // dvdspec
+        NodeList dvdSpecList = itemElement.getElementsByTagName("dvdspec");
+        if (dvdSpecList.getLength() > 0) {
+            Element dvdSpec = (Element) dvdSpecList.item(0);
+            item.setDvdFormat(getTextContent(dvdSpec, "format"));
+            item.setRegionCode(getTextContent(dvdSpec, "regioncode"));
+            item.setDvdRelease(getTextContent(dvdSpec, "releasedate"));
+            item.setRunningTime(getTextContent(dvdSpec, "runningtime"));
+        }
+         // musicspec
+        NodeList musicSpecList = itemElement.getElementsByTagName("musicspec");
+        if (musicSpecList.getLength() > 0) {
+            Element musicSpec = (Element) musicSpecList.item(0);
+            item.setMusicBinding(getTextContent(musicSpec, "binding"));
+            item.setMusicFormat(getAttr(musicSpec, "format", "value"));
+            item.setMusicRelease(getTextContent(musicSpec, "releasedate"));
+            item.setUpc(getTextContent(musicSpec, "upc"));
+        }
+         // publisher
+        NodeList pubList = itemElement.getElementsByTagName("publisher");
+        if (pubList.getLength() > 0) {
+            Element pub = (Element) pubList.item(0);
+            item.setPublisher(pub.getAttribute("name"));
+        }
+         return (item);
+
 
     }
 

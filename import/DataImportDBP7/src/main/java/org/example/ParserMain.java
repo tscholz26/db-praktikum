@@ -36,14 +36,13 @@ public class ParserMain {
             // Here you can call your XML parsing methods or classes
             // ******************************************************
             // ******************************************************
-            //Call Store Parsed
+
+            //Call Store Parser
             XMLStoreParser.main(con);
-            // ******************************************************
-            // ******************************************************
-            // Call CSV Parsing
+
+            // Call CSV Parser
             CSVRezensionParser.parse(con);
-            // ******************************************************
-            // ******************************************************
+
 
             con.close();
             System.out.println("Connection closed.");
