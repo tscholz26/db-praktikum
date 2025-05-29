@@ -192,6 +192,8 @@ CREATE TABLE Rezension (
                                    ON UPDATE CASCADE,
                            Bewertung INTEGER CHECK (Bewertung between 1 AND 5),
                            Rezension TEXT,
+                           CONSTRAINT rezension_no_amp_hash_dollar
+                               CHECK (Rezension !~ '[&#$]'),
                            PRIMARY KEY (RezensionsID)
 );
 
@@ -229,4 +231,3 @@ CREATE INDEX IF NOT EXISTS idx_filiale_ort ON filiale (ort);
 CREATE INDEX IF NOT EXISTS idx_filiale_name ON filiale (name);
 CREATE INDEX IF NOT EXISTS idx_angebot_preis ON angebot (preis);
 CREATE INDEX IF NOT EXISTS idx_rezension_bewertung ON rezension (bewertung);
-CREATE INDEX IF NOT EXISTS idx_error_fehlermeldung ON errordatacsv (fehlermeldung);
