@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.Parser.CSVRezensionParser;
+import org.example.Parser.XMLCategoryParser;
 import org.example.Parser.XMLStoreParser;
 
 import java.io.BufferedReader;
@@ -40,8 +41,11 @@ public class ParserMain {
             //Call Store Parser
             XMLStoreParser.main(con);
 
+            //Call Category Parser
+            XMLCategoryParser.main(con, "data/categories.xml");
+
             // Call CSV Parser
-            CSVRezensionParser.parse(con);
+            //CSVRezensionParser.parse(con);
 
 
             con.close();

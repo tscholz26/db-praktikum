@@ -19,47 +19,12 @@ import java.util.List;
 public class XMLStoreParser {
 
     public static void main(Connection con) {
-        List<ShopItem> allItems = new ArrayList<>();
 
-        //TODO: add PARSE STORES
         parseStores(con, "data/leipzig_transformed.xml");
         parseStores(con, "data/dresden.xml");
 
         parseProducts(con, "data/leipzig_transformed.xml");
         parseProducts(con, "data/dresden.xml");
-
-        /*//Items have now been parsed and stored in Array allItems, now we need to insert them into the database
-        for (ShopItem item : allItems) {
-
-            try {
-                //add item to table "produkt"
-                insertStatements.insertItem(con, item.getAsin(), item.getTitle(), 1, "picture");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                //add item to table book/dvd/music
-                switch (item.getPgroup()) {
-                    case "Book":
-                        try {
-                            insertStatements.insertBook(con, item.getAsin(), item.getIsbn(), 1, item.getPublisher(), null, "auflage xxx");
-
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                            //If book failed to be inserted, remove item from "produkt" table aswell
-                            try {
-                                insertStatements.deleteItem(con, item.getAsin());
-                            } catch (SQLException e2) {
-                                e2.printStackTrace();
-                            }
-                        }
-                        break;
-                    default:
-                        System.out.println("unknown category: " + item.getPgroup());
-                }
-
-            }
-        }*/
-
 
     }
 
@@ -219,15 +184,6 @@ public class XMLStoreParser {
             shopItem.setPriceCurrency(priceSpec.getAttribute("currency"));
             shopItem.setPriceMult(priceSpec.getAttribute("mult"));
             shopItem.setState(priceSpec.getAttribute("state"));
-        }
-
-
-
-         // publisher
-        NodeList pubList = item.getElementsByTagName("publisher");
-        if (pubList.getLength() > 0) {
-            Element pub = (Element) pubList.item(0);
-            shopItem.setPublisher(pub.getAttribute("name"));
         }*/
 
 
