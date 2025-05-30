@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.example.Utility.ErrorHandler.handleError;
@@ -23,17 +24,18 @@ public class XMLStoreParser {
 
     public static void main(Connection con) {
 
-        parseStores(con, "data/leipzig_transformed.xml");
         parseStores(con, "data/dresden.xml");
+        parseStores(con, "data/leipzig_transformed.xml");
 
-        parseProducts(con, "data/leipzig_transformed.xml");
         parseProducts(con, "data/dresden.xml");
+        parseProducts(con, "data/leipzig_transformed.xml");
 
-        parseSimilars(con, "data/leipzig_transformed.xml");
         parseSimilars(con, "data/dresden.xml");
+        parseSimilars(con, "data/leipzig_transformed.xml");
 
-        parseAngebot(con, "data/leipzig_transformed.xml");
         parseAngebot(con, "data/dresden.xml");
+        parseAngebot(con, "data/leipzig_transformed.xml");
+
 
 
     }
@@ -169,7 +171,7 @@ public class XMLStoreParser {
                         break;
                     default:
                         //Error muss manuell gehandelt werden, da im catch block kein error handling passiert da das normalerweise in insertStatements.java passiert
-                        handleError(con, "Produkt","pgroup",new AttributeInvalidException("Produkt","pgroup",pgroup));
+                        handleError(con, "Produkt","pgroup", new AttributeInvalidException("Produkt","pgroup",pgroup));
                         throw new AttributeInvalidException("Produkt","pgroup",pgroup);
                 }
             } catch (Exception e) {
@@ -400,6 +402,14 @@ public class XMLStoreParser {
                         String state = price.getAttribute("state");
                         String multText = price.getAttribute("mult");
                         String currency = price.getAttribute("currency");
+
+                        //List of currencies is incomplete for now
+                        String[] possibleCurrencies = {"EUR", "USD", "GBP", "CHF", "JPY", "CNY", "AUD"};
+                        if (!Arrays.asList(possibleCurrencies).contains(currency) && !currency.isEmpty()) {
+                            handleError(con,"Angebot", "Waehrung",new AttributeInvalidException("Angebot","Waehrung",currency));
+                            continue;
+                        }
+
                         String priceText = price.getTextContent().trim();
 
                         try {

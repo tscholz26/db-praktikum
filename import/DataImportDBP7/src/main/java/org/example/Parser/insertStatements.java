@@ -407,12 +407,6 @@ public class insertStatements {
     protected static void insertAngebot(Connection con, String asin, String state, Double price, String currency, Integer shopID) throws Exception{
         String insertAngebotSql = "INSERT INTO angebot (produktnr, filialeid, zustand, preis, waehrung) VALUES (?,?,?,?,?)";
 
-        //List of currencies is incomplete for now
-        String[] possibleCurrencies = {"EUR", "USD", "GBP", "CHF", "JPY", "CNY", "AUD"};
-        if (!Arrays.asList(possibleCurrencies).contains(currency)) {
-            throw new AttributeInvalidException("angebot","waehrung",currency);
-        }
-
         try {
             PreparedStatement stmt = con.prepareStatement(insertAngebotSql);
             stmt.setString(1, asin);
