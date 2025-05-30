@@ -26,6 +26,10 @@ public class XMLStoreParser {
         parseProducts(con, "data/leipzig_transformed.xml");
         parseProducts(con, "data/dresden.xml");
 
+        parseSimilars(con, "data/leipzig_transformed.xml");
+        parseSimilars(con, "data/dresden.xml");
+
+
     }
 
     private static void parseStores(Connection con, String filepath) {
@@ -287,6 +291,73 @@ public class XMLStoreParser {
             insertStatements.insertDVD(con, asin, format, regioncode, runningtime, actors, creators, directors);
         } catch (SQLException e) {
             throw e;
+        }
+    }
+
+    private static void parseSimilars(Connection con, String filepath) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(filepath);
+            doc.getDocumentElement().normalize();
+
+            NodeList items = doc.getElementsByTagName("item");
+
+            for (int i = 0; i < items.getLength(); i++) {
+                Node itemNode = items.item(i);
+                if (itemNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element itemElement = (Element) itemNode;
+
+                    // Holt die ASIN des Hauptartikels
+                    String mainAsin = itemElement.getAttribute("asin");
+                    if (mainAsin == null || mainAsin.isEmpty()) continue;
+
+                    NodeList similars = itemElement.getElementsByTagName("similars");
+                    if (similars.getLength() == 0) continue;
+
+                    Element similarsElement = (Element) similars.item(0);
+
+                    // Zwei mögliche Formate:
+                    NodeList similarItems = similarsElement.getElementsByTagName("item");
+                    NodeList simProducts = similarsElement.getElementsByTagName("sim_product");
+
+                    //TODO: jeweils prüfen ob titel des similar products wirklich dem titel entspricht, der für das produkt in der datenbank vorliegt
+
+                    // Format von dresden.xml : <similars><item asin="...">Title</item></similars>
+                    for (int j = 0; j < similarItems.getLength(); j++) {
+                        Element simItem = (Element) similarItems.item(j);
+                        String simAsin = simItem.getAttribute("asin");
+                        if (!simAsin.isEmpty()) {
+                            try {
+                                insertStatements.insertSimilars(con, mainAsin,simAsin);
+                            } catch (Exception e) {
+                                //TODO: error wird vorerst nicht zur ERROR-Table hinzugefügt
+                                //System.out.println("Error inserting similars: " + e.getMessage());
+                            }
+                        }
+                    }
+
+                    // Format von leipzig.xml: <similars><sim_product><asin>...</asin></sim_product></similars>
+                    for (int j = 0; j < simProducts.getLength(); j++) {
+                        Element simProduct = (Element) simProducts.item(j);
+                        NodeList asinNodes = simProduct.getElementsByTagName("asin");
+                        if (asinNodes.getLength() > 0) {
+                            String simAsin = asinNodes.item(0).getTextContent().trim();
+                            if (!simAsin.isEmpty()) {
+                                try {
+                                    insertStatements.insertSimilars(con, mainAsin,simAsin);
+                                } catch (Exception e) {
+                                    //TODO: error wird vorerst nicht zur ERROR-Table hinzugefügt
+                                    //System.out.println("Error inserting similars: " + e.getMessage());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

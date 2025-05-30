@@ -348,6 +348,18 @@ public class insertStatements {
         }
     }
 
+    protected static void insertSimilars(Connection con, String mainAsin, String simAsin) throws SQLException {
+        String insertSimilarsSql = "INSERT INTO produkt_aehnlichkeit (produktnr1, produktnr2) VALUES (?,?)";
+        try {
+            PreparedStatement stmt = con.prepareStatement(insertSimilarsSql);
+            stmt.setString(1, mainAsin);
+            stmt.setString(2, simAsin);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
 
     protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String entityname) throws SQLException {
         String insertRezensionSql =
