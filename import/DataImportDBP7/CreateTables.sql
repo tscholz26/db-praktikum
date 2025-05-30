@@ -98,7 +98,7 @@ CREATE TABLE Buch (
                       ISBN              VARCHAR(20) NOT NULL,
                       Seitenzahl        INTEGER,
                       Erscheinungsdatum DATE,
-                      Auflage           VARCHAR(20)
+                      Auflage           VARCHAR(50)
 );
 
 CREATE TABLE Buch_Verlag (

@@ -36,9 +36,9 @@ public class insertStatements {
         }
     }
 
-    protected static void insertBook(Connection con, String produktnr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege) throws SQLException {
+    protected static void insertBook(Connection con, String produktnr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege, NodeList autoren) throws SQLException {
         String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, erscheinungsdatum, auflage) VALUES (?,?,?,?,?)";
-        System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " seitenzahl: " + seitenzahl + " erscheinungsdatum: " + erscheinungsdatum + " auflage: " + auflage);
+        //System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " seitenzahl: " + seitenzahl + " erscheinungsdatum: " + erscheinungsdatum + " auflage: " + auflage);
         try {
             PreparedStatement stmt = con.prepareStatement(insertBookSql);
             stmt.setString(1, produktnr);
@@ -86,6 +86,35 @@ public class insertStatements {
                 }
             }
 
+            if (!(autoren.getLength() > 0)) {
+                throw new SQLException("No author found");
+            } else {
+                for (int i = 0; i < autoren.getLength(); i++) {
+                    try {
+                        Node node = autoren.item(i);
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element autorElement = (Element) node;
+
+                            // Leipzig: author name is stored under attribute "name" of <author>
+                            String autorName = autorElement.getAttribute("name");
+
+                            // Dresden: author name is stored in content of container <author>
+                            if (autorName == null || autorName.trim().isEmpty()) {
+                                autorName = autorElement.getTextContent().trim();
+                            }
+
+                            // Only insert non-empty publisher names
+                            if (autorName != null && !autorName.isEmpty()) {
+                                insertBuchAutor(con, produktnr, autorName);
+                            }
+                        }
+                    } catch (SQLException e) {
+                        throw e;
+                    }
+                }
+
+            }
+
         } catch (SQLException e) {
             throw e;
         }
@@ -97,6 +126,18 @@ public class insertStatements {
             PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
             stmt.setString(1, produktnr);
             stmt.setString(2, verlag);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    protected static void insertBuchAutor(Connection con, String produktnr, String autor) throws SQLException {
+        String insertVerlagBuchSql = "INSERT INTO Autor (Produktnr, Name) VALUES (?,?)";
+        try {
+            PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
+            stmt.setString(1, produktnr);
+            stmt.setString(2, autor);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw e;

@@ -94,7 +94,12 @@ public class XMLStoreParser {
                     }
 
                     if (hasChild) { //Falls item child elements hat: parsen kann beginnen
-                        parseItem(con, (Element) node); //Einzelne Node wird zu Typ Element gecastet und einzeln geparsed, danach zur Liste hinzugefügt
+                        try {
+                            parseItem(con, (Element) node); //Einzelne Node wird zu Typ Element gecastet und einzeln geparsed, danach zur Liste hinzugefügt
+                        } catch (Exception e) {
+                            System.out.println("Error Parsing item: " + e.getMessage());
+                            //TODO: FEHLERBEHANDLUNG mit ERROR-TABLE
+                        }
                     }
                 }
             }
@@ -137,7 +142,8 @@ public class XMLStoreParser {
         try {
             insertStatements.insertItem(con, asin, titel, salesrank, image);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //TODO: FEHLERBEHANDLUNG mit ERROR-TABLE
+            System.out.println("Error inserting Item to produkt table. Error: " + e.getMessage());
         } finally {
             try {
                 String pgroup = item.getAttribute("pgroup");
@@ -156,6 +162,7 @@ public class XMLStoreParser {
                         throw new SQLException("Unknown category: " + pgroup);
                 }
             } catch (SQLException e) {
+                //TODO: FEHLERBEHANDLUNG mit ERROR-TABLE
                 System.out.println("Error during parsing book/music/dvd, item will now be removed from produkt table. Error: " + e.getMessage());
                 try {
                     insertStatements.deleteItem(con, asin);
@@ -227,8 +234,10 @@ public class XMLStoreParser {
 
         NodeList verlaege = item.getElementsByTagName("publisher");
 
+        NodeList autoren = item.getElementsByTagName("author");
+
         try {
-            insertStatements.insertBook(con, asin, isbn, seitenzahl, erscheinungsdatum, auflage, verlaege);
+            insertStatements.insertBook(con, asin, isbn, seitenzahl, erscheinungsdatum, auflage, verlaege, autoren);
         } catch (SQLException e) {
             throw e;
         }
