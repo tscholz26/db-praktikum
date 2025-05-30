@@ -186,15 +186,7 @@ public class XMLStoreParser {
             shopItem.setState(priceSpec.getAttribute("state"));
         }
 
-         // dvdspec
-        NodeList dvdSpecList = item.getElementsByTagName("dvdspec");
-        if (dvdSpecList.getLength() > 0) {
-            Element dvdSpec = (Element) dvdSpecList.item(0);
-            shopItem.setDvdFormat(getTextContent(dvdSpec, "format"));
-            shopItem.setRegionCode(getTextContent(dvdSpec, "regioncode"));
-            shopItem.setDvdRelease(getTextContent(dvdSpec, "releasedate"));
-            shopItem.setRunningTime(getTextContent(dvdSpec, "runningtime"));
-        }
+
 
          // publisher
         NodeList pubList = item.getElementsByTagName("publisher");
@@ -277,7 +269,35 @@ public class XMLStoreParser {
 
     }
 
-    private static void parseDVD(Connection con, Element item, String asin) throws Exception {}
+    private static void parseDVD(Connection con, Element item, String asin) throws Exception {
+        NodeList dvdspecAttributes = item.getElementsByTagName("dvdspec");
+        Element dvdspecElement = (Element) dvdspecAttributes.item(0);
+
+        String format = getTextContent(dvdspecElement, "format");
+
+
+        String regioncodeTemp = getTextContent(dvdspecElement, "regioncode");
+        Integer regioncode = null;  //default wert für regioncode
+        if (regioncodeTemp != null && !regioncodeTemp.trim().isEmpty()) {
+            regioncode = Integer.parseInt(regioncodeTemp.trim());
+        }
+
+        String runningtimeTemp = getTextContent(dvdspecElement, "runningtime");
+        Integer runningtime = null;  //default wert für runningtime
+        if (runningtimeTemp != null && !runningtimeTemp.trim().isEmpty()) {
+            runningtime = Integer.parseInt(runningtimeTemp.trim());
+        }
+
+        NodeList actors = null;
+        NodeList creators = null;
+        NodeList directors = null;
+
+        try {
+            insertStatements.insertDVD(con, asin, format, regioncode, runningtime, actors, creators, directors);
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
 
 
     // Utility function to get inner text

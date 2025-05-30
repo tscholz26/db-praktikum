@@ -38,7 +38,7 @@ public class insertStatements {
 
     protected static void insertBook(Connection con, String produktnr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege, NodeList autoren) throws SQLException {
         String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, erscheinungsdatum, auflage) VALUES (?,?,?,?,?)";
-        //System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " seitenzahl: " + seitenzahl + " erscheinungsdatum: " + erscheinungsdatum + " auflage: " + auflage);
+
         try {
             PreparedStatement stmt = con.prepareStatement(insertBookSql);
             stmt.setString(1, produktnr);
@@ -146,7 +146,7 @@ public class insertStatements {
 
     protected static void insertMusic(Connection con, String produktnr, String erscheinungsdatum, NodeList trackList, NodeList artists, NodeList labels) throws SQLException {
         String insertMusicSql = "INSERT INTO musik_cd (produktnr, erscheinungsdatum) VALUES (?,?)";
-        System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " erscheinungsdatum: " + erscheinungsdatum);
+        //System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " erscheinungsdatum: " + erscheinungsdatum);
 
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicSql);
@@ -258,13 +258,57 @@ public class insertStatements {
     }
 
     protected static void insertTrack(Connection con, String produktnr, String songtitel) throws SQLException {
-        System.out.println("calling insert track with parameters: " + "produktnr: " + produktnr + " songtitel: " + songtitel);
         String insertTrackSql = "INSERT INTO song (Produktnr, songtitel) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertTrackSql);
             stmt.setString(1, produktnr);
             stmt.setString(2, songtitel);
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    protected static void insertDVD(Connection con, String asin, String format, Integer regioncode, Integer runningtime, NodeList actors, NodeList creators, NodeList directors) throws SQLException {
+        String insertDVDSql = "INSERT INTO dvd (produktnr, format, regioncode, laufzeit) VALUES (?,?,?,?)";
+
+        try {
+            PreparedStatement stmt = con.prepareStatement(insertDVDSql);
+            stmt.setString(1, asin);
+            stmt.setString(2, format);
+
+            if (regioncode != null) {
+                stmt.setInt(3, regioncode);
+            } else {
+                stmt.setNull(3, java.sql.Types.INTEGER);
+            }
+
+            if (regioncode != null) {
+                stmt.setInt(4, runningtime);
+            } else {
+                stmt.setNull(4, java.sql.Types.INTEGER);
+            }
+
+            stmt.executeUpdate();
+
+            /*add actors, creators, directors
+            if (actors.getLength() > 0) {
+                for (int i = 0; i < actors.getLength(); i++) {
+                    Node node = actors.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        String name = node.getTextContent().trim();
+                        // Only insert non-empty names
+                        if (name != null && !name.isEmpty()) {
+                            try {
+                                insertActor(con, produktnr, name);
+                            } catch (SQLException e) {
+                                throw e;
+                            }
+                        }
+                    }
+                }
+            }*/
+
         } catch (SQLException e) {
             throw e;
         }
