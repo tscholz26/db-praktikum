@@ -37,7 +37,6 @@
     - falls nicht vorhanden: item.creators auslesen:
       - falls nicht vorhanden: FEHLER, DATENSATZ ZURÜCKWEISEN
       - falls vorhanden: für jeden Creator zur Tabelle "Künstler" den Datensatz (ASIN, Künstlername) hinzufügen
-    - falls vorhanden: für jeden Artist zur Tabelle "Künstler" den Datensatz (ASIN, Künstlername) hinzufügen
   - item.label auslesen:
     - falls nicht vorhanden: FEHLER WERFEN, DATENSATZ ZURÜCKWEISEN
     - falls vorhanden: in Tabelle CD_Label den Datensatz (ASIN,Labelname) hinzufügen

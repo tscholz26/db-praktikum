@@ -121,7 +121,7 @@ public class insertStatements {
     }
 
     protected static void insertVerlagBuch(Connection con, String produktnr, String verlag) throws SQLException {
-        String insertVerlagBuchSql = "INSERT INTO Buch_Verlag (Produktnr, verlag) VALUES (?,?)";
+        String insertVerlagBuchSql = "INSERT INTO buch_verlag (Produktnr, verlag) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
             stmt.setString(1, produktnr);
@@ -133,11 +133,67 @@ public class insertStatements {
     }
 
     protected static void insertBuchAutor(Connection con, String produktnr, String autor) throws SQLException {
-        String insertVerlagBuchSql = "INSERT INTO Autor (Produktnr, Name) VALUES (?,?)";
+        String insertBuchAutorSql = "INSERT INTO Autor (Produktnr, Name) VALUES (?,?)";
+        try {
+            PreparedStatement stmt = con.prepareStatement(insertBuchAutorSql);
+            stmt.setString(1, produktnr);
+            stmt.setString(2, autor);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    protected static void insertMusic(Connection con, String produktnr, String erscheinungsdatum, NodeList tracklist, NodeList artists, NodeList labels) throws SQLException {
+        String insertMusicSql = "INSERT INTO musik_cd (produktnr, erscheinungsdatum) VALUES (?,?)";
+        System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " erscheinungsdatum: " + erscheinungsdatum);
+
+        try {
+            PreparedStatement stmt = con.prepareStatement(insertMusicSql);
+            stmt.setString(1, produktnr);
+            stmt.setDate(2, Date.valueOf(erscheinungsdatum));
+            stmt.executeUpdate();
+
+            if (!(artists.getLength() > 0)) {
+                throw new SQLException("No artist found");
+            } else {
+                for (int i = 0; i < artists.getLength(); i++) {
+                    try {
+                        Node node = artists.item(i);
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element artistElement = (Element) node;
+
+                            // Leipzig: artist name is stored under attribute "name" of <artist>
+                            String artistName = artistElement.getAttribute("name");
+
+                            // Dresden: artist name is stored in content of container <artist>
+                            if (artistName == null || artistName.trim().isEmpty()) {
+                                artistName = artistElement.getTextContent().trim();
+                            }
+
+                            // Only insert non-empty publisher names
+                            if (artistName != null && !artistName.isEmpty()) {
+                                insertMusicArtist(con, produktnr, artistName);
+                            }
+                        }
+                    } catch (SQLException e) {
+                        throw e;
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw e;
+        }
+
+    }
+
+    protected static void insertMusicArtist(Connection con, String produktnr, String artist) throws SQLException {
+        String insertVerlagBuchSql = "INSERT INTO kuenstler (Produktnr, kuenstlername) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
             stmt.setString(1, produktnr);
-            stmt.setString(2, autor);
+            stmt.setString(2, artist);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw e;

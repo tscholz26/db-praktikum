@@ -113,6 +113,7 @@ public class XMLStoreParser {
     private static void parseItem(Connection con, Element item) throws Exception {
 
         String asin = item.getAttribute("asin");
+        //TODO: verhindern, dass asin ein leerer String "" ist
 
         String titel;
         NodeList titleNodes = item.getElementsByTagName("title");
@@ -127,6 +128,7 @@ public class XMLStoreParser {
         if (!salesrankTemp.isEmpty()) {
             salesrank = Integer.parseInt(salesrankTemp);
         } else {
+            //TODO statt Wert 0 einen richtigen NULL-Wert eintragen
             salesrank = 0;
         }
 
@@ -193,15 +195,7 @@ public class XMLStoreParser {
             shopItem.setDvdRelease(getTextContent(dvdSpec, "releasedate"));
             shopItem.setRunningTime(getTextContent(dvdSpec, "runningtime"));
         }
-         // musicspec
-        NodeList musicSpecList = item.getElementsByTagName("musicspec");
-        if (musicSpecList.getLength() > 0) {
-            Element musicSpec = (Element) musicSpecList.item(0);
-            shopItem.setMusicBinding(getTextContent(musicSpec, "binding"));
-            shopItem.setMusicFormat(getAttr(musicSpec, "format", "value"));
-            shopItem.setMusicRelease(getTextContent(musicSpec, "releasedate"));
-            shopItem.setUpc(getTextContent(musicSpec, "upc"));
-        }
+
          // publisher
         NodeList pubList = item.getElementsByTagName("publisher");
         if (pubList.getLength() > 0) {
@@ -245,7 +239,42 @@ public class XMLStoreParser {
 
 
 
-    private static void parseMusic(Connection con, Element item, String asin) throws Exception {}
+    private static void parseMusic(Connection con, Element item, String asin) throws Exception {
+        NodeList musicspecAttributes = item.getElementsByTagName("musicspec");
+        Element musicspecElement = (Element) musicspecAttributes.item(0);
+
+        String erscheinungsdatum = getTextContent(musicspecElement, "releasedate");
+
+        Element tracklistElement = (Element) item.getElementsByTagName("tracks").item(0);
+        NodeList tracklist = null;
+        if (tracklistElement != null) {
+            tracklist = tracklistElement.getElementsByTagName("title");
+        }
+
+        //TODO: eventuell artist daten aufräumen (Va, &, Al löschen)
+        NodeList artists = item.getElementsByTagName("artist");
+        // Check if <artist> tags exist and are not empty
+        boolean hasValidArtists = false;
+        for (int i = 0; i < artists.getLength(); i++) {
+            String name = artists.item(i).getTextContent().trim();
+            if (!name.isEmpty()) {
+                hasValidArtists = true;
+            }
+        }
+        // If item has no valid <artist> element, try <creator> instead
+        if (!hasValidArtists) {
+            artists = item.getElementsByTagName("creator");
+        }
+
+        NodeList labels = item.getElementsByTagName("label");
+
+        try {
+            insertStatements.insertMusic(con, asin, erscheinungsdatum, tracklist, artists, labels);
+        } catch (SQLException e) {
+            throw e;
+        }
+
+    }
 
     private static void parseDVD(Connection con, Element item, String asin) throws Exception {}
 
