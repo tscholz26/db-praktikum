@@ -34,10 +34,6 @@ public class ParserMain {
                 e.printStackTrace();
             }
 
-            // Here you can call your XML parsing methods or classes
-            // ******************************************************
-            // ******************************************************
-
             //Call Store Parser
             XMLStoreParser.main(con);
 
@@ -45,8 +41,7 @@ public class ParserMain {
             XMLCategoryParser.main(con, "data/categories.xml");
 
             // Call CSV Parser
-            //CSVRezensionParser.parse(con);
-
+            CSVRezensionParser.parse(con);
 
             con.close();
             System.out.println("Connection closed.");
