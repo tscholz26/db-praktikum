@@ -4,10 +4,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.util.Arrays;
 
 public class insertStatements {
 
@@ -360,6 +359,29 @@ public class insertStatements {
         }
     }
 
+    protected static void insertAngebot(Connection con, String asin, String state, Double price, String currency, Integer shopID) throws SQLException{
+        String insertAngebotSql = "INSERT INTO angebot (produktnr, filialeid, zustand, preis, waehrung) VALUES (?,?,?,?,?)";
+
+        //List of currencies is incomplete for now
+        String[] possibleCurrencies = {"EUR", "USD", "GBP", "CHF", "JPY", "CNY", "AUD"};
+        if (!Arrays.asList(possibleCurrencies).contains(currency)) {
+            throw new SQLException("Failed to add offer for item, currency unknown: " + currency);
+        }
+
+        try {
+            PreparedStatement stmt = con.prepareStatement(insertAngebotSql);
+            stmt.setString(1, asin);
+            stmt.setInt(2, shopID);
+            stmt.setString(3, state);
+            stmt.setBigDecimal(4, new BigDecimal(price));
+            stmt.setString(5, currency);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+        System.out.println("Calling insertAngebot with parameters: " + "asin: " + asin + " state: " + state + " price: " + price + " currency: " + currency + " shopName: " + shopID);
+    }
+
 
     protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String entityname) throws SQLException {
         String insertRezensionSql =
@@ -404,6 +426,20 @@ public class insertStatements {
             stmtErrorData.setString(2, e.getMessage());
             stmtErrorData.setString(3, "username");
             stmtErrorData.executeUpdate();
+        }
+    }
+
+    protected static Integer getShopIdByName(Connection con, String shopName) throws SQLException {
+        String query = "SELECT FilialeID FROM Filiale WHERE Name = ?";
+        try (PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setString(1, shopName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("FilialeID");
+                } else {
+                    return null; // Shop not found
+                }
+            }
         }
     }
 

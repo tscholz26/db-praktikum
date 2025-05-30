@@ -149,6 +149,7 @@ CREATE TABLE Filiale (
 );
 
 CREATE TABLE Angebot (
+                         AngebotID SERIAL PRIMARY KEY,
                          ProduktNr VARCHAR(50) NOT NULL
                              REFERENCES Produkt(PNr)
                                  ON DELETE CASCADE
@@ -157,9 +158,9 @@ CREATE TABLE Angebot (
                              REFERENCES Filiale(FilialeID)
                                  ON DELETE CASCADE
                                  ON UPDATE CASCADE,
-                         Bestand   INTEGER,
-                         Preis     DECIMAL(10,2),
-                         PRIMARY KEY (ProduktNr, FilialeID)
+                         Zustand   varchar(20) NOT NULL,
+                         Preis     DECIMAL(10,2) NOT NULL,
+                         Waehrung  varchar(3) NOT NULL
 );
 
 -- 7. Kunden, Käufe und Rezensionen

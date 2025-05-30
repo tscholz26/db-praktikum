@@ -29,6 +29,9 @@ public class XMLStoreParser {
         parseSimilars(con, "data/leipzig_transformed.xml");
         parseSimilars(con, "data/dresden.xml");
 
+        parseAngebot(con, "data/leipzig_transformed.xml");
+        parseAngebot(con, "data/dresden.xml");
+
 
     }
 
@@ -360,6 +363,64 @@ public class XMLStoreParser {
             e.printStackTrace();
         }
     }
+
+    public static void parseAngebot(Connection con, String filepath) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(filepath);
+            doc.getDocumentElement().normalize();
+
+            NodeList shops = doc.getElementsByTagName("shop");
+
+            for (int i = 0; i < shops.getLength(); i++) {
+                Element shop = (Element) shops.item(i);
+                String shopName = shop.getAttribute("name");
+
+                //get shop ID from Filiale Table in DB
+                Integer shopId = insertStatements.getShopIdByName(con, shopName);
+                if (shopId == null) {
+                    System.out.println("ERROR: Shop not found in DB: " + shopName);
+                    throw new SQLException("Error creating Angebot Table: Shop not found in DB: " + shopName);
+                }
+
+                NodeList items = shop.getElementsByTagName("item");
+
+                for (int j = 0; j < items.getLength(); j++) {
+                    Element item = (Element) items.item(j);
+                    String asin = item.getAttribute("asin");
+
+                    //make sure items can have several <price> nodes
+                    NodeList priceNodes = item.getElementsByTagName("price");
+
+                    for (int k = 0; k < priceNodes.getLength(); k++) {
+
+                        Element price = (Element) priceNodes.item(k);
+
+                        String state = price.getAttribute("state");
+                        String multText = price.getAttribute("mult");
+                        String currency = price.getAttribute("currency");
+                        String priceText = price.getTextContent().trim();
+
+                        try {
+                            if (!priceText.isEmpty()) {
+                                //nur wenn preis nicht leer ist, existiert ein angebot und der datensatz muss in der DB gespeichert werden
+                                Double priceValue = Double.parseDouble(priceText) * Double.parseDouble(multText);
+                                insertStatements.insertAngebot(con, asin, state, priceValue, currency, shopId);
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println("Error Parsing price for ASIN " + asin + ": " + e.getMessage());
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     // Utility function to get inner text
