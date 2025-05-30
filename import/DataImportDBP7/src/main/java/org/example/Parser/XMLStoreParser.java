@@ -288,9 +288,9 @@ public class XMLStoreParser {
             runningtime = Integer.parseInt(runningtimeTemp.trim());
         }
 
-        NodeList actors = null;
-        NodeList creators = null;
-        NodeList directors = null;
+        NodeList actors = item.getElementsByTagName("actor");
+        NodeList creators = item.getElementsByTagName("creator");
+        NodeList directors = item.getElementsByTagName("director");
 
         try {
             insertStatements.insertDVD(con, asin, format, regioncode, runningtime, actors, creators, directors);

@@ -291,28 +291,50 @@ public class insertStatements {
 
             stmt.executeUpdate();
 
-            /*add actors, creators, directors
-            if (actors.getLength() > 0) {
-                for (int i = 0; i < actors.getLength(); i++) {
-                    Node node = actors.item(i);
-                    if (node.getNodeType() == Node.ELEMENT_NODE) {
-                        String name = node.getTextContent().trim();
-                        // Only insert non-empty names
-                        if (name != null && !name.isEmpty()) {
-                            try {
-                                insertActor(con, produktnr, name);
-                            } catch (SQLException e) {
-                                throw e;
-                            }
-                        }
-                    }
-                }
-            }*/
+            insertPeopleFromNodeList(con, "actor", asin, actors);
+            insertPeopleFromNodeList(con, "creator", asin, creators);
+            insertPeopleFromNodeList(con, "director", asin, directors);
+
 
         } catch (SQLException e) {
             throw e;
         }
     }
+
+    private static void insertPeopleFromNodeList(Connection con, String tableName, String produktnr, NodeList people) throws SQLException {
+        if (people == null) return;
+
+        for (int i = 0; i < people.getLength(); i++) {
+            Node node = people.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element personElement = (Element) node;
+
+                // Try attribute "name"
+                String name = personElement.getAttribute("name");
+
+                // Fall back to text content
+                if (name == null || name.trim().isEmpty()) {
+                    name = personElement.getTextContent().trim();
+                }
+
+                if (name != null && !name.isEmpty()) {
+                    insertPersonWithRole(con, tableName, produktnr, name);
+                }
+            }
+        }
+    }
+
+    protected static void insertPersonWithRole(Connection con, String tableName, String produktnr, String name) throws SQLException {
+        String sql = "INSERT INTO " + tableName + " (produktnr, name) VALUES (?, ?)";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, produktnr);
+            stmt.setString(2, name);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
 
     protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String entityname) throws SQLException {
         String insertRezensionSql =
