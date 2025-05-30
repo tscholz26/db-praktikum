@@ -11,6 +11,18 @@ import java.sql.SQLException;
 
 public class insertStatements {
 
+    protected static void insertStore(Connection con, String name, String street, String zip) throws SQLException {
+        String query = "INSERT INTO filiale (name, adresse, plz) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            statement.setString(1, name);
+            statement.setString(2, street);
+            statement.setString(3, zip);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
     protected static void insertItem(Connection con, String asin, String title, int salesrank, String picture) throws SQLException {
         String query = "INSERT INTO produkt (pnr, titel, verkaufsrang, bild) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = con.prepareStatement(query)) {
@@ -99,6 +111,7 @@ public class insertStatements {
                             String autorName = autorElement.getAttribute("name");
 
                             // Dresden: author name is stored in content of container <author>
+                            //TODO: check if autorname == null can be removed (see also other methods)
                             if (autorName == null || autorName.trim().isEmpty()) {
                                 autorName = autorElement.getTextContent().trim();
                             }

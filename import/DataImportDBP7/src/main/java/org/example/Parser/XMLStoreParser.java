@@ -22,6 +22,8 @@ public class XMLStoreParser {
         List<ShopItem> allItems = new ArrayList<>();
 
         //TODO: add PARSE STORES
+        parseStores(con, "data/leipzig_transformed.xml");
+        parseStores(con, "data/dresden.xml");
 
         parseProducts(con, "data/leipzig_transformed.xml");
         parseProducts(con, "data/dresden.xml");
@@ -61,6 +63,39 @@ public class XMLStoreParser {
 
     }
 
+    private static void parseStores(Connection con, String filepath) {
+        try {
+            File xmlFile = new File(filepath);
+            //DocumentBuilder: Klasse, mit der man XML Dateien parsen und in Dokumente umwandeln kann
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(xmlFile);
+            doc.getDocumentElement().normalize();
+
+            NodeList itemList = doc.getElementsByTagName("shop");
+
+            for (int i = 0; i < itemList.getLength(); i++) {
+                //Nodes aus XML werden nacheinander durchlaufen; Node = XML-Knoten (zB ein Element, Text, Kommentar)
+                Node node = itemList.item(i);
+                String name = node.getAttributes().getNamedItem("name").getNodeValue();
+                String street = node.getAttributes().getNamedItem("street").getNodeValue();
+                String zip = node.getAttributes().getNamedItem("zip").getNodeValue();
+
+                //Nur Nodes des Typs ELEMENT werden eingelesen, Textknoten wie zB Zeilenumbrüche sind irrelevant
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    try {
+                        insertStatements.insertStore(con, name, street, zip);
+                    } catch (Exception e) {
+                        System.out.println("Error Parsing store: " + e.getMessage());
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
     private static void parseProducts(Connection con, String filepath) {
