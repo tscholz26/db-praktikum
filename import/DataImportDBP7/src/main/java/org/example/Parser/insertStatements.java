@@ -1,53 +1,85 @@
 package org.example.Parser;
 
+import org.example.Utility.AttributeInvalidException;
+import org.example.Utility.AttributeUndefinedException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.management.Attribute;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.text.Normalizer;
 import java.util.Arrays;
+
+import static org.example.Utility.ErrorHandler.handleError;
 
 public class insertStatements {
 
-    protected static void insertStore(Connection con, String name, String street, String zip) throws SQLException {
+    protected static void insertStore(Connection con, String name, String street, String zip) {
         String query = "INSERT INTO filiale (name, adresse, plz) VALUES (?, ?, ?)";
         try (PreparedStatement statement = con.prepareStatement(query)) {
             statement.setString(1, name);
             statement.setString(2, street);
             statement.setString(3, zip);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
+        } catch (Exception e) {
+            handleError(con,"Filiale","UNKNOWN",e);
         }
     }
 
-    protected static void insertItem(Connection con, String asin, String title, int salesrank, String picture) throws SQLException {
+    protected static void insertItem(Connection con, String asin, String title, Integer salesrank, String picture) throws Exception {
+
+        String checkQuery = "SELECT titel FROM produkt WHERE pnr = ?";
+        try (PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
+            checkStmt.setString(1, asin);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next()) {
+                    // Product already exists
+                    String existingTitle = rs.getString("titel");
+                    //HIER WIRD ABGEBROCHEN, DA PRODUKT BEREITS EXISTIERT
+                    if (titlesAreSimilar(existingTitle,title)) {
+                        throw new Exception("Produkt mit ASIN " + asin + " existiert bereits mit dem Titel: " + existingTitle);
+                    } else {
+                        String msg = "Produkt " + title + " existiert bereits mit titel " + existingTitle;
+                        handleError(con,"Produkt","PNR",new Exception(msg));
+                        throw new Exception(msg);
+                    }
+
+                }
+            }
+        }//FIRST: check if a product with the same ASIN is already existing in DB (might have been parsed before in another file)
+
         String query = "INSERT INTO produkt (pnr, titel, verkaufsrang, bild) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = con.prepareStatement(query)) {
             statement.setString(1, asin);
             statement.setString(2, title);
-            statement.setInt(3, salesrank);
+
+            if (salesrank != null) {
+                statement.setInt(3, salesrank);
+            } else {
+                statement.setNull(3, java.sql.Types.INTEGER);
+            }
+
             statement.setString(4, picture);
             statement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            handleError(con,"Produkt","UNKNOWN",e);
             throw e;
         }
     }
 
-    protected static void deleteItem(Connection con, String asin) throws SQLException {
+    protected static void deleteItem(Connection con, String asin) {
         String query = "DELETE FROM produkt WHERE (pnr = ?)";
         try (PreparedStatement statement = con.prepareStatement(query)) {
             statement.setString(1, asin);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            System.out.println("Produkt mit ASIN " + asin + " wurde gelöscht.");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    protected static void insertBook(Connection con, String produktnr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege, NodeList autoren) throws SQLException {
+    protected static void insertBook(Connection con, String produktnr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege, NodeList autoren) throws Exception {
         String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, erscheinungsdatum, auflage) VALUES (?,?,?,?,?)";
 
         try {
@@ -55,7 +87,7 @@ public class insertStatements {
             stmt.setString(1, produktnr);
 
             if (isbn.isEmpty()) {
-                throw new SQLException("ISBN is empty");
+                throw new AttributeUndefinedException("Book","ISBN");
             }
             stmt.setString(2, isbn);
 
@@ -65,12 +97,17 @@ public class insertStatements {
                 stmt.setNull(3, java.sql.Types.INTEGER);
             }
 
-            stmt.setDate(4, Date.valueOf(erscheinungsdatum));
+            if (!erscheinungsdatum.isEmpty()) {
+                stmt.setDate(4, Date.valueOf(erscheinungsdatum));
+            } else {
+                stmt.setNull(4, java.sql.Types.DATE);
+            }
+
             stmt.setString(5, auflage);
             stmt.executeUpdate();
 
             if (!(verlaege.getLength() > 0)) {
-                throw new SQLException("No publisher found");
+                throw new AttributeUndefinedException("Book","Publisher");
             } else {
                 for (int i = 0; i < verlaege.getLength(); i++) {
                     try {
@@ -82,7 +119,7 @@ public class insertStatements {
                             String verlagName = verlagElement.getAttribute("name");
 
                             // Dresden: verlag name is stored in content of container <publisher>
-                            if (verlagName == null || verlagName.trim().isEmpty()) {
+                            if (verlagName.trim().isEmpty()) {
                                 verlagName = verlagElement.getTextContent().trim();
                             }
 
@@ -91,14 +128,14 @@ public class insertStatements {
                                 insertVerlagBuch(con, produktnr, verlagName);
                             }
                         }
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         throw e;
                     }
                 }
             }
 
             if (!(autoren.getLength() > 0)) {
-                throw new SQLException("No author found");
+                throw new AttributeUndefinedException("Book","Author");
             } else {
                 for (int i = 0; i < autoren.getLength(); i++) {
                     try {
@@ -110,8 +147,7 @@ public class insertStatements {
                             String autorName = autorElement.getAttribute("name");
 
                             // Dresden: author name is stored in content of container <author>
-                            //TODO: check if autorname == null can be removed (see also other methods)
-                            if (autorName == null || autorName.trim().isEmpty()) {
+                            if (autorName.trim().isEmpty()) {
                                 autorName = autorElement.getTextContent().trim();
                             }
 
@@ -120,54 +156,61 @@ public class insertStatements {
                                 insertBuchAutor(con, produktnr, autorName);
                             }
                         }
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         throw e;
                     }
                 }
 
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            handleError(con,"Book","UNKNOWN",e);
             throw e;
         }
     }
 
-    protected static void insertVerlagBuch(Connection con, String produktnr, String verlag) throws SQLException {
+    protected static void insertVerlagBuch(Connection con, String produktnr, String verlag) throws Exception {
         String insertVerlagBuchSql = "INSERT INTO buch_verlag (Produktnr, verlag) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
             stmt.setString(1, produktnr);
             stmt.setString(2, verlag);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
 
-    protected static void insertBuchAutor(Connection con, String produktnr, String autor) throws SQLException {
+    protected static void insertBuchAutor(Connection con, String produktnr, String autor) throws Exception {
         String insertBuchAutorSql = "INSERT INTO Autor (Produktnr, Name) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertBuchAutorSql);
             stmt.setString(1, produktnr);
             stmt.setString(2, autor);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
 
-    protected static void insertMusic(Connection con, String produktnr, String erscheinungsdatum, NodeList trackList, NodeList artists, NodeList labels) throws SQLException {
+    protected static void insertMusic(Connection con, String produktnr, String erscheinungsdatum, NodeList trackList, NodeList artists, NodeList labels) throws Exception {
         String insertMusicSql = "INSERT INTO musik_cd (produktnr, erscheinungsdatum) VALUES (?,?)";
         //System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " erscheinungsdatum: " + erscheinungsdatum);
 
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicSql);
             stmt.setString(1, produktnr);
-            stmt.setDate(2, Date.valueOf(erscheinungsdatum));
+
+            if (!erscheinungsdatum.isEmpty()) {
+                stmt.setDate(2, Date.valueOf(erscheinungsdatum));
+            } else {
+                stmt.setNull(2, java.sql.Types.DATE);
+            }
+
             stmt.executeUpdate();
 
             if (!(artists.getLength() > 0)) {
-                throw new SQLException("No artist found");
+                throw new AttributeUndefinedException("Music","Artist");
             } else {
                 for (int i = 0; i < artists.getLength(); i++) {
                     try {
@@ -179,7 +222,7 @@ public class insertStatements {
                             String artistName = artistElement.getAttribute("name");
 
                             // Dresden: artist name is stored in content of container <artist>
-                            if (artistName == null || artistName.trim().isEmpty()) {
+                            if (artistName.trim().isEmpty()) {
                                 artistName = artistElement.getTextContent().trim();
                             }
 
@@ -188,14 +231,14 @@ public class insertStatements {
                                 insertMusicArtist(con, produktnr, artistName);
                             }
                         }
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         throw e;
                     }
                 }
             }
 
             if (!(labels.getLength() > 0)) {
-                throw new SQLException("No label found");
+                throw new AttributeUndefinedException("Music","label");
             } else {
                 for (int i = 0; i < labels.getLength(); i++) {
                     try {
@@ -207,7 +250,7 @@ public class insertStatements {
                             String labelName = labelElement.getAttribute("name");
 
                             // Dresden: artist name is stored in content of container <label>
-                            if (labelName == null || labelName.trim().isEmpty()) {
+                            if (labelName.trim().isEmpty()) {
                                 labelName = labelElement.getTextContent().trim();
                             }
 
@@ -216,7 +259,7 @@ public class insertStatements {
                                 insertMusicLabel(con, produktnr, labelName);
                             }
                         }
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         throw e;
                     }
                 }
@@ -231,7 +274,7 @@ public class insertStatements {
                         if (title != null && !title.isEmpty()) {
                             try {
                                 insertTrack(con, produktnr, title);
-                            } catch (SQLException e) {
+                            } catch (Exception e) {
                                 throw e;
                             }
                         }
@@ -239,49 +282,50 @@ public class insertStatements {
                 }
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            handleError(con,"Music","UNKNOWN",e);
             throw e;
         }
 
     }
 
-    protected static void insertMusicArtist(Connection con, String produktnr, String artist) throws SQLException {
+    protected static void insertMusicArtist(Connection con, String produktnr, String artist) throws Exception {
         String insertMusicArtistSql = "INSERT INTO kuenstler (Produktnr, kuenstlername) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
             stmt.setString(1, produktnr);
             stmt.setString(2, artist);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
 
-    protected static void insertMusicLabel(Connection con, String produktnr, String label) throws SQLException {
+    protected static void insertMusicLabel(Connection con, String produktnr, String label) throws Exception {
         String insertMusicArtistSql = "INSERT INTO label (Produktnr, labelname) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
             stmt.setString(1, produktnr);
             stmt.setString(2, label);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
 
-    protected static void insertTrack(Connection con, String produktnr, String songtitel) throws SQLException {
+    protected static void insertTrack(Connection con, String produktnr, String songtitel) throws Exception {
         String insertTrackSql = "INSERT INTO song (Produktnr, songtitel) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertTrackSql);
             stmt.setString(1, produktnr);
             stmt.setString(2, songtitel);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
 
-    protected static void insertDVD(Connection con, String asin, String format, Integer regioncode, Integer runningtime, NodeList actors, NodeList creators, NodeList directors) throws SQLException {
+    protected static void insertDVD(Connection con, String asin, String format, Integer regioncode, Integer runningtime, NodeList actors, NodeList creators, NodeList directors) throws Exception {
         String insertDVDSql = "INSERT INTO dvd (produktnr, format, regioncode, laufzeit) VALUES (?,?,?,?)";
 
         try {
@@ -295,7 +339,7 @@ public class insertStatements {
                 stmt.setNull(3, java.sql.Types.INTEGER);
             }
 
-            if (regioncode != null) {
+            if (runningtime != null) {
                 stmt.setInt(4, runningtime);
             } else {
                 stmt.setNull(4, java.sql.Types.INTEGER);
@@ -308,12 +352,13 @@ public class insertStatements {
             insertPeopleFromNodeList(con, "director", asin, directors);
 
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            handleError(con,"DVD","UNKNOWN",e);
             throw e;
         }
     }
 
-    private static void insertPeopleFromNodeList(Connection con, String tableName, String produktnr, NodeList people) throws SQLException {
+    private static void insertPeopleFromNodeList(Connection con, String tableName, String produktnr, NodeList people) throws Exception {
         if (people == null) return;
 
         for (int i = 0; i < people.getLength(); i++) {
@@ -325,7 +370,7 @@ public class insertStatements {
                 String name = personElement.getAttribute("name");
 
                 // Fall back to text content
-                if (name == null || name.trim().isEmpty()) {
+                if (name.trim().isEmpty()) {
                     name = personElement.getTextContent().trim();
                 }
 
@@ -336,36 +381,36 @@ public class insertStatements {
         }
     }
 
-    protected static void insertPersonWithRole(Connection con, String tableName, String produktnr, String name) throws SQLException {
+    protected static void insertPersonWithRole(Connection con, String tableName, String produktnr, String name) throws Exception {
         String sql = "INSERT INTO " + tableName + " (produktnr, name) VALUES (?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, produktnr);
             stmt.setString(2, name);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
 
-    protected static void insertSimilars(Connection con, String mainAsin, String simAsin) throws SQLException {
+    protected static void insertSimilars(Connection con, String mainAsin, String simAsin) throws Exception {
         String insertSimilarsSql = "INSERT INTO produkt_aehnlichkeit (produktnr1, produktnr2) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertSimilarsSql);
             stmt.setString(1, mainAsin);
             stmt.setString(2, simAsin);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
 
-    protected static void insertAngebot(Connection con, String asin, String state, Double price, String currency, Integer shopID) throws SQLException{
+    protected static void insertAngebot(Connection con, String asin, String state, Double price, String currency, Integer shopID) throws Exception{
         String insertAngebotSql = "INSERT INTO angebot (produktnr, filialeid, zustand, preis, waehrung) VALUES (?,?,?,?,?)";
 
         //List of currencies is incomplete for now
         String[] possibleCurrencies = {"EUR", "USD", "GBP", "CHF", "JPY", "CNY", "AUD"};
         if (!Arrays.asList(possibleCurrencies).contains(currency)) {
-            throw new SQLException("Failed to add offer for item, currency unknown: " + currency);
+            throw new AttributeInvalidException("angebot","waehrung",currency);
         }
 
         try {
@@ -376,14 +421,13 @@ public class insertStatements {
             stmt.setBigDecimal(4, new BigDecimal(price));
             stmt.setString(5, currency);
             stmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
-        System.out.println("Calling insertAngebot with parameters: " + "asin: " + asin + " state: " + state + " price: " + price + " currency: " + currency + " shopName: " + shopID);
     }
 
 
-    protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String entityname) throws SQLException {
+    protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String entityname) throws Exception {
         String insertRezensionSql =
                 "INSERT INTO rezension (produktnr, nutzername, bewertung, rezension) VALUES (?, ?, ?, ?)";
         String insertErrorDataCSV =
@@ -397,7 +441,7 @@ public class insertStatements {
             stmtRezension.setInt(3, Integer.parseInt(bewertung));
             stmtRezension.setString(4, rezension);
             stmtRezension.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             PreparedStatement stmtErrorDataCSV = con.prepareStatement(insertErrorDataCSV);
             stmtErrorDataCSV.setString(1, entityname);
             stmtErrorDataCSV.setString(2, e.getMessage());
@@ -410,7 +454,7 @@ public class insertStatements {
         }
     }
 
-    protected static void insertKunde(Connection con, String username, String entityname) throws SQLException {
+    protected static void insertKunde(Connection con, String username, String entityname) throws Exception {
         String insertKundeSql =
                 "INSERT INTO Kunde (nutzername) VALUES (?)";
         String insertErrorData =
@@ -420,7 +464,7 @@ public class insertStatements {
             PreparedStatement stmtKunde = con.prepareStatement(insertKundeSql);
             stmtKunde.setString(1, username);
             stmtKunde.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             PreparedStatement stmtErrorData = con.prepareStatement(insertErrorData);
             stmtErrorData.setString(1, entityname);
             stmtErrorData.setString(2, e.getMessage());
@@ -429,7 +473,7 @@ public class insertStatements {
         }
     }
 
-    protected static Integer getShopIdByName(Connection con, String shopName) throws SQLException {
+    protected static Integer getShopIdByName(Connection con, String shopName) throws Exception {
         String query = "SELECT FilialeID FROM Filiale WHERE Name = ?";
         try (PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setString(1, shopName);
@@ -442,5 +486,42 @@ public class insertStatements {
             }
         }
     }
+
+
+    public static boolean titlesAreSimilar(String title1, String title2) {
+        if (title1.equals(title2)) {
+            return true;
+        } else {
+            //ähnliche Titel die sich nur in Umlauten unterscheiden sollen auch akzeptiert werden
+            //dafür wird die LEVENSHTEIN-DISTANZ berechnet, wenn sie unter 5 ist werden die Titel als gleich akzeptiert
+            int dist = levenshteinDistance(title1,title2);
+            return (dist < 5);
+        }
+    }
+
+        private static int levenshteinDistance(String s1, String s2) {
+        int[][] dp = new int[s1.length() + 1][s2.length() + 1];
+
+        for (int i = 0; i <= s1.length(); i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= s2.length(); j++) {
+            dp[0][j] = j;
+        }
+
+        for (int i = 1; i <= s1.length(); i++) {
+            for (int j = 1; j <= s2.length(); j++) {
+                int cost = (s1.charAt(i - 1) == s2.charAt(j - 1)) ? 0 : 1;
+                dp[i][j] = Math.min(
+                        Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1),
+                        dp[i - 1][j - 1] + cost
+                );
+            }
+        }
+
+        return dp[s1.length()][s2.length()];
+    }
+
+
 
 }

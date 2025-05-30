@@ -6,7 +6,6 @@ import com.opencsv.exceptions.CsvValidationException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import static org.example.Parser.insertStatements.insertKunde;
 import static org.example.Parser.insertStatements.insertRezension;
@@ -33,17 +32,19 @@ public class CSVRezensionParser {
 
 
                 // 2) Kunde einfügen
-                    try {
-                        insertKunde(con, username, "Kunde");
-                    } catch (SQLException e) {
-                        System.err.println("Kunde insert failed");
+                    if (!username.equals("guest")) {
+                        try {
+                            insertKunde(con, username, "Kunde");
+                        } catch (Exception e) {
+                            System.err.println("Kunde insert failed");
+                        }
                     }
 
 
                     // 3) Rezension einfügen
                     try {
                         insertRezension(con, produktnr, username, bewertung, rezension, "Rezension");
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         // Fehler beim Einfügen der Rezension, in ErrorDataCSV speichern
                         String errorMessage = "Rezension insert failed for product=" + produktnr +
                                 ", user=" + username + ": " + e.getMessage();

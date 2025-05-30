@@ -2,6 +2,7 @@ package org.example.Parser;
 
 import java.sql.Connection;
 
+import org.example.Utility.AttributeInvalidException;
 import org.example.Utility.AttributeUndefinedException;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -14,6 +15,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.example.Utility.ErrorHandler.handleError;
 
 
 public class XMLStoreParser {
@@ -55,11 +58,7 @@ public class XMLStoreParser {
 
                 //Nur Nodes des Typs ELEMENT werden eingelesen, Textknoten wie zB Zeilenumbrüche sind irrelevant
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    try {
-                        insertStatements.insertStore(con, name, street, zip);
-                    } catch (Exception e) {
-                        System.out.println("Error Parsing store: " + e.getMessage());
-                    }
+                    insertStatements.insertStore(con, name, street, zip);
                 }
             }
 
@@ -71,6 +70,7 @@ public class XMLStoreParser {
 
 
     private static void parseProducts(Connection con, String filepath) {
+        System.out.println("Parsing products from " + filepath + "...");
         try {
             File xmlFile = new File(filepath);
             //DocumentBuilder: Klasse, mit der man XML Dateien parsen und in Dokumente umwandeln kann
@@ -104,8 +104,7 @@ public class XMLStoreParser {
                         try {
                             parseItem(con, (Element) node); //Einzelne Node wird zu Typ Element gecastet und einzeln geparsed, danach zur Liste hinzugefügt
                         } catch (Exception e) {
-                            System.out.println("Error Parsing item: " + e.getMessage());
-                            //TODO: FEHLERBEHANDLUNG mit ERROR-TABLE
+                            handleError(con, "Produkt", "?", e);
                         }
                     }
                 }
@@ -117,26 +116,25 @@ public class XMLStoreParser {
 
     }
 
-    private static void parseItem(Connection con, Element item) throws Exception {
+    private static void parseItem(Connection con, Element item) throws AttributeUndefinedException {
 
         String asin = item.getAttribute("asin");
-        //TODO: verhindern, dass asin ein leerer String "" ist
+        if (asin.isEmpty()) {
+            throw new AttributeUndefinedException("Produkt","PNR");
+        }
 
         String titel;
         NodeList titleNodes = item.getElementsByTagName("title");
         if (titleNodes.getLength() > 0) {
             titel = titleNodes.item(0).getTextContent();
         } else {
-            throw new AttributeUndefinedException("Titel");
+            throw new AttributeUndefinedException("Produkt","Titel");
         }
 
-        Integer salesrank;
+        Integer salesrank = null;   //Default-Wert
         String salesrankTemp = item.getAttribute("salesrank");
         if (!salesrankTemp.isEmpty()) {
             salesrank = Integer.parseInt(salesrankTemp);
-        } else {
-            //TODO statt Wert 0 einen richtigen NULL-Wert eintragen
-            salesrank = 0;
         }
 
         String image;
@@ -148,12 +146,15 @@ public class XMLStoreParser {
             image = item.getAttribute("picture");
         }
 
+        boolean addingSuccessful = false;
         try {
             insertStatements.insertItem(con, asin, titel, salesrank, image);
-        } catch (SQLException e) {
-            //TODO: FEHLERBEHANDLUNG mit ERROR-TABLE
-            System.out.println("Error inserting Item to produkt table. Error: " + e.getMessage());
-        } finally {
+            addingSuccessful = true;
+        } catch (Exception e) {
+            //No Need to proceed: item could not be added, error handling has already been done in insertStatements
+        }
+
+        if (addingSuccessful){
             try {
                 String pgroup = item.getAttribute("pgroup");
                 switch (pgroup) {
@@ -167,31 +168,15 @@ public class XMLStoreParser {
                         parseDVD(con, item, asin);
                         break;
                     default:
-                        System.out.println("unknown category: " + pgroup);
-                        throw new SQLException("Unknown category: " + pgroup);
+                        //Error muss manuell gehandelt werden, da im catch block kein error handling passiert da das normalerweise in insertStatements.java passiert
+                        handleError(con, "Produkt","pgroup",new AttributeInvalidException("Produkt","pgroup",pgroup));
+                        throw new AttributeInvalidException("Produkt","pgroup",pgroup);
                 }
-            } catch (SQLException e) {
-                //TODO: FEHLERBEHANDLUNG mit ERROR-TABLE
-                System.out.println("Error during parsing book/music/dvd, item will now be removed from produkt table. Error: " + e.getMessage());
-                try {
-                    insertStatements.deleteItem(con, asin);
-                } catch (SQLException e2) {
-                    e2.printStackTrace();
-                }
+            } catch (Exception e) {
+                //Fehlerbehandlung mit ERROR-Tabelle wurde bereits in insertItem() durchgeführt, exception wird nur gefangen um sicherzustellen dass referenziertes Produkt gelöscht wird
+                insertStatements.deleteItem(con, asin);
             }
         }
-
-        /*
-
-        // price
-        NodeList priceNodes = item.getElementsByTagName("price");
-        if (priceNodes.getLength() > 0) {
-            Element priceSpec = (Element) priceNodes.item(0);
-            shopItem.setPriceRaw(priceSpec.getTextContent().trim());
-            shopItem.setPriceCurrency(priceSpec.getAttribute("currency"));
-            shopItem.setPriceMult(priceSpec.getAttribute("mult"));
-            shopItem.setState(priceSpec.getAttribute("state"));
-        }*/
 
 
     }
@@ -202,7 +187,7 @@ public class XMLStoreParser {
 
         String isbn = getAttr(bookspecElement, "isbn", "val");
         if (isbn == null) {
-            throw new AttributeUndefinedException("ISBN");
+            throw new AttributeUndefinedException("Book","ISBN");
         }
 
         String seitenzahlTemp = getTextContent(bookspecElement, "pages");
@@ -210,7 +195,6 @@ public class XMLStoreParser {
         if (seitenzahlTemp != null && !seitenzahlTemp.trim().isEmpty()) {
             seitenzahl = Integer.parseInt(seitenzahlTemp.trim());
         }
-
 
         String erscheinungsdatum = getAttr(bookspecElement, "publication", "date");
 
@@ -222,7 +206,7 @@ public class XMLStoreParser {
 
         try {
             insertStatements.insertBook(con, asin, isbn, seitenzahl, erscheinungsdatum, auflage, verlaege, autoren);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
@@ -261,7 +245,7 @@ public class XMLStoreParser {
 
         try {
             insertStatements.insertMusic(con, asin, erscheinungsdatum, tracklist, artists, labels);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
 
@@ -292,12 +276,13 @@ public class XMLStoreParser {
 
         try {
             insertStatements.insertDVD(con, asin, format, regioncode, runningtime, actors, creators, directors);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
 
     private static void parseSimilars(Connection con, String filepath) {
+        System.out.println("Parsing similar items from " + filepath + "...");
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -365,6 +350,7 @@ public class XMLStoreParser {
     }
 
     public static void parseAngebot(Connection con, String filepath) {
+        System.out.println("Parsing available items from " + filepath + "...");
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -380,8 +366,7 @@ public class XMLStoreParser {
                 //get shop ID from Filiale Table in DB
                 Integer shopId = insertStatements.getShopIdByName(con, shopName);
                 if (shopId == null) {
-                    System.out.println("ERROR: Shop not found in DB: " + shopName);
-                    throw new SQLException("Error creating Angebot Table: Shop not found in DB: " + shopName);
+                    throw new AttributeInvalidException("Angebot","Name des Shops (existiert nicht)",shopName);
                 }
 
                 NodeList items = shop.getElementsByTagName("item");
@@ -410,7 +395,11 @@ public class XMLStoreParser {
                             }
 
                         } catch (Exception e) {
-                            System.out.println("Error Parsing price for ASIN " + asin + ": " + e.getMessage());
+                            if (e.getMessage().contains("angebot_produktnr_fkey")) {
+                                handleError(con, "Angebot", "Produktnummer", new Exception("Angebot konnte nicht hinzugefügt werden, Produkt mit Produktnr. " + asin + " existiert nicht in der Datenbank"));
+                            } else {
+                                handleError(con, "Angebot", "UNKNOWN", e);
+                            }
                         }
                     }
                 }
