@@ -252,6 +252,7 @@ public class XMLStoreParser {
         }
 
         //TODO: eventuell artist daten aufräumen (Va, &, Al löschen)
+        //TODO: methode schein fehlerhaft, zT werden artists nicht gefunden
         NodeList artists = item.getElementsByTagName("artist");
         // Check if <artist> tags exist and are not empty
         boolean hasValidArtists = false;
