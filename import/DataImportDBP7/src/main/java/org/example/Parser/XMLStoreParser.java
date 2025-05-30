@@ -226,20 +226,35 @@ public class XMLStoreParser {
         }
 
         //TODO: eventuell artist daten aufräumen (Va, &, Al löschen)
-        //TODO: methode schein fehlerhaft, zT werden artists nicht gefunden
         NodeList artists = item.getElementsByTagName("artist");
         // Check if <artist> tags exist and are not empty
         boolean hasValidArtists = false;
+
         for (int i = 0; i < artists.getLength(); i++) {
-            String name = artists.item(i).getTextContent().trim();
-            if (!name.isEmpty()) {
-                hasValidArtists = true;
+            Node node = artists.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element artistElement = (Element) node;
+
+                // Leipzig: <artist name="NAME HERE" />
+                String name = artistElement.getAttribute("name").trim();
+
+                // Dresden: <artist> NAME HERE </artist>
+                if (name.isEmpty()) {
+                    name = artistElement.getTextContent().trim();
+                }
+
+                if (!name.isEmpty()) {
+                    hasValidArtists = true;
+                    break; // No need to check further if a valid artist is found
+                }
             }
         }
+
         // If item has no valid <artist> element, try <creator> instead
         if (!hasValidArtists) {
             artists = item.getElementsByTagName("creator");
         }
+
 
         NodeList labels = item.getElementsByTagName("label");
 
