@@ -436,7 +436,6 @@ public class insertStatements {
     }
 
     protected static void insertPersonWithRole(Connection con, String tableName, String produktnr, String name) throws Exception {
-        //TODO: ADD SANITY CHECKS
         String sql = "INSERT INTO " + tableName + " (produktnr, name) VALUES (?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, produktnr);
@@ -473,7 +472,7 @@ public class insertStatements {
         }
 
         // Step 3: Insert into produkt_aehnlichkeit
-        //TODO: ADD SANITY CHECKS
+
         String insertSimilarsSql = "INSERT INTO produkt_aehnlichkeit (produktnr1, produktnr2) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertSimilarsSql);
