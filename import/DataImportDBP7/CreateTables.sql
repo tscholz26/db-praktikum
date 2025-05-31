@@ -219,7 +219,8 @@ CREATE TABLE ErrorData (
                             ErrorID SERIAL PRIMARY KEY,
                             EntityName VARCHAR(100) NOT NULL,
                             FehlerAttribut VARCHAR(100) NOT NULL,
-                            Fehlermeldung TEXT NOT NULL
+                            Fehlermeldung TEXT NOT NULL,
+                            Fehlerklasse VARCHAR(100)
 );
 
 -- CREATE INDEXES

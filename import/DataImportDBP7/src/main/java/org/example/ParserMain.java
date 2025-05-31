@@ -3,6 +3,7 @@ package org.example;
 import org.example.Parser.CSVRezensionParser;
 import org.example.Parser.XMLCategoryParser;
 import org.example.Parser.XMLStoreParser;
+import org.example.Utility.ErrorClassifier;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -42,6 +43,10 @@ public class ParserMain {
 
             // Call CSV Parser
             CSVRezensionParser.parse(con);
+
+            //Classify Errors from error table
+            ErrorClassifier errorClassifier = new ErrorClassifier(con);
+            errorClassifier.classifyErrors();
 
             con.close();
             System.out.println("Connection closed.");

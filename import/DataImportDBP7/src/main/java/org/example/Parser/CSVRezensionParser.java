@@ -51,7 +51,8 @@ public class CSVRezensionParser {
                         System.err.println(errorMessage);
                     }
             }
-            System.out.println("Rezension and Kunde parsed succesfull.");
+            System.out.println("\u001B[32m[SUCCESS] Rezension and Kunde parsed succesfully.\u001B[0m");
+
         } catch (IOException | CsvValidationException e) {
             // Nur Fehler, die vor der Schleife auftreten (z.B. Datei nicht gefunden)
             e.printStackTrace();

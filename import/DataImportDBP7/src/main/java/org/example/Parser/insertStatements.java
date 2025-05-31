@@ -48,10 +48,12 @@ public class insertStatements {
                     String existingTitle = rs.getString("titel");
                     //HIER WIRD ABGEBROCHEN, DA PRODUKT BEREITS EXISTIERT
                     if (titlesAreSimilar(existingTitle,title)) {
+                        //Falls erneutes Parsing wirklich als Fehler betrachtet werden soll, dann fehlermeldung schreiben:
+                        handleError(con, "Produkt","PNR", new Exception("Doppelter Schluesselwert: Produkt mit PNR " + asin + " existiert bereits"));
                         throw new Exception("dummy exception: da produkt schon in DB ist kann parsen hier abgebrochen werden");
                     } else {
                         //nur in diesem Fall soll der fehler gehandelt werden
-                        String msg = "Produkt " + title + " existiert bereits mit titel " + existingTitle;
+                        String msg = "Inhaltlicher Fehler: Produkt " + title + " mit PNR " + asin + " existiert bereits mit titel " + existingTitle;
                         handleError(con,"Produkt","PNR",new Exception(msg));
                         throw new Exception(msg);
                     }
@@ -542,7 +544,7 @@ public class insertStatements {
             return true;
         } else {
             //ähnliche Titel die sich nur in Umlauten unterscheiden sollen auch akzeptiert werden
-            //dafür wird die LEVENSHTEIN-DISTANZ berechnet, wenn sie unter 5 ist werden die Titel als gleich akzeptiert
+            //dafür wird die LEVENSHTEIN-DISTANZ berechnet, wenn sie unter einem bestimmten Grenzwert ist werden die Titel als gleich akzeptiert
             int dist = levenshteinDistance(title1,title2);
             return (dist < 5);
         }
