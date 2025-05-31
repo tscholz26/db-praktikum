@@ -109,7 +109,7 @@ public class insertStatements {
             if (seitenzahl != null && seitenzahl < 0) { throw new AttributeInvalidException("Buch","Seitenzahl",String.valueOf(seitenzahl)); };
             if (!erscheinungsdatum.isEmpty()) {
                 LocalDate date = LocalDate.parse(erscheinungsdatum); // assuming format is yyyy-MM-dd
-                if (date.isBefore(LocalDate.of(1900, 1, 1)) || date.equals(LocalDate.of(1970, 1, 1))) {
+                if (date.isAfter(LocalDate.now()) || date.isBefore(LocalDate.of(1900, 1, 1)) || date.equals(LocalDate.of(1970, 1, 1))) {
                     throw new AttributeInvalidException("Buch", "Erscheinungsdatum", erscheinungsdatum);
                 }
             }
@@ -236,7 +236,7 @@ public class insertStatements {
             if (!erscheinungsdatum.isEmpty()) {
                 LocalDate date = LocalDate.parse(erscheinungsdatum);
                 // cd was first introduced in 1979
-                if (date.isBefore(LocalDate.of(1978, 1, 1)) || date.equals(LocalDate.of(1970, 1, 1))) {
+                if (date.isAfter(LocalDate.now()) || date.isBefore(LocalDate.of(1978, 1, 1)) || date.equals(LocalDate.of(1970, 1, 1))) {
                     throw new AttributeInvalidException("Musik_CD", "Erscheinungsdatum", erscheinungsdatum);
                 }
             }
