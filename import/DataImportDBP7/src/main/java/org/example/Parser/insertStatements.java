@@ -496,10 +496,14 @@ public class insertStatements {
     }
 
     protected static void insertAngebot(Connection con, String asin, String state, Double price, String currency, Integer shopID) throws Exception{
-        //TODO: ADD SANITY CHECKS
         String insertAngebotSql = "INSERT INTO angebot (produktnr, filialeid, zustand, preis, waehrung) VALUES (?,?,?,?,?)";
 
         try {
+            //Sanity checks
+            if (price <= 0.5 || price > 200) {
+                throw new AttributeInvalidException("Angebot", "Preis", String.valueOf(price));
+            };
+
             PreparedStatement stmt = con.prepareStatement(insertAngebotSql);
             stmt.setString(1, asin);
             stmt.setInt(2, shopID);
@@ -508,7 +512,11 @@ public class insertStatements {
             stmt.setString(5, currency);
             stmt.executeUpdate();
         } catch (Exception e) {
-            throw e;
+            if (e.getMessage().contains("fkey")) {
+                handleError(con, "Angebot", "ProduktNr", e);
+            } else {
+                handleError(con, "Angebot", "UNKNOWN", e);
+            }
         }
     }
 
