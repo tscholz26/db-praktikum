@@ -447,7 +447,32 @@ public class insertStatements {
         }
     }
 
-    protected static void insertSimilars(Connection con, String mainAsin, String simAsin) throws Exception {
+    protected static void insertSimilars(Connection con, String mainAsin, String simAsin, String titleFromSource) {
+        // Step 1: Fetch title from DB for simAsin
+        String actualTitle = null;
+        String titleQuery = "SELECT Titel FROM Produkt WHERE PNr = ?";
+
+        try (PreparedStatement titleStmt = con.prepareStatement(titleQuery)) {
+            titleStmt.setString(1, simAsin);
+            try (ResultSet rs = titleStmt.executeQuery()) {
+                if (rs.next()) {
+                    actualTitle = rs.getString("Titel");
+                }
+            }
+        } catch (Exception e) {
+            handleError(con, "produkt_aehnlichkeit", "produktnr2", e);
+            return;
+        }
+
+        // Step 2: Compare titles titleFromSource and actual title of item with PNR "simAsin"
+        if (titleFromSource != null && actualTitle != null) {
+            if (!titlesAreSimilar(titleFromSource.trim(), actualTitle.trim())) {
+                handleError(con,"produkt_aehnlichkeit","produktnr2", new Exception("Inhaltlicher Fehler: Aehnliches Produkt mit PNR " + simAsin + " und Titel " + titleFromSource + " hat in DB den Titel " + actualTitle));
+                return;
+            }
+        }
+
+        // Step 3: Insert into produkt_aehnlichkeit
         //TODO: ADD SANITY CHECKS
         String insertSimilarsSql = "INSERT INTO produkt_aehnlichkeit (produktnr1, produktnr2) VALUES (?,?)";
         try {
@@ -456,7 +481,17 @@ public class insertStatements {
             stmt.setString(2, simAsin);
             stmt.executeUpdate();
         } catch (Exception e) {
-            throw e;
+            String attribut = "UNKNOWN";
+            if (e.getMessage().contains("pkey")) {
+                attribut = "PK (produktnr1, produktnr2)";
+                //Doppelter Schluesselwert sollte nicht als Fehler gelten, da Relation symmetrisch ist, deswegen KEIN error-handling
+                return;
+            } else if (e.getMessage().contains("produktnr1")) {
+                attribut = "produktnr1";
+            } else if (e.getMessage().contains("produktnr2")) {
+                attribut = "produktnr2";
+            }
+            handleError(con,"produkt_aehnlichkeit",attribut,e);
         }
     }
 
@@ -546,7 +581,10 @@ public class insertStatements {
             //ähnliche Titel die sich nur in Umlauten unterscheiden sollen auch akzeptiert werden
             //dafür wird die LEVENSHTEIN-DISTANZ berechnet, wenn sie unter einem bestimmten Grenzwert ist werden die Titel als gleich akzeptiert
             int dist = levenshteinDistance(title1,title2);
-            return (dist < 5);
+            int len = Math.max(title1.length(), title2.length());
+
+            //If words are very long, more substsitutions/deletions/... are allowed (Allowed threshold: 1 modification per 8 characters)
+            return ((dist < 3) || (dist * 8 < len));
         }
     }
 

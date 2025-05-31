@@ -323,40 +323,37 @@ public class XMLStoreParser {
 
                     Element similarsElement = (Element) similars.item(0);
 
-                    // Zwei mögliche Formate:
+                    // dresden.xml: <similars><item asin="...">Title</item></similars>
                     NodeList similarItems = similarsElement.getElementsByTagName("item");
-                    NodeList simProducts = similarsElement.getElementsByTagName("sim_product");
-
-                    //TODO: jeweils prüfen ob titel des similar products wirklich dem titel entspricht, der für das produkt in der datenbank vorliegt
-
-                    // Format von dresden.xml : <similars><item asin="...">Title</item></similars>
                     for (int j = 0; j < similarItems.getLength(); j++) {
                         Element simItem = (Element) similarItems.item(j);
                         String simAsin = simItem.getAttribute("asin");
+                        String simTitle = simItem.getTextContent().trim();
+
                         if (!simAsin.isEmpty()) {
-                            try {
-                                insertStatements.insertSimilars(con, mainAsin,simAsin);
-                            } catch (Exception e) {
-                                //TODO: error wird vorerst nicht zur ERROR-Table hinzugefügt
-                                //System.out.println("Error inserting similars: " + e.getMessage());
-                            }
+                            insertStatements.insertSimilars(con, mainAsin, simAsin, simTitle);
                         }
                     }
 
-                    // Format von leipzig.xml: <similars><sim_product><asin>...</asin></sim_product></similars>
+                    // leipzig.xml: <similars><sim_product><asin>...</asin><title>...</title></sim_product></similars>
+                    NodeList simProducts = similarsElement.getElementsByTagName("sim_product");
                     for (int j = 0; j < simProducts.getLength(); j++) {
                         Element simProduct = (Element) simProducts.item(j);
+                        String simAsin = null;
+                        String simTitle = null;
+
                         NodeList asinNodes = simProduct.getElementsByTagName("asin");
                         if (asinNodes.getLength() > 0) {
-                            String simAsin = asinNodes.item(0).getTextContent().trim();
-                            if (!simAsin.isEmpty()) {
-                                try {
-                                    insertStatements.insertSimilars(con, mainAsin,simAsin);
-                                } catch (Exception e) {
-                                    //TODO: error wird vorerst nicht zur ERROR-Table hinzugefügt
-                                    //System.out.println("Error inserting similars: " + e.getMessage());
-                                }
-                            }
+                            simAsin = asinNodes.item(0).getTextContent().trim();
+                        }
+
+                        NodeList titleNodes = simProduct.getElementsByTagName("title");
+                        if (titleNodes.getLength() > 0) {
+                            simTitle = titleNodes.item(0).getTextContent().trim();
+                        }
+
+                        if (simAsin != null && !simAsin.isEmpty()) {
+                            insertStatements.insertSimilars(con, mainAsin, simAsin, simTitle);
                         }
                     }
                 }
@@ -368,6 +365,7 @@ public class XMLStoreParser {
 
         System.out.println("\u001B[32m[SUCCESS] Parsed similar items from " + filepath + " successfully.\u001B[0m");
     }
+
 
     public static void parseAngebot(Connection con, String filepath) {
 
