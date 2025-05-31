@@ -29,12 +29,15 @@ public class CSVRezensionParser {
                 String bewertung = line[1];
                 String rezension = line[6];
 
+
+
                 // 2) Kunde einfügen
                         try {
-                            insertKunde(con, username);
+                            insertKunde(con, username, "Kunde");
                         } catch (Exception e) {
                             System.err.println("Kunde insert failed");
                         }
+
 
                     // 3) Rezension einfügen
                     try {
