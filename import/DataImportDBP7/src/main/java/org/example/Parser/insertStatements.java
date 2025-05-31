@@ -548,14 +548,27 @@ public class insertStatements {
         }
     }
 
-    protected static void insertKunde(Connection con, String username) throws Exception {
+    protected static void insertKunde(Connection con, String username, String entityname) throws Exception {
         String insertKundeSql =
                 "INSERT INTO Kunde (nutzername) VALUES (?)";
+        String insertErrorKunde =
+                "INSERT INTO ErrorData (entityname, fehlermeldung, fehlerattribut) " +
+                        "VALUES (?, ?, ?)";
         try {
             PreparedStatement stmtKunde = con.prepareStatement(insertKundeSql);
             stmtKunde.setString(1, username);
             stmtKunde.executeUpdate();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            PreparedStatement stmtErrorData = con.prepareStatement(insertErrorKunde);
+            stmtErrorData.setString(1, entityname);
+            stmtErrorData.setString(2, e.getMessage());
+            if (e.getMessage().contains("violates unique constraint")) {
+                stmtErrorData.setString(3, "Nutzername");
+            } else {
+                stmtErrorData.setString(3, "Unknown");
+            }
+            stmtErrorData.executeUpdate();
+        }
     }
 
     protected static Integer getShopIdByName(Connection con, String shopName) throws Exception {
