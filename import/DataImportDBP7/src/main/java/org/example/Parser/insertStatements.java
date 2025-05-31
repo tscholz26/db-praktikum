@@ -10,15 +10,23 @@ import javax.management.Attribute;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.text.Normalizer;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import static org.example.Utility.ErrorHandler.handleError;
 
 public class insertStatements {
 
-    protected static void insertStore(Connection con, String name, String street, String zip) {
+    protected static void insertStore(Connection con, String name, String street, String zip)  {
+
         String query = "INSERT INTO filiale (name, adresse, plz) VALUES (?, ?, ?)";
+
         try (PreparedStatement statement = con.prepareStatement(query)) {
+            //Sanity checks
+            if (name.trim().length() < 3) { throw new AttributeInvalidException("Filiale","Name",name); };
+            if (street.trim().length() < 3) { throw new AttributeInvalidException("Filiale","Adresse",street); };
+            if (zip.trim().length() != 5) { throw new AttributeInvalidException("Filiale","PLZ",zip); };
+
             statement.setString(1, name);
             statement.setString(2, street);
             statement.setString(3, zip);
@@ -30,6 +38,7 @@ public class insertStatements {
 
     protected static void insertItem(Connection con, String asin, String title, Integer salesrank, String picture) throws Exception {
 
+        //FIRST: check if a product with the same ASIN is already existing in DB (might have been parsed before in another file)
         String checkQuery = "SELECT titel FROM produkt WHERE pnr = ?";
         try (PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
             checkStmt.setString(1, asin);
@@ -39,8 +48,9 @@ public class insertStatements {
                     String existingTitle = rs.getString("titel");
                     //HIER WIRD ABGEBROCHEN, DA PRODUKT BEREITS EXISTIERT
                     if (titlesAreSimilar(existingTitle,title)) {
-                        throw new Exception("Produkt mit ASIN " + asin + " existiert bereits mit dem Titel: " + existingTitle);
+                        throw new Exception("dummy exception: da produkt schon in DB ist kann parsen hier abgebrochen werden");
                     } else {
+                        //nur in diesem Fall soll der fehler gehandelt werden
                         String msg = "Produkt " + title + " existiert bereits mit titel " + existingTitle;
                         handleError(con,"Produkt","PNR",new Exception(msg));
                         throw new Exception(msg);
@@ -48,10 +58,16 @@ public class insertStatements {
 
                 }
             }
-        }//FIRST: check if a product with the same ASIN is already existing in DB (might have been parsed before in another file)
+        }
 
+        //actually insert new product
         String query = "INSERT INTO produkt (pnr, titel, verkaufsrang, bild) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = con.prepareStatement(query)) {
+
+            //Sanity checks
+            if (asin.trim().length() != 10) { throw new AttributeInvalidException("Produkt","PNR",asin); };
+            if (salesrank != null && salesrank < 0) { throw new AttributeInvalidException("Produkt","Salesrank",String.valueOf(salesrank)); };
+
             statement.setString(1, asin);
             statement.setString(2, title);
 
@@ -61,7 +77,12 @@ public class insertStatements {
                 statement.setNull(3, java.sql.Types.INTEGER);
             }
 
-            statement.setString(4, picture);
+            if (!picture.isEmpty()) {
+                statement.setString(4, picture);
+            } else {
+                statement.setNull(4, java.sql.Types.VARCHAR);
+            }
+
             statement.executeUpdate();
         } catch (Exception e) {
             handleError(con,"Produkt","UNKNOWN",e);
@@ -83,6 +104,17 @@ public class insertStatements {
         String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, erscheinungsdatum, auflage) VALUES (?,?,?,?,?)";
 
         try {
+            //Sanity checks
+            if (!isbn.isEmpty() && isbn.length() < 8) { throw new AttributeInvalidException("Buch","ISBN",isbn); };
+            if (seitenzahl != null && seitenzahl < 0) { throw new AttributeInvalidException("Buch","Seitenzahl",String.valueOf(seitenzahl)); };
+            if (!erscheinungsdatum.isEmpty()) {
+                LocalDate date = LocalDate.parse(erscheinungsdatum); // assuming format is yyyy-MM-dd
+                if (date.isBefore(LocalDate.of(1900, 1, 1)) || date.equals(LocalDate.of(1970, 1, 1))) {
+                    throw new AttributeInvalidException("Buch", "Erscheinungsdatum", erscheinungsdatum);
+                }
+            }
+
+
             PreparedStatement stmt = con.prepareStatement(insertBookSql);
             stmt.setString(1, produktnr);
 
@@ -170,6 +202,7 @@ public class insertStatements {
     }
 
     protected static void insertVerlagBuch(Connection con, String produktnr, String verlag) throws Exception {
+        //TODO: ADD SANITY CHECKS
         String insertVerlagBuchSql = "INSERT INTO buch_verlag (Produktnr, verlag) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
@@ -182,6 +215,7 @@ public class insertStatements {
     }
 
     protected static void insertBuchAutor(Connection con, String produktnr, String autor) throws Exception {
+        //TODO: ADD SANITY CHECKS
         String insertBuchAutorSql = "INSERT INTO Autor (Produktnr, Name) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertBuchAutorSql);
@@ -198,6 +232,15 @@ public class insertStatements {
         //System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " erscheinungsdatum: " + erscheinungsdatum);
 
         try {
+            //Sanity checks
+            if (!erscheinungsdatum.isEmpty()) {
+                LocalDate date = LocalDate.parse(erscheinungsdatum);
+                // cd was first introduced in 1979
+                if (date.isBefore(LocalDate.of(1978, 1, 1)) || date.equals(LocalDate.of(1970, 1, 1))) {
+                    throw new AttributeInvalidException("Musik_CD", "Erscheinungsdatum", erscheinungsdatum);
+                }
+            }
+
             PreparedStatement stmt = con.prepareStatement(insertMusicSql);
             stmt.setString(1, produktnr);
 
@@ -290,6 +333,7 @@ public class insertStatements {
     }
 
     protected static void insertMusicArtist(Connection con, String produktnr, String artist) throws Exception {
+        //TODO: ADD SANITY CHECKS
         String insertMusicArtistSql = "INSERT INTO kuenstler (Produktnr, kuenstlername) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
@@ -302,6 +346,7 @@ public class insertStatements {
     }
 
     protected static void insertMusicLabel(Connection con, String produktnr, String label) throws Exception {
+        //TODO: ADD SANITY CHECKS
         String insertMusicArtistSql = "INSERT INTO label (Produktnr, labelname) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
@@ -314,6 +359,7 @@ public class insertStatements {
     }
 
     protected static void insertTrack(Connection con, String produktnr, String songtitel) throws Exception {
+        //TODO: ADD SANITY CHECKS
         String insertTrackSql = "INSERT INTO song (Produktnr, songtitel) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertTrackSql);
@@ -326,9 +372,14 @@ public class insertStatements {
     }
 
     protected static void insertDVD(Connection con, String asin, String format, Integer regioncode, Integer runningtime, NodeList actors, NodeList creators, NodeList directors) throws Exception {
+
         String insertDVDSql = "INSERT INTO dvd (produktnr, format, regioncode, laufzeit) VALUES (?,?,?,?)";
 
         try {
+            //Sanity checks
+            if (regioncode != null && (regioncode < 0 || regioncode > 7)) { throw new AttributeInvalidException("DVD","Regioncode",String.valueOf(regioncode)); }
+            if (runningtime != null && runningtime < 0) { throw new AttributeInvalidException("DVD","Laufzeit", String.valueOf(runningtime)); };
+
             PreparedStatement stmt = con.prepareStatement(insertDVDSql);
             stmt.setString(1, asin);
             stmt.setString(2, format);
@@ -359,6 +410,7 @@ public class insertStatements {
     }
 
     private static void insertPeopleFromNodeList(Connection con, String tableName, String produktnr, NodeList people) throws Exception {
+        //TODO: ADD SANITY CHECKS
         if (people == null) return;
 
         for (int i = 0; i < people.getLength(); i++) {
@@ -382,6 +434,7 @@ public class insertStatements {
     }
 
     protected static void insertPersonWithRole(Connection con, String tableName, String produktnr, String name) throws Exception {
+        //TODO: ADD SANITY CHECKS
         String sql = "INSERT INTO " + tableName + " (produktnr, name) VALUES (?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, produktnr);
@@ -393,6 +446,7 @@ public class insertStatements {
     }
 
     protected static void insertSimilars(Connection con, String mainAsin, String simAsin) throws Exception {
+        //TODO: ADD SANITY CHECKS
         String insertSimilarsSql = "INSERT INTO produkt_aehnlichkeit (produktnr1, produktnr2) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertSimilarsSql);
@@ -405,6 +459,7 @@ public class insertStatements {
     }
 
     protected static void insertAngebot(Connection con, String asin, String state, Double price, String currency, Integer shopID) throws Exception{
+        //TODO: ADD SANITY CHECKS
         String insertAngebotSql = "INSERT INTO angebot (produktnr, filialeid, zustand, preis, waehrung) VALUES (?,?,?,?,?)";
 
         try {
