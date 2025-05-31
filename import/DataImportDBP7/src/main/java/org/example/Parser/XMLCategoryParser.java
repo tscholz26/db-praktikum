@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.example.Utility.ErrorHandler.handleError;
+
 public class XMLCategoryParser {
 
     private static final Map<String, Integer> categoryNameToIdMap = new HashMap<>();
@@ -76,8 +78,7 @@ public class XMLCategoryParser {
                     try {
                         addItemToCategory(con, item, currentCategory);
                     } catch (Exception e) {
-                        //TODO: Sollte das hier zur ERROR-TABLE hinzugefügt werden oder nicht??
-                        //System.out.println("Error adding item to category: " + e.getMessage());
+                        //error wurde bereits in SQL-Methode gehandelt
                     }
                 } else if (child.getNodeName().equals("category")) {
                     traverseCategory(con, child, currentCategory);
@@ -100,7 +101,7 @@ public class XMLCategoryParser {
         return "UNKNOWN_CATEGORY";
     }
 
-    private static void createCategory(Connection con, String name) throws Exception {
+    private static void createCategory(Connection con, String name) throws Exception{
         if (categoryNameToIdMap.containsKey(name)) return;
 
         String sql = "INSERT INTO Kategorie (Name) VALUES (?) RETURNING KategorieID";
@@ -111,6 +112,9 @@ public class XMLCategoryParser {
                 int id = rs.getInt(1);
                 categoryNameToIdMap.put(name, id);
             }
+        } catch (Exception e) {
+            handleError(con,"Kategorie","Name",e);
+            throw e;
         }
     }
 
@@ -128,6 +132,9 @@ public class XMLCategoryParser {
             stmt.setInt(1, parentId);
             stmt.setInt(2, childId);
             stmt.executeUpdate();
+        } catch (Exception e) {
+            handleError(con,"Kategorie","OberkategorieID",e);
+            throw e;
         }
     }
 
@@ -145,10 +152,12 @@ public class XMLCategoryParser {
             stmt.executeUpdate();
         } catch (Exception e) {
             // Optional: Ignore duplicate insert (if ProduktNr/KategorieID already exists)
-            if (e.getMessage().contains("duplicate key") || e.getMessage().contains("violates primary key")) {
-                System.out.println("Product-category link already exists: " + item + " -> " + categoryName);
-            } else {
-                throw e;
+            if (!(e.getMessage().contains("pkey") || e.getMessage().contains("doppelter Schl"))) {
+                if (e.getMessage().contains("fkey")) {
+                    handleError(con, "Produkt_Kategorie", "ProduktNr", e);
+                } else {
+                    handleError(con, "Produkt_Kategorie", "UNKNOWN", e);
+                }
             }
         }
     }

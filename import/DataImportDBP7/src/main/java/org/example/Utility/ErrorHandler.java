@@ -10,7 +10,10 @@ public class ErrorHandler {
     public static void handleError(Connection con, String entityName, String fehlerattribut, Exception e) {
 
         String message = e.getMessage();
-        System.out.println("\u001B[33mError handler detected error, details: \u001B[0m" + message );
+        //Dont print duplicate PK / missing FK to console to avoid overloading
+        if (!(message.contains("fkey") || message.contains("pkey") || message.contains("Doppelter Schl"))) {
+            System.out.println("\u001B[33mError handler detected error, details: \u001B[0m" + message );
+        }
 
         if (e instanceof AttributeUndefinedException) {
             String entity = ((AttributeUndefinedException) e).getEntityName();
