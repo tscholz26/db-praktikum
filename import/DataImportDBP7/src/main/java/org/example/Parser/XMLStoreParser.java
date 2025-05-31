@@ -72,7 +72,7 @@ public class XMLStoreParser {
 
 
     private static void parseProducts(Connection con, String filepath) {
-        System.out.println("Parsing products from " + filepath + "...");
+
         try {
             File xmlFile = new File(filepath);
             //DocumentBuilder: Klasse, mit der man XML Dateien parsen und in Dokumente umwandeln kann
@@ -115,6 +115,8 @@ public class XMLStoreParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("\u001B[32m[SUCCESS] Parsed products from " + filepath + " successfully.\u001B[0m");
 
     }
 
@@ -179,7 +181,6 @@ public class XMLStoreParser {
                 insertStatements.deleteItem(con, asin);
             }
         }
-
 
     }
 
@@ -299,7 +300,7 @@ public class XMLStoreParser {
     }
 
     private static void parseSimilars(Connection con, String filepath) {
-        System.out.println("Parsing similar items from " + filepath + "...");
+
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -364,10 +365,12 @@ public class XMLStoreParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("\u001B[32m[SUCCESS] Parsed similar items from " + filepath + " successfully.\u001B[0m");
     }
 
     public static void parseAngebot(Connection con, String filepath) {
-        System.out.println("Parsing available items from " + filepath + "...");
+
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -433,6 +436,8 @@ public class XMLStoreParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("\u001B[32m[SUCCESS] Parsed available products and prices from " + filepath + " successfully.\u001B[0m");
     }
 
 

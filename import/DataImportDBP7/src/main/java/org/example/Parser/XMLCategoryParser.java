@@ -18,7 +18,7 @@ public class XMLCategoryParser {
     private static final Map<String, Integer> categoryNameToIdMap = new HashMap<>();
 
     public static void main(Connection con, String filepath) {
-        System.out.println("Parsing categories...");
+
         try {
             File xmlFile = new File(filepath);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -44,6 +44,8 @@ public class XMLCategoryParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("\u001B[32m[SUCCESS] Parsed categories from " + filepath + " successfully.\u001B[0m");
     }
 
 
