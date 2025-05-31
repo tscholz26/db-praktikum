@@ -505,7 +505,7 @@ public class insertStatements {
         }
     }
 
-    protected static void insertKunde(Connection con, String username, String entityname) throws Exception {
+    protected static void insertKunde(Connection con, String username) throws Exception {
         String insertKundeSql =
                 "INSERT INTO Kunde (nutzername) VALUES (?)";
         try {
