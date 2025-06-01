@@ -6,7 +6,8 @@ CREATE TABLE Produkt (
                          PNr          VARCHAR(50) PRIMARY KEY,
                          Verkaufsrang INTEGER,
                          Bild         TEXT,
-                         Titel        VARCHAR(255)
+                         Titel        VARCHAR(255),
+                         Rating       DECIMAL(3,2)
 );
 
 -- 2. Musik-CD als Spezialisierung von Produkt ohne Array-Attribute

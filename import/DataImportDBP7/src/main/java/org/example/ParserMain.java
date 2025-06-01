@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.Parser.CSVRezensionParser;
+import org.example.Parser.RatingCalculator;
 import org.example.Parser.XMLCategoryParser;
 import org.example.Parser.XMLStoreParser;
 import org.example.Utility.ErrorClassifier;
@@ -43,6 +44,10 @@ public class ParserMain {
 
             // Call CSV Parser
             CSVRezensionParser.parse(con);
+
+            // Calculate Ratings
+            RatingCalculator rc = new RatingCalculator(con);
+            rc.calculateRatings();
 
             //Classify Errors from error table
             ErrorClassifier errorClassifier = new ErrorClassifier(con);
