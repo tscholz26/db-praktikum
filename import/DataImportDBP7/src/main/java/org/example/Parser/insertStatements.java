@@ -744,10 +744,8 @@ public class insertStatements {
 
         // Substring logic — mark as similar, but longer one should be kept
         // only do that if both substrings are longer than 3 characters
-        if (a.length() > 3 && b.length() > 3) {
-            if (a.contains(b) || b.contains(a)) {
-                return true;
-            }
+        if (a.contains(b) || b.contains(a)) {
+            return true;
         }
 
         int maxLen = Math.max(a.length(), b.length());
