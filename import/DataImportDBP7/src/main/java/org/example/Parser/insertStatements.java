@@ -2,16 +2,21 @@ package org.example.Parser;
 
 import org.example.Utility.AttributeInvalidException;
 import org.example.Utility.AttributeUndefinedException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.management.Attribute;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.text.Normalizer;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.example.Utility.ErrorHandler.handleError;
 
@@ -104,6 +109,9 @@ public class insertStatements {
 
     protected static void insertBook(Connection con, String produktnr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege, NodeList autoren) throws Exception {
         String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, erscheinungsdatum, auflage) VALUES (?,?,?,?,?)";
+
+        verlaege = (NodeList) removeDuplicates(con, verlaege, "publisher");
+        autoren = (NodeList) removeDuplicates(con, autoren, "author");
 
         try {
             //Sanity checks
@@ -204,7 +212,7 @@ public class insertStatements {
     }
 
     protected static void insertVerlagBuch(Connection con, String produktnr, String verlag) throws Exception {
-        //TODO: ADD SANITY CHECKS
+
         String insertVerlagBuchSql = "INSERT INTO buch_verlag (Produktnr, verlag) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
@@ -217,7 +225,7 @@ public class insertStatements {
     }
 
     protected static void insertBuchAutor(Connection con, String produktnr, String autor) throws Exception {
-        //TODO: ADD SANITY CHECKS
+
         String insertBuchAutorSql = "INSERT INTO Autor (Produktnr, Name) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertBuchAutorSql);
@@ -230,8 +238,11 @@ public class insertStatements {
     }
 
     protected static void insertMusic(Connection con, String produktnr, String erscheinungsdatum, NodeList trackList, NodeList artists, NodeList labels) throws Exception {
+
+        artists = (NodeList) removeDuplicates(con, artists, "artist");
+        labels = (NodeList) removeDuplicates(con, labels, "label");
+
         String insertMusicSql = "INSERT INTO musik_cd (produktnr, erscheinungsdatum) VALUES (?,?)";
-        //System.out.println("Calling insertBook with parameters: " + "produktnr: " + produktnr + " erscheinungsdatum: " + erscheinungsdatum);
 
         try {
             //Sanity checks
@@ -335,7 +346,7 @@ public class insertStatements {
     }
 
     protected static void insertMusicArtist(Connection con, String produktnr, String artist) throws Exception {
-        //TODO: ADD SANITY CHECKS
+
         String insertMusicArtistSql = "INSERT INTO kuenstler (Produktnr, kuenstlername) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
@@ -348,7 +359,7 @@ public class insertStatements {
     }
 
     protected static void insertMusicLabel(Connection con, String produktnr, String label) throws Exception {
-        //TODO: ADD SANITY CHECKS
+
         String insertMusicArtistSql = "INSERT INTO label (Produktnr, labelname) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
@@ -376,6 +387,10 @@ public class insertStatements {
     protected static void insertDVD(Connection con, String asin, String format, Integer regioncode, Integer runningtime, NodeList actors, NodeList creators, NodeList directors) throws Exception {
 
         String insertDVDSql = "INSERT INTO dvd (produktnr, format, regioncode, laufzeit) VALUES (?,?,?,?)";
+
+        actors = (NodeList) removeDuplicates(con, actors, "actor");
+        creators = (NodeList) removeDuplicates(con, creators, "creator");
+        directors = (NodeList) removeDuplicates(con, directors, "director");
 
         try {
             //Sanity checks
@@ -412,7 +427,7 @@ public class insertStatements {
     }
 
     private static void insertPeopleFromNodeList(Connection con, String tableName, String produktnr, NodeList people) throws Exception {
-        //TODO: ADD SANITY CHECKS
+
         if (people == null) return;
 
         for (int i = 0; i < people.getLength(); i++) {
@@ -620,6 +635,128 @@ public class insertStatements {
         }
 
         return dp[s1.length()][s2.length()];
+    }
+
+    private static Element removeDuplicates(Connection con, NodeList nodes, String tagName) {
+        try {
+            // Create a new DOM document for the result
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document newDoc = builder.newDocument();
+
+            // e.g., <creators>, <labels>, etc.
+            Element root = newDoc.createElement(tagName + "s");
+            List<String> approved = new ArrayList<>();
+
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Node node = nodes.item(i);
+                if (!(node instanceof Element)) continue;
+
+                Element element = (Element) node;
+                String value = element.hasAttribute("name")
+                        ? element.getAttribute("name").trim()
+                        : element.getTextContent().trim();
+
+                boolean isDuplicate = false;
+                for (int j = 0; j < approved.size(); j++) {
+                    String approvedValue = approved.get(j);
+
+                    if (isSimilar(value, approvedValue)) {
+                        isDuplicate = true;
+
+                        // Determine which value is being removed and log accordingly
+                        if (value.length() > approvedValue.length()) {
+                            logDuplicateRemoval(con, approvedValue, value, tagName);  // approvedValue is removed, value is better
+                            approved.set(j, value);
+                        } else {
+                            logDuplicateRemoval(con, value, approvedValue, tagName);  // value is removed, approvedValue stays
+                        }
+
+                        break;
+                    }
+                }
+
+                if (!isDuplicate) {
+                    approved.add(value);
+                }
+            }
+
+            // Build new XML elements based on the approved list
+            for (String val : approved) {
+                Element newElement = newDoc.createElement(tagName);
+                if (hasAttributeBasedFormat(nodes)) {
+                    newElement.setAttribute("name", val);
+                } else {
+                    newElement.setTextContent(val);
+                }
+                root.appendChild(newElement);
+            }
+
+            return root;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static boolean hasAttributeBasedFormat(NodeList nodes) {
+        //nötig für unterscheidung zwischen den formaten von leipzig/dresden
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            if (node instanceof Element && ((Element) node).hasAttribute("name")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void logDuplicateRemoval(Connection con, String s1, String s2, String tagName) {
+        String message = "Doppelter Attributwert: " + tagName + " \"" + s1 + "\" wurde wegen Aehnlichkeit zu \"" + s2 + "\" entfernt.";
+
+        if (tagName.equals("actor")) {
+            handleError(con, "Actor", "Name", new Exception(message));
+        } else if (tagName.equals("creator")) {
+            handleError(con, "Creator", "Name", new Exception(message));
+        } else if (tagName.equals("director")) {
+            handleError(con, "Director", "Name", new Exception(message));
+        } else if (tagName.equals("artist")) {
+            handleError(con, "Kuenstler", "Kuenstlername", new Exception(message));
+        } else if (tagName.equals("author")) {
+            handleError(con, "Autor", "Name", new Exception(message));
+        } else if (tagName.equals("publisher")) {
+            handleError(con, "Buch_Verlag", "Verlag", new Exception(message));
+        } else if (tagName.equals("label")) {
+            handleError(con, "Label", "Labelname", new Exception(message));
+        } else {
+            handleError(con, "Unknown, tagname: " + tagName, "?", new Exception(message));
+        }
+
+    }
+
+
+    public static boolean isSimilar(String a, String b) {
+        a = a.trim().toLowerCase();
+        b = b.trim().toLowerCase();
+
+        // Exact match
+        if (a.equals(b)) return true;
+
+        // Substring logic — mark as similar, but longer one should be kept
+        // only do that if both substrings are longer than 3 characters
+        if (a.length() > 3 && b.length() > 3) {
+            if (a.contains(b) || b.contains(a)) {
+                return true;
+            }
+        }
+
+        int maxLen = Math.max(a.length(), b.length());
+        if (maxLen == 0) return true;
+
+        int distance = levenshteinDistance(a, b);
+        double similarity = 1.0 - (double) distance / maxLen;
+
+        return similarity >= 0.85;
     }
 
 

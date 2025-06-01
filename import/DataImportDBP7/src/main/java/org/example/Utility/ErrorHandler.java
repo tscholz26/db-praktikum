@@ -11,7 +11,7 @@ public class ErrorHandler {
 
         String message = e.getMessage();
         //Dont print duplicate PK / missing FK to console to avoid overloading
-        if (!(message.contains("fkey") || message.contains("pkey") || message.contains("Doppelter Schl"))) {
+        if (!(message.contains("fkey") || message.contains("pkey") || message.contains("Doppelt"))) {
             System.out.println("\u001B[33mError handler detected error, details: \u001B[0m" + message );
         }
 

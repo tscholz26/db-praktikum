@@ -61,6 +61,8 @@ public class ErrorClassifier {
             return "Fremdschluesselbedingung_verletzt";
         } else if (fehlermeldung.contains("inhaltlich")) {
             return "Inhaltlicher_Fehler";
+        } else if (fehlermeldung.contains("doppelter attr")) {
+            return "Doppelter_Attributwert";
         }
 
         return "nicht_zugeordnet";
