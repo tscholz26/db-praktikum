@@ -35,7 +35,7 @@ public class CSVRezensionParser {
                         try {
                             insertKunde(con, username, "Kunde");
                         } catch (Exception e) {
-                            System.err.println("Kunde insert failed");
+                            System.out.println("\u001B[33m[WARNING] " + "Kunde insert failed" + "\u001B[0m");
                         }
 
 
@@ -46,7 +46,7 @@ public class CSVRezensionParser {
                         // Fehler beim Einfügen der Rezension, in ErrorDataCSV speichern
                         String errorMessage = "Rezension insert failed for product=" + produktnr +
                                 ", user=" + username + ": " + e.getMessage();
-                        System.err.println(errorMessage);
+                        System.out.println("\u001B[33m[WARNING] Error handler detected error, details: \u001B[0m" + errorMessage);
                     }
             }
             System.out.println("\u001B[32m[SUCCESS] Rezension and Kunde parsed succesfully.\u001B[0m");

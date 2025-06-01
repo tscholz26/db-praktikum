@@ -24,15 +24,15 @@ public class ParserMain {
 
             Connection con = DriverManager.getConnection(url, username, password);
             if (con != null) {
-                System.out.println("Connected to the database!");
+                System.out.println("\u001B[32m[SUCCESS] Connected to the database!\u001B[0m");
             } else {
-                System.out.println("Failed to make connection!");
+                System.err.println("[ERROR] Failed to establish connection to the database.");
             }
 
             try{
                 initDB(con, "CreateTables.sql");
             } catch (Exception e) {
-                System.out.println("Error during database initialization: " + e.getMessage());
+                System.err.println("[ERROR]Error during database initialization: " + e.getMessage());
                 e.printStackTrace();
             }
 
@@ -54,7 +54,7 @@ public class ParserMain {
             errorClassifier.classifyErrors();
 
             con.close();
-            System.out.println("Connection closed.");
+            System.out.println("\u001B[32m[SUCCESS] Connection closed.\u001B[0m");
 
 
         } catch (SQLException e) {
@@ -80,7 +80,7 @@ public class ParserMain {
         // SQL ausführen
         try (Statement stmt = con.createStatement()) {
             stmt.execute(sql);
-            System.out.println("Initialisierung erfolgreich");
+            System.out.println("\u001B[32m[SUCCESS] Initialisierung erfolgreich.\u001B[0m");
         } catch (SQLException e) {
             throw new SQLException("Fehler beim Ausführen der SQL-Initialisierung: " + e.getMessage(), e);
         }

@@ -14,7 +14,7 @@ public class AttributeInvalidException extends Exception {
 
     @Override
     public String getMessage() {
-        return "AttributeInvalidException: Attribute value for Attribute \"" + attributeName + "\" of entity of type \"" + entityName + "\" is  \"" + attributeValue + "\"";
+        return "AttributeInvalidException: Attributwert fuer Attribut \"" + attributeName + "\" des Entity-Typs \"" + entityName + "\" ist  \"" + attributeValue + "\"";
     }
 
     public String getEntityName() {

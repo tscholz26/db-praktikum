@@ -74,14 +74,21 @@ public class ErrorClassifier {
                 PreparedStatement stmt = con.prepareStatement(query);
                 ResultSet rs = stmt.executeQuery()
         ) {
+            System.out.println("\u001B[34m[INFO] Fehlerklassenzusammenfassung:");
+            System.out.printf("    %-36s | %s%n", "Fehlerklasse", "Vorkommen");
+            System.out.println("    -------------------------------------|----------");
+
             while (rs.next()) {
                 String fehlerklasse = rs.getString("Fehlerklasse");
                 int anzahl = rs.getInt("Anzahl");
-                System.out.println("\u001B[32m    Fehlerklasse \"" + fehlerklasse + "\": " + anzahl + " occurences\u001B[0m");
+                System.out.printf("    %-36s | %d%n", fehlerklasse, anzahl);
             }
+
+            System.out.println("\u001B[0m"); // Reset color after the block
         } catch (SQLException e) {
-            System.out.println("Error logging error classes to console: " + e.getMessage());
+            System.err.println("[ERROR] Error logging error classes to console: " + e.getMessage());
         }
     }
+
 
 }

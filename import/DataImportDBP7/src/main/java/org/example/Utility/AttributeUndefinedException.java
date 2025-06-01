@@ -12,7 +12,7 @@ public class AttributeUndefinedException extends Exception {
 
     @Override
     public String getMessage() {
-        return "AttributeUndefinedException: Attribute \"" + attributeName + "\" for entity of type \"" + entityName + "\" is NULL";
+        return "AttributeUndefinedException: Attribut \"" + attributeName + "\" fuer Entity vom Typ \"" + entityName + "\" ist NULL";
     }
 
     public String getEntityName() {
