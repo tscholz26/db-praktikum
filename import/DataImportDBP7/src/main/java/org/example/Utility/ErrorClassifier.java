@@ -18,6 +18,7 @@ public class ErrorClassifier {
     public void classifyErrors() {
         String selectQuery = "SELECT ErrorID, Fehlermeldung FROM ErrorData";
         String updateQuery = "UPDATE ErrorData SET Fehlerklasse = ? WHERE ErrorID = ?";
+        int countErrors = 0;
 
         try (
                 PreparedStatement selectStmt = con.prepareStatement(selectQuery);
@@ -28,6 +29,9 @@ public class ErrorClassifier {
                 int errorId = rs.getInt("ErrorID");
                 String fehlermeldung = rs.getString("Fehlermeldung");
                 String fehlerklasse = classify(fehlermeldung.toLowerCase());
+                if (!(fehlerklasse.equals("nicht_zugeordnet"))) {
+                    countErrors++;
+                };
 
                 if (fehlerklasse != null) {
                     updateStmt.setString(1, fehlerklasse);
@@ -39,7 +43,9 @@ public class ErrorClassifier {
             e.printStackTrace();
         }
 
-        System.out.println("\u001B[32m[SUCCESS] Classified Errors from table ERRORDATA successfully.\u001B[0m");
+        System.out.println("\u001B[32m[SUCCESS] Succesfully classified " + countErrors + " Errors from table ERRORDATA.\u001B[0m");
+        printErrorClasses();
+
     }
 
     // Classification logic based on substrings in Fehlermeldung
@@ -59,4 +65,21 @@ public class ErrorClassifier {
 
         return "nicht_zugeordnet";
     }
+
+    private void printErrorClasses() {
+        String query = "SELECT Fehlerklasse, COUNT(*) AS Anzahl FROM ErrorData GROUP BY Fehlerklasse ORDER BY Anzahl DESC";
+        try (
+                PreparedStatement stmt = con.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()
+        ) {
+            while (rs.next()) {
+                String fehlerklasse = rs.getString("Fehlerklasse");
+                int anzahl = rs.getInt("Anzahl");
+                System.out.println("\u001B[32m    Fehlerklasse \"" + fehlerklasse + "\": " + anzahl + " occurences\u001B[0m");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error logging error classes to console: " + e.getMessage());
+        }
+    }
+
 }
