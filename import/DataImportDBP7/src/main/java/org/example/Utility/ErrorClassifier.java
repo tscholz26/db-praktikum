@@ -51,13 +51,13 @@ public class ErrorClassifier {
     // Classification logic based on substrings in Fehlermeldung
     private String classify(String fehlermeldung) {
 
-        if (fehlermeldung.contains("attributeinvalidexception")) {
+        if (fehlermeldung.contains("attributeinvalidexception") || fehlermeldung.contains("check constraint")) {
             return "Attributwert_nicht_sinnvoll";
         } else if (fehlermeldung.contains("attributeundefinedexception")) {
             return "Unerlaubter_NULL_Wert";
-        } else if (fehlermeldung.contains("doppelter schl")) {
+        } else if (fehlermeldung.contains("doppelter schl") || fehlermeldung.contains("duplicate key")) {
             return "Doppelter_Schluesselwert";
-        } else if (fehlermeldung.contains("fremdschl")) {
+        } else if (fehlermeldung.contains("fkey")) {
             return "Fremdschluesselbedingung_verletzt";
         } else if (fehlermeldung.contains("inhaltlich")) {
             return "Inhaltlicher_Fehler";

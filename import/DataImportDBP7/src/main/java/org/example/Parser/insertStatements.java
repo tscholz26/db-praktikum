@@ -553,9 +553,9 @@ public class insertStatements {
             PreparedStatement stmtErrorDataCSV = con.prepareStatement(insertErrorDataCSV);
             stmtErrorDataCSV.setString(1, entityname);
             stmtErrorDataCSV.setString(2, e.getMessage());
-            if (e.getMessage().contains("violates foreign key constraint")) {
+            if (e.getMessage().contains("fkey")) {
                 stmtErrorDataCSV.setString(3, "product");
-            } else if (e.getMessage().contains("violates check constraint \"rezension_bewertung_check\"")) {
+            } else if (e.getMessage().contains("check")) {
                 stmtErrorDataCSV.setString(3, "rating");
             }
             stmtErrorDataCSV.executeUpdate();
@@ -576,11 +576,7 @@ public class insertStatements {
             PreparedStatement stmtErrorData = con.prepareStatement(insertErrorKunde);
             stmtErrorData.setString(1, entityname);
             stmtErrorData.setString(2, e.getMessage());
-            if (e.getMessage().contains("violates unique constraint")) {
-                stmtErrorData.setString(3, "Nutzername");
-            } else {
-                stmtErrorData.setString(3, "Unknown");
-            }
+            stmtErrorData.setString(3, "Nutzername");
             stmtErrorData.executeUpdate();
         }
     }
