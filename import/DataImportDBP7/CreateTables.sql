@@ -160,7 +160,7 @@ CREATE TABLE Angebot (
                                  ON DELETE CASCADE
                                  ON UPDATE CASCADE,
                          Zustand   varchar(20) NOT NULL,
-                         Preis     DECIMAL(10,2) NOT NULL,
+                         Preis     DECIMAL(10,2) NOT NULL CHECK (Preis >= 0),
                          Waehrung  varchar(3) NOT NULL
 );
 
@@ -180,6 +180,8 @@ CREATE TABLE Kauf (
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
                       Kaufzeit  TIMESTAMP,
+                      Preis     DECIMAL(10,2) NOT NULL CHECK (Preis >= 0),
+                      WarenkorbPreis DECIMAL(10,2) CHECK ( WarenkorbPreis = Menge * Preis ),
                       Menge     INTEGER   NOT NULL,
                       Name      VARCHAR(255),
                       Adresse   VARCHAR(255),
