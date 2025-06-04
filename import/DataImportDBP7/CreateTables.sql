@@ -12,7 +12,7 @@ CREATE TABLE Produkt (
 
 -- 2. Musik-CD als Spezialisierung von Produkt ohne Array-Attribute
 CREATE TABLE Musik_CD (
-                          ProduktNr         VARCHAR(50) PRIMARY KEY
+                          PNr         VARCHAR(50) PRIMARY KEY
                               REFERENCES Produkt(PNr)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
@@ -21,37 +21,37 @@ CREATE TABLE Musik_CD (
 
 -- Label als eigene Relation, da in XML-Datei sehr oft mehrere Labels vorkommen
 CREATE TABLE Label (
-                      ProduktNr   VARCHAR(50) NOT NULL
-                          REFERENCES Musik_CD(ProduktNr)
+                      PNr   VARCHAR(50) NOT NULL
+                          REFERENCES Musik_CD(PNr)
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
                       Labelname   VARCHAR(255) NOT NULL,
-                      PRIMARY KEY (ProduktNr, Labelname)
+                      PRIMARY KEY (PNr, Labelname)
 );
 
 -- 2a. Songs als eigene Relation
 CREATE TABLE Song (
-                      ProduktNr   VARCHAR(50) NOT NULL
-                          REFERENCES Musik_CD(ProduktNr)
+                      PNr   VARCHAR(50) NOT NULL
+                          REFERENCES Musik_CD(PNr)
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
                       Songtitel   TEXT       NOT NULL,
-                      PRIMARY KEY (ProduktNr, Songtitel)
+                      PRIMARY KEY (PNr, Songtitel)
 );
 
 -- 2b. Kuenstler als eigene Relation
 CREATE TABLE Kuenstler (
-                           ProduktNr    VARCHAR(50) NOT NULL
-                               REFERENCES Musik_CD(ProduktNr)
+                           PNr    VARCHAR(50) NOT NULL
+                               REFERENCES Musik_CD(PNr)
                                    ON DELETE CASCADE
                                    ON UPDATE CASCADE,
                            Kuenstlername TEXT      NOT NULL,
-                           PRIMARY KEY (ProduktNr, Kuenstlername)
+                           PRIMARY KEY (PNr, Kuenstlername)
 );
 
 -- 3. DVD als Spezialisierung von Produkt ohne Array-Attribute
 CREATE TABLE DVD (
-                     ProduktNr   VARCHAR(50) PRIMARY KEY
+                     PNr   VARCHAR(50) PRIMARY KEY
                          REFERENCES Produkt(PNr)
                              ON DELETE CASCADE
                              ON UPDATE CASCADE,
@@ -62,37 +62,37 @@ CREATE TABLE DVD (
 
 -- 3a. Creator als eigene Relation
 CREATE TABLE Creator (
-                         ProduktNr VARCHAR(50) NOT NULL
-                             REFERENCES DVD(ProduktNr)
+                         PNr VARCHAR(50) NOT NULL
+                             REFERENCES DVD(PNr)
                                  ON DELETE CASCADE
                                  ON UPDATE CASCADE,
                          Name      TEXT      NOT NULL,
-                         PRIMARY KEY (ProduktNr, Name)
+                         PRIMARY KEY (PNr, Name)
 );
 
 -- 3b. Actor als eigene Relation
 CREATE TABLE Actor (
-                       ProduktNr VARCHAR(50) NOT NULL
-                           REFERENCES DVD(ProduktNr)
+                       PNr VARCHAR(50) NOT NULL
+                           REFERENCES DVD(PNr)
                                ON DELETE CASCADE
                                ON UPDATE CASCADE,
                        Name      TEXT      NOT NULL,
-                       PRIMARY KEY (ProduktNr, Name)
+                       PRIMARY KEY (PNr, Name)
 );
 
 -- 3c. Director als eigene Relation
 CREATE TABLE Director (
-                          ProduktNr VARCHAR(50) NOT NULL
-                              REFERENCES DVD(ProduktNr)
+                          PNr VARCHAR(50) NOT NULL
+                              REFERENCES DVD(PNr)
                                   ON DELETE CASCADE
                                   ON UPDATE CASCADE,
                           Name      TEXT      NOT NULL,
-                          PRIMARY KEY (ProduktNr, Name)
+                          PRIMARY KEY (PNr, Name)
 );
 
 -- 4. Buch als Spezialisierung von Produkt ohne Array-Attribute
 CREATE TABLE Buch (
-                      ProduktNr         VARCHAR(50) PRIMARY KEY
+                      PNr         VARCHAR(50) PRIMARY KEY
                           REFERENCES Produkt(PNr)
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
@@ -103,20 +103,20 @@ CREATE TABLE Buch (
 );
 
 CREATE TABLE Buch_Verlag (
-                      ProduktNr VARCHAR(50),
+                      PNr VARCHAR(50),
                       Verlag VARCHAR(255),
-                      PRIMARY KEY (ProduktNr, Verlag),
-                      FOREIGN KEY (ProduktNr) REFERENCES Buch(ProduktNr) ON DELETE CASCADE ON UPDATE CASCADE
+                      PRIMARY KEY (PNr, Verlag),
+                      FOREIGN KEY (PNr) REFERENCES Buch(PNr) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- 4a. Autor als eigene Relation
 CREATE TABLE Autor (
-                       ProduktNr VARCHAR(50) NOT NULL
-                           REFERENCES Buch(ProduktNr)
+                       PNr VARCHAR(50) NOT NULL
+                           REFERENCES Buch(PNr)
                                ON DELETE CASCADE
                                ON UPDATE CASCADE,
                        Name      TEXT      NOT NULL,
-                       PRIMARY KEY (ProduktNr, Name)
+                       PRIMARY KEY (PNr, Name)
 );
 
 -- 5. Kategorien
@@ -130,7 +130,7 @@ CREATE TABLE Kategorie (
 );
 
 CREATE TABLE Produkt_Kategorie (
-                                   ProduktNr   VARCHAR(50) NOT NULL
+                                   PNr   VARCHAR(50) NOT NULL
                                        REFERENCES Produkt(PNr)
                                            ON DELETE CASCADE
                                            ON UPDATE CASCADE,
@@ -138,7 +138,7 @@ CREATE TABLE Produkt_Kategorie (
                                        REFERENCES Kategorie(KategorieID)
                                            ON DELETE CASCADE
                                            ON UPDATE CASCADE,
-                                   PRIMARY KEY (ProduktNr, KategorieID)
+                                   PRIMARY KEY (PNr, KategorieID)
 );
 
 -- 6. Filialen und Angebote
@@ -151,7 +151,7 @@ CREATE TABLE Filiale (
 
 CREATE TABLE Angebot (
                          AngebotID SERIAL PRIMARY KEY,
-                         ProduktNr VARCHAR(50) NOT NULL
+                         PNr VARCHAR(50) NOT NULL
                              REFERENCES Produkt(PNr)
                                  ON DELETE CASCADE
                                  ON UPDATE CASCADE,
@@ -175,7 +175,7 @@ CREATE TABLE Kauf (
                           REFERENCES Kunde(Nutzername)
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
-                      ProduktNr VARCHAR(50) NOT NULL
+                      PNr VARCHAR(50) NOT NULL
                           REFERENCES Produkt(PNr)
                               ON DELETE CASCADE
                               ON UPDATE CASCADE,
@@ -191,7 +191,7 @@ CREATE TABLE Kauf (
 
 CREATE TABLE Rezension (
                            RezensionsID SERIAL UNIQUE NOT NULL,
-                           ProduktNr VARCHAR(50) NOT NULL
+                           PNr VARCHAR(50) NOT NULL
                                REFERENCES Produkt(PNr)
                                    ON DELETE CASCADE
                                    ON UPDATE CASCADE,
@@ -206,15 +206,15 @@ CREATE TABLE Rezension (
 
 -- 8. Produkt-Ähnlichkeiten
 CREATE TABLE Produkt_Aehnlichkeit (
-                                      ProduktNr1 VARCHAR(50) NOT NULL
+                                      PNr1 VARCHAR(50) NOT NULL
                                           REFERENCES Produkt(PNr)
                                               ON DELETE CASCADE
                                               ON UPDATE CASCADE,
-                                      ProduktNr2 VARCHAR(50) NOT NULL
+                                      PNr2 VARCHAR(50) NOT NULL
                                           REFERENCES Produkt(PNr)
                                               ON DELETE CASCADE
                                               ON UPDATE CASCADE,
-                                      PRIMARY KEY (ProduktNr1, ProduktNr2)
+                                      PRIMARY KEY (PNr1, PNr2)
 );
 
 -- 9. ErrorData

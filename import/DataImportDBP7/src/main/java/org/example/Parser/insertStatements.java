@@ -107,8 +107,8 @@ public class insertStatements {
         }
     }
 
-    protected static void insertBook(Connection con, String produktnr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege, NodeList autoren) throws Exception {
-        String insertBookSql = "INSERT INTO buch (produktnr, isbn, seitenzahl, erscheinungsdatum, auflage) VALUES (?,?,?,?,?)";
+    protected static void insertBook(Connection con, String PNr, String isbn, Integer seitenzahl, String erscheinungsdatum, String auflage, NodeList verlaege, NodeList autoren) throws Exception {
+        String insertBookSql = "INSERT INTO buch (PNr, isbn, seitenzahl, erscheinungsdatum, auflage) VALUES (?,?,?,?,?)";
 
         verlaege = (NodeList) removeDuplicates(con, verlaege, "publisher");
         autoren = (NodeList) removeDuplicates(con, autoren, "author");
@@ -126,7 +126,7 @@ public class insertStatements {
 
 
             PreparedStatement stmt = con.prepareStatement(insertBookSql);
-            stmt.setString(1, produktnr);
+            stmt.setString(1, PNr);
 
             if (isbn.isEmpty()) {
                 throw new AttributeUndefinedException("Book","ISBN");
@@ -167,7 +167,7 @@ public class insertStatements {
 
                             // Only insert non-empty publisher names
                             if (verlagName != null && !verlagName.isEmpty()) {
-                                insertVerlagBuch(con, produktnr, verlagName);
+                                insertVerlagBuch(con, PNr, verlagName);
                             }
                         }
                     } catch (Exception e) {
@@ -195,7 +195,7 @@ public class insertStatements {
 
                             // Only insert non-empty publisher names
                             if (autorName != null && !autorName.isEmpty()) {
-                                insertBuchAutor(con, produktnr, autorName);
+                                insertBuchAutor(con, PNr, autorName);
                             }
                         }
                     } catch (Exception e) {
@@ -211,12 +211,12 @@ public class insertStatements {
         }
     }
 
-    protected static void insertVerlagBuch(Connection con, String produktnr, String verlag) throws Exception {
+    protected static void insertVerlagBuch(Connection con, String PNr, String verlag) throws Exception {
 
-        String insertVerlagBuchSql = "INSERT INTO buch_verlag (Produktnr, verlag) VALUES (?,?)";
+        String insertVerlagBuchSql = "INSERT INTO buch_verlag (PNr, verlag) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertVerlagBuchSql);
-            stmt.setString(1, produktnr);
+            stmt.setString(1, PNr);
             stmt.setString(2, verlag);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -224,12 +224,12 @@ public class insertStatements {
         }
     }
 
-    protected static void insertBuchAutor(Connection con, String produktnr, String autor) throws Exception {
+    protected static void insertBuchAutor(Connection con, String PNr, String autor) throws Exception {
 
-        String insertBuchAutorSql = "INSERT INTO Autor (Produktnr, Name) VALUES (?,?)";
+        String insertBuchAutorSql = "INSERT INTO Autor (PNr, Name) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertBuchAutorSql);
-            stmt.setString(1, produktnr);
+            stmt.setString(1, PNr);
             stmt.setString(2, autor);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -237,12 +237,12 @@ public class insertStatements {
         }
     }
 
-    protected static void insertMusic(Connection con, String produktnr, String erscheinungsdatum, NodeList trackList, NodeList artists, NodeList labels) throws Exception {
+    protected static void insertMusic(Connection con, String PNr, String erscheinungsdatum, NodeList trackList, NodeList artists, NodeList labels) throws Exception {
 
         artists = (NodeList) removeDuplicates(con, artists, "artist");
         labels = (NodeList) removeDuplicates(con, labels, "label");
 
-        String insertMusicSql = "INSERT INTO musik_cd (produktnr, erscheinungsdatum) VALUES (?,?)";
+        String insertMusicSql = "INSERT INTO musik_cd (PNr, erscheinungsdatum) VALUES (?,?)";
 
         try {
             //Sanity checks
@@ -255,7 +255,7 @@ public class insertStatements {
             }
 
             PreparedStatement stmt = con.prepareStatement(insertMusicSql);
-            stmt.setString(1, produktnr);
+            stmt.setString(1, PNr);
 
             if (!erscheinungsdatum.isEmpty()) {
                 stmt.setDate(2, Date.valueOf(erscheinungsdatum));
@@ -284,7 +284,7 @@ public class insertStatements {
 
                             // Only insert non-empty artist names
                             if (artistName != null && !artistName.isEmpty()) {
-                                insertMusicArtist(con, produktnr, artistName);
+                                insertMusicArtist(con, PNr, artistName);
                             }
                         }
                     } catch (Exception e) {
@@ -312,7 +312,7 @@ public class insertStatements {
 
                             // Only insert non-empty label names
                             if (labelName != null && !labelName.isEmpty()) {
-                                insertMusicLabel(con, produktnr, labelName);
+                                insertMusicLabel(con, PNr, labelName);
                             }
                         }
                     } catch (Exception e) {
@@ -329,7 +329,7 @@ public class insertStatements {
                         // Only insert non-empty tracks
                         if (title != null && !title.isEmpty()) {
                             try {
-                                insertTrack(con, produktnr, title);
+                                insertTrack(con, PNr, title);
                             } catch (Exception e) {
                                 throw e;
                             }
@@ -345,12 +345,12 @@ public class insertStatements {
 
     }
 
-    protected static void insertMusicArtist(Connection con, String produktnr, String artist) throws Exception {
+    protected static void insertMusicArtist(Connection con, String PNr, String artist) throws Exception {
 
-        String insertMusicArtistSql = "INSERT INTO kuenstler (Produktnr, kuenstlername) VALUES (?,?)";
+        String insertMusicArtistSql = "INSERT INTO kuenstler (PNr, kuenstlername) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
-            stmt.setString(1, produktnr);
+            stmt.setString(1, PNr);
             stmt.setString(2, artist);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -358,12 +358,12 @@ public class insertStatements {
         }
     }
 
-    protected static void insertMusicLabel(Connection con, String produktnr, String label) throws Exception {
+    protected static void insertMusicLabel(Connection con, String PNr, String label) throws Exception {
 
-        String insertMusicArtistSql = "INSERT INTO label (Produktnr, labelname) VALUES (?,?)";
+        String insertMusicArtistSql = "INSERT INTO label (PNr, labelname) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
-            stmt.setString(1, produktnr);
+            stmt.setString(1, PNr);
             stmt.setString(2, label);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -371,12 +371,12 @@ public class insertStatements {
         }
     }
 
-    protected static void insertTrack(Connection con, String produktnr, String songtitel) throws Exception {
+    protected static void insertTrack(Connection con, String PNr, String songtitel) throws Exception {
         //TODO: ADD SANITY CHECKS
-        String insertTrackSql = "INSERT INTO song (Produktnr, songtitel) VALUES (?,?)";
+        String insertTrackSql = "INSERT INTO song (PNr, songtitel) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertTrackSql);
-            stmt.setString(1, produktnr);
+            stmt.setString(1, PNr);
             stmt.setString(2, songtitel);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -386,7 +386,7 @@ public class insertStatements {
 
     protected static void insertDVD(Connection con, String asin, String format, Integer regioncode, Integer runningtime, NodeList actors, NodeList creators, NodeList directors) throws Exception {
 
-        String insertDVDSql = "INSERT INTO dvd (produktnr, format, regioncode, laufzeit) VALUES (?,?,?,?)";
+        String insertDVDSql = "INSERT INTO dvd (PNr, format, regioncode, laufzeit) VALUES (?,?,?,?)";
 
         actors = (NodeList) removeDuplicates(con, actors, "actor");
         creators = (NodeList) removeDuplicates(con, creators, "creator");
@@ -426,7 +426,7 @@ public class insertStatements {
         }
     }
 
-    private static void insertPeopleFromNodeList(Connection con, String tableName, String produktnr, NodeList people) throws Exception {
+    private static void insertPeopleFromNodeList(Connection con, String tableName, String PNr, NodeList people) throws Exception {
 
         if (people == null) return;
 
@@ -444,16 +444,16 @@ public class insertStatements {
                 }
 
                 if (name != null && !name.isEmpty()) {
-                    insertPersonWithRole(con, tableName, produktnr, name);
+                    insertPersonWithRole(con, tableName, PNr, name);
                 }
             }
         }
     }
 
-    protected static void insertPersonWithRole(Connection con, String tableName, String produktnr, String name) throws Exception {
-        String sql = "INSERT INTO " + tableName + " (produktnr, name) VALUES (?, ?)";
+    protected static void insertPersonWithRole(Connection con, String tableName, String PNr, String name) throws Exception {
+        String sql = "INSERT INTO " + tableName + " (PNr, name) VALUES (?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, produktnr);
+            stmt.setString(1, PNr);
             stmt.setString(2, name);
             stmt.executeUpdate();
         } catch (Exception e) {
@@ -474,21 +474,21 @@ public class insertStatements {
                 }
             }
         } catch (Exception e) {
-            handleError(con, "produkt_aehnlichkeit", "produktnr2", e);
+            handleError(con, "produkt_aehnlichkeit", "PNr2", e);
             return;
         }
 
         // Step 2: Compare titles titleFromSource and actual title of item with PNR "simAsin"
         if (titleFromSource != null && actualTitle != null) {
             if (!titlesAreSimilar(titleFromSource.trim(), actualTitle.trim())) {
-                handleError(con,"produkt_aehnlichkeit","produktnr2", new Exception("Inhaltlicher Fehler: Aehnliches Produkt mit PNR " + simAsin + " und Titel " + titleFromSource + " hat in DB den Titel " + actualTitle));
+                handleError(con,"produkt_aehnlichkeit","PNr2", new Exception("Inhaltlicher Fehler: Aehnliches Produkt mit PNR " + simAsin + " und Titel " + titleFromSource + " hat in DB den Titel " + actualTitle));
                 return;
             }
         }
 
         // Step 3: Insert into produkt_aehnlichkeit
 
-        String insertSimilarsSql = "INSERT INTO produkt_aehnlichkeit (produktnr1, produktnr2) VALUES (?,?)";
+        String insertSimilarsSql = "INSERT INTO produkt_aehnlichkeit (PNr1, PNr2) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertSimilarsSql);
             stmt.setString(1, mainAsin);
@@ -497,20 +497,20 @@ public class insertStatements {
         } catch (Exception e) {
             String attribut = "UNKNOWN";
             if (e.getMessage().contains("pkey")) {
-                attribut = "PK (produktnr1, produktnr2)";
+                attribut = "PK (PNr1, PNr2)";
                 //Doppelter Schluesselwert sollte nicht als Fehler gelten, da Relation symmetrisch ist, deswegen KEIN error-handling
                 return;
-            } else if (e.getMessage().contains("produktnr1")) {
-                attribut = "produktnr1";
-            } else if (e.getMessage().contains("produktnr2")) {
-                attribut = "produktnr2";
+            } else if (e.getMessage().contains("PNr1")) {
+                attribut = "PNr1";
+            } else if (e.getMessage().contains("PNr2")) {
+                attribut = "PNr2";
             }
             handleError(con,"produkt_aehnlichkeit",attribut,e);
         }
     }
 
     protected static void insertAngebot(Connection con, String asin, String state, Double price, String currency, Integer shopID) throws Exception{
-        String insertAngebotSql = "INSERT INTO angebot (produktnr, filialeid, zustand, preis, waehrung) VALUES (?,?,?,?,?)";
+        String insertAngebotSql = "INSERT INTO angebot (PNr, filialeid, zustand, preis, waehrung) VALUES (?,?,?,?,?)";
 
         try {
             //Sanity checks
@@ -527,7 +527,7 @@ public class insertStatements {
             stmt.executeUpdate();
         } catch (Exception e) {
             if (e.getMessage().contains("fkey")) {
-                handleError(con, "Angebot", "ProduktNr", e);
+                handleError(con, "Angebot", "PNr", e);
             } else {
                 handleError(con, "Angebot", "UNKNOWN", e);
             }
@@ -535,16 +535,16 @@ public class insertStatements {
     }
 
 
-    protected static void insertRezension(Connection con, String produktnr, String username, String bewertung, String rezension, String entityname) throws Exception {
+    protected static void insertRezension(Connection con, String PNr, String username, String bewertung, String rezension, String entityname) throws Exception {
         String insertRezensionSql =
-                "INSERT INTO rezension (produktnr, nutzername, bewertung, rezension) VALUES (?, ?, ?, ?)";
+                "INSERT INTO rezension (PNr, nutzername, bewertung, rezension) VALUES (?, ?, ?, ?)";
         String insertErrorDataCSV =
                 "INSERT INTO ErrorData (entityname, fehlermeldung, fehlerattribut) " +
                         "VALUES (?, ?, ?)";
         // 3) Rezension einfügen
         try {
             PreparedStatement stmtRezension = con.prepareStatement(insertRezensionSql);
-            stmtRezension.setString(1, produktnr);
+            stmtRezension.setString(1, PNr);
             stmtRezension.setString(2, username);
             stmtRezension.setInt(3, Integer.parseInt(bewertung));
             stmtRezension.setString(4, rezension);

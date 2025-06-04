@@ -25,7 +25,7 @@ public class CSVRezensionParser {
             String[] line;
             while ((line = reader.readNext()) != null) {
                 String username = line[4];
-                String produktnr = line[0];
+                String PNr = line[0];
                 String bewertung = line[1];
                 String rezension = line[6];
 
@@ -41,10 +41,10 @@ public class CSVRezensionParser {
 
                     // 3) Rezension einfügen
                     try {
-                        insertRezension(con, produktnr, username, bewertung, rezension, "Rezension");
+                        insertRezension(con, PNr, username, bewertung, rezension, "Rezension");
                     } catch (Exception e) {
                         // Fehler beim Einfügen der Rezension, in ErrorDataCSV speichern
-                        String errorMessage = "Rezension insert failed for product=" + produktnr +
+                        String errorMessage = "Rezension insert failed for product=" + PNr +
                                 ", user=" + username + ": " + e.getMessage();
                         System.out.println("\u001B[33m[WARNING] Error handler detected error, details: \u001B[0m" + errorMessage);
                     }

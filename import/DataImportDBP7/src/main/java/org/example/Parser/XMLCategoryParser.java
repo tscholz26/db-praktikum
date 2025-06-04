@@ -145,16 +145,16 @@ public class XMLCategoryParser {
             throw new Exception("Category ID not found for categoryname: " + categoryName);
         }
 
-        String sql = "INSERT INTO Produkt_Kategorie (ProduktNr, KategorieID) VALUES (?, ?)";
+        String sql = "INSERT INTO Produkt_Kategorie (PNr, KategorieID) VALUES (?, ?)";
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, item);
             stmt.setInt(2, categoryId);
             stmt.executeUpdate();
         } catch (Exception e) {
-            // Optional: Ignore duplicate insert (if ProduktNr/KategorieID already exists)
+            // Optional: Ignore duplicate insert (if PNr/KategorieID already exists)
             if (!(e.getMessage().contains("pkey") || e.getMessage().contains("doppelter Schl"))) {
                 if (e.getMessage().contains("fkey")) {
-                    handleError(con, "Produkt_Kategorie", "ProduktNr", e);
+                    handleError(con, "Produkt_Kategorie", "PNr", e);
                 } else {
                     handleError(con, "Produkt_Kategorie", "UNKNOWN", e);
                 }

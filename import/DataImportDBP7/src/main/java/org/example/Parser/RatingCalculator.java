@@ -18,9 +18,9 @@ public class RatingCalculator {
                 UPDATE public.produkt p
                     SET rating = r.rating
                     FROM (
-                            SELECT produktnr AS pnr, AVG(bewertung) AS rating
+                            SELECT PNr, AVG(bewertung) AS rating
                             FROM public.rezension
-                            GROUP BY produktnr
+                            GROUP BY PNr
                     ) r
                 WHERE p.pnr = r.pnr;
         """;

@@ -421,8 +421,8 @@ public class XMLStoreParser {
                             }
 
                         } catch (Exception e) {
-                            if (e.getMessage().contains("angebot_produktnr_fkey")) {
-                                handleError(con, "Angebot", "Produktnummer", new Exception("Fremdschluesselbedingung verletzt, Angebot konnte nicht hinzugefügt werden, Produkt mit Produktnr. " + asin + " existiert nicht in der Datenbank"));
+                            if (e.getMessage().contains("angebot_PNr_fkey")) {
+                                handleError(con, "Angebot", "Produktnummer", new Exception("Fremdschluesselbedingung verletzt, Angebot konnte nicht hinzugefügt werden, Produkt mit PNr. " + asin + " existiert nicht in der Datenbank"));
                             } else {
                                 handleError(con, "Angebot", "UNKNOWN", e);
                             }
