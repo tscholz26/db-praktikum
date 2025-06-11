@@ -233,3 +233,24 @@ CREATE INDEX IF NOT EXISTS idx_kategorie_name ON kategorie (name);
 CREATE INDEX IF NOT EXISTS idx_filiale_name ON filiale (name);
 CREATE INDEX IF NOT EXISTS idx_angebot_preis ON angebot (preis);
 CREATE INDEX IF NOT EXISTS idx_rezension_bewertung ON rezension (bewertung);
+
+
+
+-- CREATE TRIGGERS
+CREATE OR REPLACE FUNCTION update_produkt_rating() RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE Produkt
+    SET Rating = (
+        SELECT ROUND(AVG(Bewertung)::numeric, 2)
+        FROM Rezension
+        WHERE PNr = NEW.PNr
+    )
+    WHERE PNr = NEW.PNr;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER rezension_rating_update
+    AFTER INSERT OR UPDATE OR DELETE ON Rezension
+    FOR EACH ROW
+EXECUTE FUNCTION update_produkt_rating();
