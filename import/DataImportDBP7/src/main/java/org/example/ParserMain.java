@@ -31,6 +31,7 @@ public class ParserMain {
 
             try{
                 initDB(con, "CreateTables.sql");
+                initTrigger(con, "Trigger.sql");
             } catch (Exception e) {
                 System.err.println("[ERROR]Error during database initialization: " + e.getMessage());
                 e.printStackTrace();
@@ -80,9 +81,33 @@ public class ParserMain {
         // SQL ausführen
         try (Statement stmt = con.createStatement()) {
             stmt.execute(sql);
-            System.out.println("\u001B[32m[SUCCESS] Initialisierung erfolgreich.\u001B[0m");
+            System.out.println("\u001B[32m[SUCCESS] DB-Initialisierung erfolgreich.\u001B[0m");
         } catch (SQLException e) {
             throw new SQLException("Fehler beim Ausführen der SQL-Initialisierung: " + e.getMessage(), e);
+        }
+    }
+
+    public static void initTrigger(Connection con, String sqlFilePath) throws Exception {
+        StringBuilder sqlBuilder = new StringBuilder();
+
+        // SQL-Datei einlesen
+        try (BufferedReader reader = new BufferedReader(new FileReader(sqlFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sqlBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            throw new IOException("Fehler beim Lesen der SQL-Datei: " + e.getMessage(), e);
+        }
+
+        String sql = sqlBuilder.toString();
+
+        // SQL ausführen
+        try (Statement stmt = con.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("\u001B[32m[SUCCESS] Triggerinitialisierung erfolgreich.\u001B[0m");
+        } catch (SQLException e) {
+            throw new SQLException("Fehler beim Ausführen der Trigger-Initialisierung: " + e.getMessage(), e);
         }
     }
 }
