@@ -233,3 +233,8 @@ CREATE INDEX IF NOT EXISTS idx_kategorie_name ON kategorie (name);
 CREATE INDEX IF NOT EXISTS idx_filiale_name ON filiale (name);
 CREATE INDEX IF NOT EXISTS idx_angebot_preis ON angebot (preis);
 CREATE INDEX IF NOT EXISTS idx_rezension_bewertung ON rezension (bewertung);
+
+CREATE INDEX IF NOT EXISTS idx_produkt_kategorie_pnr ON Produkt_Kategorie(PNr);
+CREATE INDEX IF NOT EXISTS idx_produkt_kategorie_kategorieid ON Produkt_Kategorie(KategorieID);
+CREATE INDEX IF NOT EXISTS idx_kategorie_kategorieid ON Kategorie(KategorieID);
+CREATE INDEX IF NOT EXISTS idx_kategorie_oberkategorieid ON Kategorie(OberkategorieID);
