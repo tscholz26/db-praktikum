@@ -45,8 +45,8 @@ CREATE TABLE Kuenstler (
                                REFERENCES Musik_CD(PNr)
                                    ON DELETE CASCADE
                                    ON UPDATE CASCADE,
-                           Kuenstlername TEXT      NOT NULL,
-                           PRIMARY KEY (PNr, Kuenstlername)
+                           Name TEXT      NOT NULL,
+                           PRIMARY KEY (PNr, Name)
 );
 
 -- 3. DVD als Spezialisierung von Produkt ohne Array-Attribute

@@ -347,7 +347,7 @@ public class insertStatements {
 
     protected static void insertMusicArtist(Connection con, String PNr, String artist) throws Exception {
 
-        String insertMusicArtistSql = "INSERT INTO kuenstler (PNr, kuenstlername) VALUES (?,?)";
+        String insertMusicArtistSql = "INSERT INTO kuenstler (PNr, name) VALUES (?,?)";
         try {
             PreparedStatement stmt = con.prepareStatement(insertMusicArtistSql);
             stmt.setString(1, PNr);
