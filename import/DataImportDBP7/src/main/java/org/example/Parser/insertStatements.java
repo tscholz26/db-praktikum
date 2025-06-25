@@ -514,7 +514,7 @@ public class insertStatements {
 
         try {
             //Sanity checks
-            if (price <= 0.5 || price > 200) {
+            if (price < 0 || price > 200) {
                 throw new AttributeInvalidException("Angebot", "Preis", String.valueOf(price));
             };
 

@@ -36,6 +36,8 @@ public class XMLStoreParser {
         parseAngebot(con, "data/dresden.xml");
         parseAngebot(con, "data/leipzig_transformed.xml");
 
+        addNullAngebote(con, "data/dresden.xml");
+        addNullAngebote(con, "data/leipzig_transformed.xml");
 
 
     }
@@ -437,6 +439,66 @@ public class XMLStoreParser {
 
         System.out.println("\u001B[32m[SUCCESS] Parsed available products and prices from " + filepath + " successfully.\u001B[0m");
     }
+
+    public static void addNullAngebote(Connection con, String filepath) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(filepath);
+            doc.getDocumentElement().normalize();
+
+            NodeList shops = doc.getElementsByTagName("shop");
+
+            for (int i = 0; i < shops.getLength(); i++) {
+                Element shop = (Element) shops.item(i);
+                String shopName = shop.getAttribute("name");
+
+                // Shop-ID holen
+                Integer shopId = insertStatements.getShopIdByName(con, shopName);
+                if (shopId == null) {
+                    throw new AttributeInvalidException("Angebot", "Name des Shops (existiert nicht)", shopName);
+                }
+
+                NodeList items = shop.getElementsByTagName("item");
+
+                for (int j = 0; j < items.getLength(); j++) {
+                    Element item = (Element) items.item(j);
+                    String asin = item.getAttribute("asin");
+
+                    NodeList priceNodes = item.getElementsByTagName("price");
+
+                    boolean hasValidPrice = false;
+                    for (int k = 0; k < priceNodes.getLength(); k++) {
+                        String priceText = priceNodes.item(k).getTextContent().trim();
+                        if (!priceText.isEmpty()) {
+                            hasValidPrice = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasValidPrice) {
+                        try {
+                            // Versuch, 0-Angebot einzufügen
+                            insertStatements.insertAngebot(con, asin, "neu", 0.0, "EUR", shopId);
+                            System.out.println("[INFO] Null-Angebot für Produkt " + asin + " in Shop " + shopName + " eingefügt.");
+                        } catch (Exception e) {
+                            if (e.getMessage().contains("angebot_PNr_fkey")) {
+                                handleError(con, "Angebot", "Produktnummer", new Exception("Produkt " + asin + " existiert nicht in DB."));
+                            } else {
+                                handleError(con, "Angebot", "UNKNOWN", e);
+                            }
+                        }
+                    }
+                }
+            }
+
+            System.out.println("\u001B[32m[SUCCESS] Alle fehlenden Angebote mit Preis = 0 ergänzt.\u001B[0m");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 
