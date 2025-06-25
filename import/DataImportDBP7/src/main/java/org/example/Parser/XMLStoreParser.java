@@ -36,10 +36,6 @@ public class XMLStoreParser {
         parseAngebot(con, "data/dresden.xml");
         parseAngebot(con, "data/leipzig_transformed.xml");
 
-        addNullAngebote(con, "data/dresden.xml");
-        addNullAngebote(con, "data/leipzig_transformed.xml");
-
-
     }
 
     private static void parseStores(Connection con, String filepath) {
@@ -383,77 +379,7 @@ public class XMLStoreParser {
                 Element shop = (Element) shops.item(i);
                 String shopName = shop.getAttribute("name");
 
-                //get shop ID from Filiale Table in DB
-                Integer shopId = insertStatements.getShopIdByName(con, shopName);
-                if (shopId == null) {
-                    throw new AttributeInvalidException("Angebot","Name des Shops (existiert nicht)",shopName);
-                }
-
-                NodeList items = shop.getElementsByTagName("item");
-
-                for (int j = 0; j < items.getLength(); j++) {
-                    Element item = (Element) items.item(j);
-                    String asin = item.getAttribute("asin");
-
-                    //make sure items can have several <price> nodes
-                    NodeList priceNodes = item.getElementsByTagName("price");
-
-                    for (int k = 0; k < priceNodes.getLength(); k++) {
-
-                        Element price = (Element) priceNodes.item(k);
-
-                        String state = price.getAttribute("state");
-                        String multText = price.getAttribute("mult");
-                        String currency = price.getAttribute("currency");
-
-                        //List of currencies is incomplete for now
-                        String[] possibleCurrencies = {"EUR", "USD", "GBP", "CHF", "JPY", "CNY", "AUD"};
-                        if (!Arrays.asList(possibleCurrencies).contains(currency) && !currency.isEmpty()) {
-                            handleError(con,"Angebot", "Waehrung",new AttributeInvalidException("Angebot","Waehrung",currency));
-                            continue;
-                        }
-
-                        String priceText = price.getTextContent().trim();
-
-                        try {
-                            if (!priceText.isEmpty()) {
-                                //nur wenn preis nicht leer ist, existiert ein angebot und der datensatz muss in der DB gespeichert werden
-                                Double priceValue = Double.parseDouble(priceText) * Double.parseDouble(multText);
-                                insertStatements.insertAngebot(con, asin, state, priceValue, currency, shopId);
-                            }
-
-                        } catch (Exception e) {
-                            if (e.getMessage().contains("angebot_PNr_fkey")) {
-                                handleError(con, "Angebot", "Produktnummer", new Exception("Fremdschluesselbedingung verletzt, Angebot konnte nicht hinzugefügt werden, Produkt mit PNr. " + asin + " existiert nicht in der Datenbank"));
-                            } else {
-                                handleError(con, "Angebot", "UNKNOWN", e);
-                            }
-                        }
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("\u001B[32m[SUCCESS] Parsed available products and prices from " + filepath + " successfully.\u001B[0m");
-    }
-
-    public static void addNullAngebote(Connection con, String filepath) {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(filepath);
-            doc.getDocumentElement().normalize();
-
-            NodeList shops = doc.getElementsByTagName("shop");
-
-            for (int i = 0; i < shops.getLength(); i++) {
-                Element shop = (Element) shops.item(i);
-                String shopName = shop.getAttribute("name");
-
-                // Shop-ID holen
+                // get shop ID from Filiale Table
                 Integer shopId = insertStatements.getShopIdByName(con, shopName);
                 if (shopId == null) {
                     throw new AttributeInvalidException("Angebot", "Name des Shops (existiert nicht)", shopName);
@@ -466,37 +392,64 @@ public class XMLStoreParser {
                     String asin = item.getAttribute("asin");
 
                     NodeList priceNodes = item.getElementsByTagName("price");
+                    boolean priceInserted = false;
 
-                    boolean hasValidPrice = false;
                     for (int k = 0; k < priceNodes.getLength(); k++) {
-                        String priceText = priceNodes.item(k).getTextContent().trim();
-                        if (!priceText.isEmpty()) {
-                            hasValidPrice = true;
-                            break;
+                        Element price = (Element) priceNodes.item(k);
+
+                        String state = price.getAttribute("state");
+                        String multText = price.getAttribute("mult");
+                        String currency = price.getAttribute("currency");
+                        String priceText = price.getTextContent().trim();
+
+                        String[] possibleCurrencies = {"EUR", "USD", "GBP", "CHF", "JPY", "CNY", "AUD"};
+                        boolean validCurrency = Arrays.asList(possibleCurrencies).contains(currency);
+                        if (!validCurrency && !currency.isEmpty()) {
+                            handleError(con, "Angebot", "Waehrung", new AttributeInvalidException("Angebot", "Waehrung ungültig", currency));
+                            // fallback with currency = EUR
+                            currency = "EUR";
+                        }
+
+                        try {
+                            if (!priceText.isEmpty()) {
+                                double priceValue = Double.parseDouble(priceText) * Double.parseDouble(multText);
+
+                                if (priceValue < 0) {
+                                    handleError(con, "Angebot", "Preis", new AttributeInvalidException("Angebot", "Preis ist negativ: ",String.valueOf(priceValue)));
+                                    insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
+                                } else {
+                                    insertStatements.insertAngebot(con, asin, state, priceValue, currency, shopId);
+                                }
+
+                                priceInserted = true;
+                            }
+                        } catch (Exception e) {
+                            handleError(con, "Angebot", "Preis", e);
+                            try {
+                                insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
+                                priceInserted = true;
+                            } catch (Exception fallbackEx) {
+                                handleError(con, "Angebot", "Fallback Insert", fallbackEx);
+                            }
                         }
                     }
 
-                    if (!hasValidPrice) {
+                    // Fallback if no price inserted at all
+                    if (!priceInserted) {
                         try {
-                            // Versuch, 0-Angebot einzufügen
                             insertStatements.insertAngebot(con, asin, "neu", 0.0, "EUR", shopId);
-                            System.out.println("[INFO] Null-Angebot für Produkt " + asin + " in Shop " + shopName + " eingefügt.");
-                        } catch (Exception e) {
-                            if (e.getMessage().contains("angebot_PNr_fkey")) {
-                                handleError(con, "Angebot", "Produktnummer", new Exception("Produkt " + asin + " existiert nicht in DB."));
-                            } else {
-                                handleError(con, "Angebot", "UNKNOWN", e);
-                            }
+                        } catch (Exception fallbackEx) {
+                            handleError(con, "Angebot", "Fallback Null-Angebot", fallbackEx);
                         }
                     }
                 }
             }
 
-            System.out.println("\u001B[32m[SUCCESS] Alle fehlenden Angebote mit Preis = 0 ergänzt.\u001B[0m");
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("\u001B[32m[SUCCESS] Parsed available products and prices from " + filepath + " successfully.\u001B[0m");
     }
 
 
