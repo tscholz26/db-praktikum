@@ -1,0 +1,15 @@
+1. Anfrage um alle Bewertungen eines Artikels (pnr = B00005RSCH) zu bekommen
+select bewertung
+from rezension
+where pnr = 'B00005RSCH'
+
+2. Anfrage um durschnittliche Bewertung des Artikels mit pnr = B00005RSCH zu bekommen
+select rating
+from produkt
+where pnr = 'B00005RSCH'
+
+3. Anfrage um eine Bewertung für diesen Artikel hinzuzufügen (Im Beispiel mit Bewertung 3)
+insert into rezension (pnr, nutzername, bewertung)
+values('B00005RSCH', 'guest', 3)
+
+2. Anfrage wieder ausführen, um neues geupdatetes Durschnittsrating für dieses Produkt zu bekommen

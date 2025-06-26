@@ -1,0 +1,120 @@
+1. Anfrage:
+select
+    (select count(*) as Anzahl_Bücher from buch),
+    (select count(*) as Anzahl_DVDs from dvd),
+    (select count(*) as Anzahl_MusikCD from musik_cd)
+
+
+2. Anfrage:
+create view top_5_produkte_je_typ(typ, pnr, rating)as
+(
+	select 'buch' as typ, p.pnr, p.rating
+	from buch b join produkt p on b.pnr = p.pnr
+	where p.rating is not null
+	order by p.rating desc
+	limit 5
+) union
+(
+	select 'dvd' as typ, p.pnr, p.rating
+	from dvd join produkt p on dvd.pnr = p.pnr
+	where p.rating is not null
+	order by p.rating desc
+	limit 5
+) union
+(	
+	select 'Musik_CD' as typ, p.pnr, p.rating
+	from musik_cd m join produkt p on m.pnr = p.pnr
+	where p.rating is not null
+	order by p.rating desc
+	limit 5
+);
+
+Select typ, pnr, rating
+from top_5_produkte_je_typ
+
+Anmerkung: Gleiche durchschnittliche Ratings werden nicht berücksichtigt, d.h. es könnte noch mehrere Produkte mit gleich gutem Rating geben, die aber nicht zurückgegeben werden. Sollten alle Produkte der 5 bestbewertesten Produkte jedes Typs zurückgegeben werden, würde sich eine Anfrage über dense_rank() anbieten
+
+
+3. Anfrage:
+select pnr, preis
+from angebot
+where preis = 0.00
+
+!!! NULL werte für preis???
+
+
+
+4. Anfrage:
+select pnr, max(preis) as maximalpreis, min(preis) as minimalpreis
+from angebot a
+group by pnr
+having max(preis) > (min(preis) * 2)
+
+
+5. Anfrage:
+select pnr, max(bewertung) as beste_bewertung, min(bewertung) as schlechteste_bewertung
+from rezension
+group by pnr
+having max(bewertung) = 5 and min(bewertung) = 1
+
+6. Anfrage:
+select p.anzahl_verschiedener_produkte - r.anzahl_verschiedener_produkte_mit_rezension as anzahl_produkte_ohne_rezension
+from (select count(distinct pnr) as anzahl_verschiedener_produkte from produkt) as p,
+	 (select count(distinct pnr) as anzahl_verschiedener_produkte_mit_rezension from rezension) as r
+
+7. Anfrage:
+select nutzername, count(rezensionsid)
+from rezension
+where nutzername <> 'guest'
+group by nutzername
+having count(rezensionsid) > 9
+
+8. Anfrage:
+select distinct a.name
+from autor a
+where a.name in (select ac.name from actor ac)
+or a.name in (select c.name from creator c)
+or a.name in (select d.name from director d)
+or a.name in (select k.name from kuenstler k)
+order by 1 asc
+
+
+9. Anfrage:
+select round(avg(anzahl_songs)) as durschnittliche_songanzahl
+from (select count(*) as anzahl_songs
+	  from song 
+	  group by pnr)
+
+10. Anfrage (Rekursion):
+
+
+11. Anfrage:
+select pnr
+from angebot
+group by pnr
+having count(distinct filialeid) = (select count(*) from filiale)
+
+12. Anfrage:
+with produkte_in_allen_filialen as (
+select pnr
+from angebot
+group by pnr
+having count(distinct filialeid) = (select count(*) from filiale)
+),
+günstigstes_angebot as (
+select pnr, min(preis) as min_preis
+from angebot
+where pnr in (select pnr from produkte_in_allen_filialen)
+group by pnr
+),
+günstigstes_angebot_in_leipzig as (
+select distinct a.pnr
+from angebot a join filiale f on a.filialeid = f.filialeid join günstigstes_angebot ga on a.pnr = ga.pnr and a.preis = ga.min_preis
+where f.name = 'Leipzig'
+)
+select count(paf.pnr) as anzahl_produkte_alle_filialen, 
+	   count(gal.pnr) as anzahl_günstigste_in_leipzig, 
+	  round(count(gal.pnr) * 100.0 / count(paf.pnr)) as anteil_günstigstes_in_leipzig
+from produkte_in_allen_filialen paf left join günstigstes_angebot_in_leipzig gal on paf.pnr = gal.pnr
+
+
