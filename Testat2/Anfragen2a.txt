@@ -52,6 +52,7 @@ WHERE NOT EXISTS (
 4. Anfrage:
 select pnr, max(preis) as maximalpreis, min(preis) as minimalpreis
 from angebot a
+where a.preis > 0.00
 group by pnr
 having max(preis) > (min(preis) * 2)
 
@@ -71,11 +72,12 @@ FROM (
 ) AS keine_rezension;
 
 7. Anfrage:
-select nutzername, count(rezensionsid)
+select nutzername, count(rezensionsid) as anzahl_rezensionen
 from rezension
 where nutzername <> 'guest'
 group by nutzername
 having count(rezensionsid) > 9
+order by anzahl_rezensionen desc
 
 8. Anfrage:
 SELECT DISTINCT a.Name
@@ -142,15 +144,16 @@ having count(distinct filialeid) = (select count(*) from filiale)
 
 12. Anfrage:
 with produkte_in_allen_filialen as (
-select pnr
+select distinct pnr
 from angebot
+where preis > 0
 group by pnr
 having count(distinct filialeid) = (select count(*) from filiale)
 ),
 günstigstes_angebot as (
-select pnr, min(preis) as min_preis
+select distinct pnr, min(preis) as min_preis
 from angebot
-where pnr in (select pnr from produkte_in_allen_filialen)
+where pnr in (select pnr from produkte_in_allen_filialen) and preis > 0.00
 group by pnr
 ),
 günstigstes_angebot_in_leipzig as (
@@ -158,9 +161,7 @@ select distinct a.pnr
 from angebot a join filiale f on a.filialeid = f.filialeid join günstigstes_angebot ga on a.pnr = ga.pnr and a.preis = ga.min_preis
 where f.name = 'Leipzig'
 )
-select count(paf.pnr) as anzahl_produkte_alle_filialen, 
-	   count(gal.pnr) as anzahl_günstigste_in_leipzig, 
-	  round(count(gal.pnr) * 100.0 / count(paf.pnr)) as anteil_günstigstes_in_leipzig
+select count(paf.pnr) as anzahl_produkte_alle_filialen,
+	   count(gal.pnr) as anzahl_günstigste_in_leipzig,
+	  round(count(gal.pnr) * 100.00 / count(paf.pnr)) as anteil_günstigstes_in_leipzig
 from produkte_in_allen_filialen paf left join günstigstes_angebot_in_leipzig gal on paf.pnr = gal.pnr
-
-
