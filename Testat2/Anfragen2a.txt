@@ -143,25 +143,82 @@ group by pnr
 having count(distinct filialeid) = (select count(*) from filiale)
 
 12. Anfrage:
-with produkte_in_allen_filialen as (
-select distinct pnr
-from angebot
-where preis > 0
-group by pnr
-having count(distinct filialeid) = (select count(*) from filiale)
+
+Habe 12) nochmal angeschaut und habe 2 Optionen. Das 1. ist eigentlich nur eine übersichtlich formatierte Variante von deiner Query,
+2) ist eine Abwandlung von meiner in der man jetzt auch die 3 spalten wie bei dir hat.
+Deins mit dem LEFT JOIN ist etwas eleganter und vermutlich effizienter, aber auch schwerer zu verstehen.
+Meins ist zwar nicht so effizient aber etwas übersichtlicher wie ich finde (ist aber Geschmackssache). (hab schon beides im GIT)
+
+Option 1:
+WITH produkte_alle_filialen AS (
+SELECT DISTINCT PNr
+FROM Angebot
+WHERE Preis > 0
+GROUP BY PNr
+Having count(DISTINCT FilialeID) = (SELECT count(*) FROM Filiale)
 ),
-günstigstes_angebot as (
-select distinct pnr, min(preis) as min_preis
-from angebot
-where pnr in (select pnr from produkte_in_allen_filialen) and preis > 0.00
-group by pnr
+
+minpreis_global AS (
+SELECT DISTINCT PNr, MIN(Preis) AS Preis
+FROM Angebot
+WHERE PNr IN (SELECT PNr FROM produkte_alle_filialen) AND Preis > 0
+GROUP BY PNr
 ),
-günstigstes_angebot_in_leipzig as (
-select distinct a.pnr
-from angebot a join filiale f on a.filialeid = f.filialeid join günstigstes_angebot ga on a.pnr = ga.pnr and a.preis = ga.min_preis
-where f.name = 'Leipzig'
+
+minpreis_leipzig AS (
+SELECT DISTINCT a.PNr
+FROM angebot a
+JOIN filiale f ON a.filialeid = f.filialeid
+JOIN minpreis_global ga ON a.PNr = ga.PNr and a.preis = ga.preis
+WHERE f.name = 'Leipzig'
 )
-select count(paf.pnr) as anzahl_produkte_alle_filialen,
-	   count(gal.pnr) as anzahl_günstigste_in_leipzig,
-	  round(count(gal.pnr) * 100.00 / count(paf.pnr)) as anteil_günstigstes_in_leipzig
-from produkte_in_allen_filialen paf left join günstigstes_angebot_in_leipzig gal on paf.pnr = gal.pnr
+
+SELECT count(paf.PNr) AS anzahl_produkte_alle_filialen,
+	   count(gal.PNr) AS anzahl_günstigste_in_leipzig,
+	   round(count(gal.PNr) * 100.00 / count(paf.PNr)) AS anteil_günstigstes_in_leipzig
+
+FROM
+produkte_alle_filialen paf
+LEFT JOIN minpreis_leipzig gal
+ON paf.PNr = gal.PNr
+
+-----------------------------------------------------------------------------------------
+Option 2:
+WITH
+produkte_alle_filialen AS (
+    SELECT PNr
+    FROM Angebot
+    WHERE preis > 0
+    GROUP BY PNr
+    HAVING COUNT(DISTINCT FilialeID) = (SELECT COUNT(*) FROM Filiale)
+),
+
+minpreis_global AS (
+    SELECT a.PNr, MIN(a.Preis) AS preis
+    FROM Angebot a
+    WHERE a.Preis > 0
+    GROUP BY a.PNr
+),
+
+minpreis_leipzig AS (
+    SELECT a.PNr, MIN(a.Preis) AS preis
+    FROM Angebot a NATURAL JOIN Filiale f
+    WHERE f.Name LIKE '%Leipzig%' AND a.Preis > 0
+    GROUP BY a.PNr
+),
+
+leipzig_am_guenstigsten AS (
+    SELECT min_l.PNr, min_l.Preis
+    FROM produkte_alle_filialen p
+    JOIN minpreis_global min_g ON p.pnr = min_g.pnr
+    JOIN minpreis_leipzig min_l ON min_g.pnr = min_l.pnr AND min_g.preis = min_l.preis
+)
+
+SELECT
+    (SELECT COUNT(*) FROM produkte_alle_filialen) AS anzahl_produkte_alle_filialen,
+    (SELECT COUNT(*) FROM leipzig_am_guenstigsten) AS anzahl_leipzig_am_guenstigsten,
+    ROUND(
+        (SELECT COUNT(*) FROM leipzig_am_guenstigsten) * 100.0 /
+        (SELECT COUNT(*) FROM produkte_alle_filialen),
+        2
+    ) AS anteil_leipzig_am_guenstigsten;
