@@ -6,43 +6,48 @@ select
 
 
 2. Anfrage:
-create view top_5_produkte_je_typ(typ, pnr, rating)as
 (
-	select 'buch' as typ, p.pnr, p.rating
-	from buch b join produkt p on b.pnr = p.pnr
-	where p.rating is not null
-	order by p.rating desc
-	limit 5
-) union
+  SELECT 'Buch' AS Typ, p.PNr AS ProduktNr, p.Rating, COUNT(r.RezensionsID) AS AnzahlBewertungen
+  FROM Produkt p
+  JOIN Buch b ON p.PNr = b.PNr
+  LEFT JOIN Rezension r ON p.PNr = r.PNr
+  WHERE p.Rating IS NOT NULL
+  GROUP BY p.PNr, p.Rating
+  ORDER BY p.Rating DESC, COUNT(r.RezensionsID) DESC, p.PNR
+  LIMIT 5
+)
+UNION ALL
 (
-	select 'dvd' as typ, p.pnr, p.rating
-	from dvd join produkt p on dvd.pnr = p.pnr
-	where p.rating is not null
-	order by p.rating desc
-	limit 5
-) union
-(	
-	select 'Musik_CD' as typ, p.pnr, p.rating
-	from musik_cd m join produkt p on m.pnr = p.pnr
-	where p.rating is not null
-	order by p.rating desc
-	limit 5
+  SELECT 'Musik-CD' AS Typ, p.PNr AS ProduktNr, p.Rating, COUNT(r.RezensionsID)
+  FROM Produkt p
+  JOIN Musik_CD m ON p.PNr = m.PNr
+  LEFT JOIN Rezension r ON p.PNr = r.PNr
+  WHERE p.Rating IS NOT NULL
+  GROUP BY p.PNr, p.Rating
+  ORDER BY p.Rating DESC, COUNT(r.RezensionsID) DESC, p.PNR
+  LIMIT 5
+)
+UNION ALL
+(
+  SELECT 'DVD' AS Typ, p.PNr AS ProduktNr, p.Rating, COUNT(r.RezensionsID)
+  FROM Produkt p
+  JOIN DVD d ON p.PNr = d.PNr
+  LEFT JOIN Rezension r ON p.PNr = r.PNr
+  WHERE p.Rating IS NOT NULL
+  GROUP BY p.PNr, p.Rating
+  ORDER BY p.Rating DESC, COUNT(r.RezensionsID) DESC, p.PNR
+  LIMIT 5
 );
 
-Select typ, pnr, rating
-from top_5_produkte_je_typ
-
-Anmerkung: Gleiche durchschnittliche Ratings werden nicht berücksichtigt, d.h. es könnte noch mehrere Produkte mit gleich gutem Rating geben, die aber nicht zurückgegeben werden. Sollten alle Produkte der 5 bestbewertesten Produkte jedes Typs zurückgegeben werden, würde sich eine Anfrage über dense_rank() anbieten
-
-
 3. Anfrage:
-select pnr, preis
-from angebot
-where preis = 0.00
 
-!!! NULL werte für preis???
-
-
+SELECT *
+FROM Produkt p
+WHERE NOT EXISTS (
+    SELECT a.PNr
+    FROM Angebot a
+    WHERE (a.preis > 0.00) AND (a.PNr = p.PNr)
+)
 
 4. Anfrage:
 select pnr, max(preis) as maximalpreis, min(preis) as minimalpreis
@@ -58,9 +63,12 @@ group by pnr
 having max(bewertung) = 5 and min(bewertung) = 1
 
 6. Anfrage:
-select p.anzahl_verschiedener_produkte - r.anzahl_verschiedener_produkte_mit_rezension as anzahl_produkte_ohne_rezension
-from (select count(distinct pnr) as anzahl_verschiedener_produkte from produkt) as p,
-	 (select count(distinct pnr) as anzahl_verschiedener_produkte_mit_rezension from rezension) as r
+SELECT COUNT(*) AS Anz
+FROM (
+    SELECT PNr FROM Produkt
+    EXCEPT
+    SELECT PNr FROM Rezension
+) AS keine_rezension;
 
 7. Anfrage:
 select nutzername, count(rezensionsid)
@@ -70,13 +78,18 @@ group by nutzername
 having count(rezensionsid) > 9
 
 8. Anfrage:
-select distinct a.name
-from autor a
-where a.name in (select ac.name from actor ac)
-or a.name in (select c.name from creator c)
-or a.name in (select d.name from director d)
-or a.name in (select k.name from kuenstler k)
-order by 1 asc
+SELECT DISTINCT a.Name
+FROM Autor a
+WHERE a.Name IN (
+    SELECT Name FROM Creator
+    UNION ALL
+    SELECT Name FROM Director
+    UNION ALL
+    SELECT Name FROM Actor
+    UNION ALL
+    SELECT Kuenstlername AS Name FROM Kuenstler
+)
+ORDER BY a.Name;
 
 
 9. Anfrage:
@@ -86,6 +99,39 @@ from (select count(*) as anzahl_songs
 	  group by pnr)
 
 10. Anfrage (Rekursion):
+
+WITH RECURSIVE hauptkategorien AS (
+  -- TOP DOWN: an Wurzel (hauptkat.) beginnen, in jeder Iteration direkte unterkategorien finden,
+  -- jeweils die Hauptkategorie ihrer direkten oberkategorie als Hauptkategorie eintragen
+  SELECT
+    KategorieID,
+    KategorieID AS HauptkategorieID
+  FROM Kategorie
+  WHERE OberkategorieID IS NULL --das liefert ausschliesslich HAUPTKATEGORIEN
+
+  UNION ALL
+
+  -- Rekursion: direkte Unterkategorien abfragen
+  SELECT
+    k.KategorieID,
+    hk.HauptkategorieID
+  FROM Kategorie k
+  JOIN hauptkategorien hk
+  ON k.OberkategorieID = hk.KategorieID
+),
+
+produkt_hk AS (
+	SELECT pkat.pnr, (hkat.hauptkategorieID) AS hk
+	FROM hauptkategorien hkat
+	JOIN produkt_kategorie pkat
+	ON hkat.kategorieID = pkat.kategorieID
+)
+
+SELECT DISTINCT p1.PNr
+FROM produkt_hk p1
+JOIN Produkt_Aehnlichkeit pa ON p1.PNr = pa.PNr1
+JOIN produkt_hk p2 ON pa.PNr2 = p2.PNr
+WHERE NOT p1.hk = p2.hk;
 
 
 11. Anfrage:
