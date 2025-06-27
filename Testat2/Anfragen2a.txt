@@ -144,46 +144,6 @@ having count(distinct filialeid) = (select count(*) from filiale)
 
 12. Anfrage:
 
-Habe 12) nochmal angeschaut und habe 2 Optionen. Das 1. ist eigentlich nur eine übersichtlich formatierte Variante von deiner Query,
-2) ist eine Abwandlung von meiner in der man jetzt auch die 3 spalten wie bei dir hat.
-Deins mit dem LEFT JOIN ist etwas eleganter und vermutlich effizienter, aber auch schwerer zu verstehen.
-Meins ist zwar nicht so effizient aber etwas übersichtlicher wie ich finde (ist aber Geschmackssache). (hab schon beides im GIT)
-
-Option 1:
-WITH produkte_alle_filialen AS (
-SELECT DISTINCT PNr
-FROM Angebot
-WHERE Preis > 0
-GROUP BY PNr
-Having count(DISTINCT FilialeID) = (SELECT count(*) FROM Filiale)
-),
-
-minpreis_global AS (
-SELECT DISTINCT PNr, MIN(Preis) AS Preis
-FROM Angebot
-WHERE PNr IN (SELECT PNr FROM produkte_alle_filialen) AND Preis > 0
-GROUP BY PNr
-),
-
-minpreis_leipzig AS (
-SELECT DISTINCT a.PNr
-FROM angebot a
-JOIN filiale f ON a.filialeid = f.filialeid
-JOIN minpreis_global ga ON a.PNr = ga.PNr and a.preis = ga.preis
-WHERE f.name = 'Leipzig'
-)
-
-SELECT count(paf.PNr) AS anzahl_produkte_alle_filialen,
-	   count(gal.PNr) AS anzahl_günstigste_in_leipzig,
-	   round(count(gal.PNr) * 100.00 / count(paf.PNr)) AS anteil_günstigstes_in_leipzig
-
-FROM
-produkte_alle_filialen paf
-LEFT JOIN minpreis_leipzig gal
-ON paf.PNr = gal.PNr
-
------------------------------------------------------------------------------------------
-Option 2:
 WITH
 produkte_alle_filialen AS (
     SELECT PNr
