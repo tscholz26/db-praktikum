@@ -7,15 +7,7 @@ import org.example.Utility.AttributeUndefinedException;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.File;
-import java.sql.Date;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.example.Utility.ErrorHandler.handleError;
 
@@ -415,10 +407,16 @@ public class XMLStoreParser {
                                 double priceValue = Double.parseDouble(priceText) * Double.parseDouble(multText);
 
                                 if (priceValue < 0) {
-                                    handleError(con, "Angebot", "Preis", new AttributeInvalidException("Angebot", "Preis ist negativ: ",String.valueOf(priceValue)));
-                                    insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
+                                    if (!insertStatements.angebotExistsForProductAndShop(con, asin, shopId)) {
+                                        insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
+                                        handleError(con, "Angebot", "Preis", new AttributeInvalidException("Angebot", "Preis ist negativ: ",String.valueOf(priceValue)));
+                                    }
+
                                 } else {
-                                    insertStatements.insertAngebot(con, asin, state, priceValue, currency, shopId);
+                                    if (!insertStatements.angebotExistsForProductAndShop(con, asin, shopId) || priceValue > 0 ) {
+                                        //TODO HIER IST VERMUTLICH DAS PROBLEM
+                                        insertStatements.insertAngebot(con, asin, state, priceValue, currency, shopId);
+                                    }
                                 }
 
                                 priceInserted = true;
@@ -426,7 +424,9 @@ public class XMLStoreParser {
                         } catch (Exception e) {
                             handleError(con, "Angebot", "Preis", e);
                             try {
-                                insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
+                                if (!insertStatements.angebotExistsForProductAndShop(con, asin, shopId)) {
+                                    insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
+                                }
                                 priceInserted = true;
                             } catch (Exception fallbackEx) {
                                 handleError(con, "Angebot", "Fallback Insert", fallbackEx);
@@ -437,7 +437,9 @@ public class XMLStoreParser {
                     // Fallback if no price inserted at all
                     if (!priceInserted) {
                         try {
-                            insertStatements.insertAngebot(con, asin, "neu", 0.0, "EUR", shopId);
+                            if (!insertStatements.angebotExistsForProductAndShop(con, asin, shopId)) {
+                                insertStatements.insertAngebot(con, asin, "neu", 0.0, "EUR", shopId);
+                            }
                         } catch (Exception fallbackEx) {
                             handleError(con, "Angebot", "Fallback Null-Angebot", fallbackEx);
                         }
@@ -451,8 +453,6 @@ public class XMLStoreParser {
 
         System.out.println("\u001B[32m[SUCCESS] Parsed available products and prices from " + filepath + " successfully.\u001B[0m");
     }
-
-
 
 
     // Utility function to get inner text

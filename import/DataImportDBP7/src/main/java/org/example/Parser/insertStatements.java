@@ -7,15 +7,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.management.Attribute;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.example.Utility.ErrorHandler.handleError;
@@ -531,6 +528,16 @@ public class insertStatements {
             } else {
                 handleError(con, "Angebot", "UNKNOWN", e);
             }
+        }
+    }
+
+    public static boolean angebotExistsForProductAndShop(Connection con, String asin, int shopId) throws SQLException {
+        String sql = "SELECT 1 FROM Angebot WHERE PNr = ? AND FilialeID = ? LIMIT 1";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, asin);
+            ps.setInt(2, shopId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
         }
     }
 
