@@ -407,16 +407,11 @@ public class XMLStoreParser {
                                 double priceValue = Double.parseDouble(priceText) * Double.parseDouble(multText);
 
                                 if (priceValue < 0) {
-                                    if (!insertStatements.angebotExistsForProductAndShop(con, asin, shopId)) {
-                                        insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
-                                        handleError(con, "Angebot", "Preis", new AttributeInvalidException("Angebot", "Preis ist negativ: ",String.valueOf(priceValue)));
-                                    }
+                                    insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
+                                    handleError(con, "Angebot", "Preis", new AttributeInvalidException("Angebot", "Preis ist negativ: ",String.valueOf(priceValue)));
 
                                 } else {
-                                    if (!insertStatements.angebotExistsForProductAndShop(con, asin, shopId) || priceValue > 0 ) {
-                                        //TODO HIER IST VERMUTLICH DAS PROBLEM
-                                        insertStatements.insertAngebot(con, asin, state, priceValue, currency, shopId);
-                                    }
+                                    insertStatements.insertAngebot(con, asin, state, priceValue, currency, shopId);
                                 }
 
                                 priceInserted = true;
@@ -424,9 +419,7 @@ public class XMLStoreParser {
                         } catch (Exception e) {
                             handleError(con, "Angebot", "Preis", e);
                             try {
-                                if (!insertStatements.angebotExistsForProductAndShop(con, asin, shopId)) {
-                                    insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
-                                }
+                                insertStatements.insertAngebot(con, asin, state, 0.0, currency, shopId);
                                 priceInserted = true;
                             } catch (Exception fallbackEx) {
                                 handleError(con, "Angebot", "Fallback Insert", fallbackEx);
@@ -437,9 +430,7 @@ public class XMLStoreParser {
                     // Fallback if no price inserted at all
                     if (!priceInserted) {
                         try {
-                            if (!insertStatements.angebotExistsForProductAndShop(con, asin, shopId)) {
-                                insertStatements.insertAngebot(con, asin, "neu", 0.0, "EUR", shopId);
-                            }
+                            insertStatements.insertAngebot(con, asin, "neu", 0.0, "EUR", shopId);
                         } catch (Exception fallbackEx) {
                             handleError(con, "Angebot", "Fallback Null-Angebot", fallbackEx);
                         }

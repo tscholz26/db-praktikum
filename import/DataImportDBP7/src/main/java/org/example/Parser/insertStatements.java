@@ -508,6 +508,7 @@ public class insertStatements {
 
     protected static void insertAngebot(Connection con, String asin, String state, Double price, String currency, Integer shopID) throws Exception{
         String insertAngebotSql = "INSERT INTO angebot (PNr, filialeid, zustand, preis, waehrung) VALUES (?,?,?,?,?)";
+        String deleteFallbackSql = "DELETE FROM angebot WHERE PNr = ? AND filialeid = ? AND preis = 0";
 
         try {
             //Sanity checks
@@ -515,13 +516,25 @@ public class insertStatements {
                 throw new AttributeInvalidException("Angebot", "Preis", String.valueOf(price));
             };
 
-            PreparedStatement stmt = con.prepareStatement(insertAngebotSql);
-            stmt.setString(1, asin);
-            stmt.setInt(2, shopID);
-            stmt.setString(3, state);
-            stmt.setBigDecimal(4, new BigDecimal(price));
-            stmt.setString(5, currency);
-            stmt.executeUpdate();
+            // If price valid, remove fallback angebot with price=0 if it exists
+            if (price > 0) {
+                try (PreparedStatement deleteStmt = con.prepareStatement(deleteFallbackSql)) {
+                    deleteStmt.setString(1, asin);
+                    deleteStmt.setInt(2, shopID);
+                    deleteStmt.executeUpdate();
+                }
+            }
+
+            if (price > 0 || !angebotExistsForProductAndShop(con, asin, shopID)) {
+                //If price>0: add angebot, if price=0 only add angebot if there if no offer at the shop yet
+                PreparedStatement stmt = con.prepareStatement(insertAngebotSql);
+                stmt.setString(1, asin);
+                stmt.setInt(2, shopID);
+                stmt.setString(3, state);
+                stmt.setBigDecimal(4, new BigDecimal(price));
+                stmt.setString(5, currency);
+                stmt.executeUpdate();
+            }
         } catch (Exception e) {
             if (e.getMessage().contains("fkey")) {
                 handleError(con, "Angebot", "PNr", e);
