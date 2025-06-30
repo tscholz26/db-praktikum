@@ -95,10 +95,10 @@ ORDER BY a.Name;
 
 
 9. Anfrage:
-select round(avg(anzahl_songs)) as durschnittliche_songanzahl
-from (select count(*) as anzahl_songs
-	  from song 
-	  group by pnr)
+SELECT ROUND(AVG(anzahl_songs),2) AS durschnittliche_songanzahl
+FROM (SELECT COUNT(*) AS anzahl_songs
+	  FROM Song
+	  GROUP BY PNr)
 
 10. Anfrage (Rekursion):
 
@@ -137,10 +137,11 @@ WHERE NOT p1.hk = p2.hk;
 
 
 11. Anfrage:
-select pnr
-from angebot
-group by pnr
-having count(distinct filialeid) = (select count(*) from filiale)
+SELECT PNr
+    FROM Angebot
+    WHERE preis > 0
+    GROUP BY PNr
+    HAVING COUNT(DISTINCT FilialeID) = (SELECT COUNT(*) FROM Filiale)
 
 12. Anfrage:
 
