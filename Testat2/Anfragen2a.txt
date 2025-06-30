@@ -1,11 +1,11 @@
-1. Anfrage:
+1. Anfrage: Wieviele Produkte jeden Typs (Buch, Musik-CD, DVD) sind in der Datenbank erfasst? Hinweis: Geben Sie das Ergebnis in einer 3-spaltigen Relation aus.
 select
     (select count(*) as Anzahl_Bücher from buch),
     (select count(*) as Anzahl_DVDs from dvd),
     (select count(*) as Anzahl_MusikCD from musik_cd)
 
 
-2. Anfrage:
+2. Anfrage: Nennen Sie die 5 besten Produkte jedes Typs (Buch, Musik-CD, DVD) sortiert nach dem durchschnittlichem Rating. Hinweis: Geben Sie das Ergebnis in einer einzigen Relation mit den Attributen Typ, ProduktNr, Rating aus. Wie werden gleiche durchschnittliche Ratings behandelt?
 (
   SELECT 'Buch' AS Typ, p.PNr AS ProduktNr, p.Rating, COUNT(r.RezensionsID) AS AnzahlBewertungen
   FROM Produkt p
@@ -39,7 +39,7 @@ UNION ALL
   LIMIT 5
 );
 
-3. Anfrage:
+3. Anfrage: Für welche Produkte gibt es im Moment kein Angebot?
 
 SELECT *
 FROM Produkt p
@@ -49,7 +49,7 @@ WHERE NOT EXISTS (
     WHERE (a.preis > 0.00) AND (a.PNr = p.PNr)
 )
 
-4. Anfrage:
+4. Anfrage: Für welche Produkte ist das teuerste Angebot mehr als doppelt so teuer wie das preiswerteste?
 select pnr, max(preis) as maximalpreis, min(preis) as minimalpreis
 from angebot a
 where a.preis > 0.00
@@ -57,13 +57,13 @@ group by pnr
 having max(preis) > (min(preis) * 2)
 
 
-5. Anfrage:
+5. Anfrage: Welche Produkte haben sowohl mindestens eine sehr schlechte (Punktzahl: 1) als auch mindestens eine sehr gute (Punktzahl: 5) Bewertung?
 select pnr, max(bewertung) as beste_bewertung, min(bewertung) as schlechteste_bewertung
 from rezension
 group by pnr
 having max(bewertung) = 5 and min(bewertung) = 1
 
-6. Anfrage:
+6. Anfrage: Für wieviele Produkte gibt es gar keine Rezension?
 SELECT COUNT(*) AS Anz
 FROM (
     SELECT PNr FROM Produkt
@@ -71,7 +71,7 @@ FROM (
     SELECT PNr FROM Rezension
 ) AS keine_rezension;
 
-7. Anfrage:
+7. Anfrage: Nennen Sie alle Rezensenten, die mindestens 10 Rezensionen geschrieben haben.
 select nutzername, count(rezensionsid) as anzahl_rezensionen
 from rezension
 where nutzername <> 'guest'
@@ -79,7 +79,7 @@ group by nutzername
 having count(rezensionsid) > 9
 order by anzahl_rezensionen desc
 
-8. Anfrage:
+8. Anfrage: Geben Sie eine duplikatfreie und alphabetisch sortierte Liste der Namen aller Buchautoren an, die auch an DVDs oder Musik-CDs beteiligt sind.
 SELECT DISTINCT a.Name
 FROM Autor a
 WHERE a.Name IN (
@@ -94,14 +94,13 @@ WHERE a.Name IN (
 ORDER BY a.Name;
 
 
-9. Anfrage:
+9. Anfrage: Wie hoch ist die durchschnittliche Anzahl von Liedern einer Musik-CD?
 SELECT ROUND(AVG(anzahl_songs),2) AS durschnittliche_songanzahl
 FROM (SELECT COUNT(*) AS anzahl_songs
 	  FROM Song
 	  GROUP BY PNr)
 
-10. Anfrage (Rekursion):
-
+10. Anfrage: Für welche Produkte gibt es ähnliche Produkte in einer anderen Hauptkategorie? Hinweis: Eine Hauptkategorie ist eine Produktkategorie ohne Oberkategorie. Erstellen Sie eine rekursive Anfrage, die zu jedem Produkt dessen Hauptkategorie bestimmt.
 WITH RECURSIVE hauptkategorien AS (
   -- TOP DOWN: an Wurzel (hauptkat.) beginnen, in jeder Iteration direkte unterkategorien finden,
   -- jeweils die Hauptkategorie ihrer direkten oberkategorie als Hauptkategorie eintragen
@@ -136,15 +135,14 @@ JOIN produkt_hk p2 ON pa.PNr2 = p2.PNr
 WHERE NOT p1.hk = p2.hk;
 
 
-11. Anfrage:
+11. Anfrage: Welche Produkte werden in allen Filialen angeboten? Hinweis: Ihre Query muss so formuliert werden, dass sie für eine beliebige Anzahl von Filialen funktioniert. Hinweis: Beachten Sie, dass ein Produkt mehrfach von einer Filiale angeboten werden kann (z.B. neu und gebraucht).
 SELECT PNr
     FROM Angebot
     WHERE preis > 0
     GROUP BY PNr
     HAVING COUNT(DISTINCT FilialeID) = (SELECT COUNT(*) FROM Filiale)
 
-12. Anfrage:
-
+12. Anfrage: In wieviel Prozent der Fälle der Frage 11 gibt es in Leipzig das preiswerteste Angebot?
 WITH
 produkte_alle_filialen AS (
     SELECT PNr
