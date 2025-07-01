@@ -89,7 +89,7 @@ WHERE a.Name IN (
     UNION ALL
     SELECT Name FROM Actor
     UNION ALL
-    SELECT Kuenstlername AS Name FROM Kuenstler
+    SELECT name FROM Kuenstler
 )
 ORDER BY a.Name;
 
