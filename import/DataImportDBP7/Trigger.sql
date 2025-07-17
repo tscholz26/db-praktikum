@@ -11,7 +11,7 @@ BEGIN
 
     UPDATE Produkt
     SET Rating = (
-        SELECT ROUND(CAST(AVG(Bewertung) as decimal), 2)
+        SELECT ROUND(CAST(AVG(Bewertung) AS DECIMAL), 2)
         FROM Rezension
         WHERE PNr = produkt_id
     )
