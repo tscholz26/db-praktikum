@@ -1,10 +1,10 @@
-package com.example.backendDBP.services;
+package com.example.backendDBP.api;
 
 import com.example.backendDBP.models.*;
 
 import java.util.List;
 
-public interface MediastoreService {
+public interface MediastoreServiceAPI {
 // init() method is not necessary because Spring Boot automatically initializes beans
 // finish() method is not necessary because Spring Boot automatically handles bean destruction
 
