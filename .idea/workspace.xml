@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ccd2e703-222f-41e3-93fb-761485a42d33" name="Changes" comment="changed künsterlname to name from Kuenstler">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/backend.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/jpa.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/sqldialects.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/SQL-Files/CreateTables.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/data/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/data/categories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/data/dresden.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/data/leipzig_transformed.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/data/reviews.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Dbprak7Application.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Actor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/ActorId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Angebot.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/AngebotId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Autor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/AutorId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Buch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Creator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/CreatorId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Director.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/DirectorId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Dvd.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Errordata.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Filiale.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Kategorie.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Kauf.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Kuenstler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/KuenstlerId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Kunde.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Label.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/LabelId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/MusikCd.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Produkt.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/ProduktAehnlichkeit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/ProduktAehnlichkeitId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/ProduktKategorie.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/ProduktKategorieId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Rezension.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/RezensionId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/Song.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Model/SongId.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/ActorRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/AngebotRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/AutorRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/BuchRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/CreatorRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/DirectorRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/DvdRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/ErrordataRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/FilialeRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/KategorieRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/KaufRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/KuenstlerRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/KundeRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/MusikCdRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/ProduktAehnlichkeitRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/ProduktKategorieRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/ProduktRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/RezensionRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/Repositories/SongRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/XmlToArray/ShopItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/java/com/example/dbprak7/XmlToArray/XmlToArrayExample.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dbprak7/src/test/java/com/example/dbprak7/Dbprak7ApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitLabMergeRequestFiltersHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPENED&quot;,
+    &quot;assignee&quot;: {
+      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
+      &quot;username&quot;: &quot;yb13oziq&quot;,
+      &quot;fullname&quot;: &quot;Moritz Schwock&quot;
+    }
+  }
+}</component>
+  <component name="GitLabMergeRequestsSettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;first&quot;: &quot;https://git.informatik.uni-leipzig.de/bf96zocu/dbprak7.git&quot;,
+    &quot;second&quot;: &quot;5e798444-a47a-4891-b7ec-1e9291fb50ea&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2xd5rWdKucJp8WmAkKsQ7CJezX3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/Users/moritzschwock/Documents/Uni/6. Semester/DBP/Gruppe7/backend/dbprak7/SQL-Files",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/dbprak7/SQL-Files" />
+      <recent name="$PROJECT_DIR$/Testat2/Results" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="Gruppe7" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="Gruppe7" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.27812.49" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.27812.49" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ccd2e703-222f-41e3-93fb-761485a42d33" name="Changes" comment="" />
+      <created>1748255309057</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1748255309057</updated>
+      <workItem from="1748255310700" duration="239000" />
+      <workItem from="1748255608524" duration="131000" />
+      <workItem from="1748255742057" duration="253000" />
+      <workItem from="1748255997475" duration="7000" />
+      <workItem from="1748256006702" duration="44000" />
+      <workItem from="1748256062236" duration="12000" />
+      <workItem from="1748256214388" duration="31000" />
+      <workItem from="1748256295013" duration="952000" />
+      <workItem from="1748260217177" duration="1811000" />
+      <workItem from="1748428724732" duration="1533000" />
+      <workItem from="1750938431814" duration="81000" />
+      <workItem from="1750938535266" duration="5360000" />
+      <workItem from="1751311595336" duration="363000" />
+      <workItem from="1751312077238" duration="47000" />
+      <workItem from="1751312412849" duration="265000" />
+      <workItem from="1751380757675" duration="152000" />
+      <workItem from="1752738547261" duration="471000" />
+      <workItem from="1752755137536" duration="1029000" />
+      <workItem from="1753869495476" duration="680000" />
+      <workItem from="1753870350571" duration="20000" />
+    </task>
+    <task id="LOCAL-00001" summary="vcs.xml to gitignore">
+      <option name="closed" value="true" />
+      <created>1748260342024</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1748260342024</updated>
+    </task>
+    <task id="LOCAL-00002" summary="git test">
+      <option name="closed" value="true" />
+      <created>1748283462844</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1748283462844</updated>
+    </task>
+    <task id="LOCAL-00003" summary="add files for testat 2">
+      <option name="closed" value="true" />
+      <created>1750938491143</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1750938491143</updated>
+    </task>
+    <task id="LOCAL-00004" summary="changed little things on the queries">
+      <option name="closed" value="true" />
+      <created>1750942890888</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1750942890888</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Aufgabenstellung hinter die Anfragen hinzugefügt für besseren Überblick">
+      <option name="closed" value="true" />
+      <created>1751312671100</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1751312671100</updated>
+    </task>
+    <task id="LOCAL-00006" summary="new docx file with the results of the queries">
+      <option name="closed" value="true" />
+      <created>1751380831568</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1751380831568</updated>
+    </task>
+    <task id="LOCAL-00007" summary="changed künsterlname to name from Kuenstler">
+      <option name="closed" value="true" />
+      <created>1751380900649</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1751380900649</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="vcs.xml to gitignore" />
+    <MESSAGE value="git test" />
+    <MESSAGE value="add files for testat 2" />
+    <MESSAGE value="changed little things on the queries" />
+    <MESSAGE value="Aufgabenstellung hinter die Anfragen hinzugefügt für besseren Überblick" />
+    <MESSAGE value="new docx file with the results of the queries" />
+    <MESSAGE value="changed künsterlname to name from Kuenstler" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed künsterlname to name from Kuenstler" />
+  </component>
+</project>
