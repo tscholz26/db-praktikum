@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="JpaBuddyIdeaProjectConfig" migrateIndexesAndConstraints="true" reUseTableSchema="true" newRepositoryParent="org.springframework.data.jpa.repository.JpaRepository">
-    <option name="migrateIndexesAndConstraints" value="true" />
-    <option name="reLastEntityCreationPackage" value="dbprak7/src/main/java/com/example/dbprak7/Model" />
-    <option name="reverseEngineeringLastDbConnectionId" value="6f7f7d59-6ea2-45ec-9db9-9c2c7099d893" />
-  </component>
-  <component name="JpaPluginProjectSettings" commentSavingStrategy="@Comment annotation" reExcludeTablePrefixes="" reExcludeColumnPrefixes="" reExcludeTableSuffixes="" reExcludeColumnSuffixes="" />
-</project>
