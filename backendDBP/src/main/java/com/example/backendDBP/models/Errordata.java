@@ -12,7 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @Entity
 @Table(name = "errordata", schema = "public")
-public class Errordatum {
+public class Errordata {
     @Id
     @ColumnDefault("nextval('errordata_errorid_seq')")
     @Column(name = "errorid", nullable = false)

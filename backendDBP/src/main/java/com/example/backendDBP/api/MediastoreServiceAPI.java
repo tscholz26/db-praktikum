@@ -3,9 +3,10 @@ package com.example.backendDBP.api;
 import com.example.backendDBP.models.*;
 
 import java.util.List;
+import java.util.Properties;
 
 public interface MediastoreServiceAPI {
-   void init();
+   void init(Properties properties);
    void finish();
 
     Produkt getProduct(String pnr);
