@@ -1,6 +1,4 @@
-package org.example.Utility;
-
-import org.w3c.dom.Attr;
+package org.DataImport.Utility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

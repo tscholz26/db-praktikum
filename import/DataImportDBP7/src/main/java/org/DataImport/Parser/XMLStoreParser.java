@@ -1,15 +1,15 @@
-package org.example.Parser;
+package org.DataImport.Parser;
 
 import java.sql.Connection;
 
-import org.example.Utility.AttributeInvalidException;
-import org.example.Utility.AttributeUndefinedException;
+import org.DataImport.Utility.AttributeInvalidException;
+import org.DataImport.Utility.AttributeUndefinedException;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.File;
 import java.util.Arrays;
 
-import static org.example.Utility.ErrorHandler.handleError;
+import static org.DataImport.Utility.ErrorHandler.handleError;
 
 
 public class XMLStoreParser {

@@ -5,8 +5,8 @@ import com.example.backendDBP.models.*;
 import java.util.List;
 
 public interface MediastoreServiceAPI {
-// init() method is not necessary because Spring Boot automatically initializes beans
-// finish() method is not necessary because Spring Boot automatically handles bean destruction
+   void init();
+   void finish();
 
     Produkt getProduct(String pnr);
     List<Produkt> getProducts(String pattern);

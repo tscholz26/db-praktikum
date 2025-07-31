@@ -1,4 +1,4 @@
-package org.example.Parser;
+package org.DataImport.Parser;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.example.Utility.ErrorHandler.handleError;
+import static org.DataImport.Utility.ErrorHandler.handleError;
 
 public class XMLCategoryParser {
 

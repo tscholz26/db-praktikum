@@ -1,4 +1,4 @@
-package org.example.Utility;
+package org.DataImport.Utility;
 
 public class AttributeUndefinedException extends Exception {
 

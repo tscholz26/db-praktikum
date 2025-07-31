@@ -1,10 +1,10 @@
-package org.example;
+package org.DataImport;
 
-import org.example.Parser.CSVRezensionParser;
-import org.example.Parser.RatingCalculator;
-import org.example.Parser.XMLCategoryParser;
-import org.example.Parser.XMLStoreParser;
-import org.example.Utility.ErrorClassifier;
+import org.DataImport.Parser.CSVRezensionParser;
+import org.DataImport.Parser.RatingCalculator;
+import org.DataImport.Parser.XMLCategoryParser;
+import org.DataImport.Parser.XMLStoreParser;
+import org.DataImport.Utility.ErrorClassifier;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

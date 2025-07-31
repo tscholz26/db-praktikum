@@ -1,4 +1,4 @@
-package org.example.Parser;
+package org.DataImport.Parser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

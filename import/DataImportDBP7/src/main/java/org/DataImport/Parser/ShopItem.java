@@ -1,4 +1,4 @@
-package org.example.Parser;
+package org.DataImport.Parser;
 
 // Data container
 public class ShopItem {

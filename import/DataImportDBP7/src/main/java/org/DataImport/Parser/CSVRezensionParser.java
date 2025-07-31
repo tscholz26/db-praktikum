@@ -1,4 +1,4 @@
-package org.example.Parser;
+package org.DataImport.Parser;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -7,8 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 
-import static org.example.Parser.insertStatements.insertKunde;
-import static org.example.Parser.insertStatements.insertRezension;
+import static org.DataImport.Parser.insertStatements.insertKunde;
+import static org.DataImport.Parser.insertStatements.insertRezension;
 
 
 public class CSVRezensionParser {

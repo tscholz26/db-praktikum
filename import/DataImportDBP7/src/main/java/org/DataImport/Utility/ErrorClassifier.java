@@ -1,4 +1,4 @@
-package org.example.Utility;
+package org.DataImport.Utility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
