@@ -21,4 +21,6 @@ public interface ProduktRepository extends JpaRepository<Produkt, String> {
     @Query("SELECT p FROM Produkt p WHERE p.titel LIKE %:pattern%")
     List<Produkt> findProductByPattern(@Param("pattern") String pattern);
 
+    @Query("SELECT p FROM Produkt p where p.rating is not null order by p.rating desc limit :lim")
+    List<Produkt> findTopProducts(@Param("lim") int lim);
 }

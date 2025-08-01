@@ -38,10 +38,10 @@ public class KatalogService implements MediastoreServiceAPI {
         Configuration hibernateConfig = new Configuration();
 
         // Lese die Konfigurationseigenschaften aus dem Properties-Objekt
-        String url     = properties.getProperty("spring.datasource.url");
-        String user    = properties.getProperty("spring.datasource.username");
-        String pass    = properties.getProperty("spring.datasource.password");
-        String driver  = properties.getProperty("spring.datasource.driver-class-name");
+        String url = properties.getProperty("spring.datasource.url");
+        String user = properties.getProperty("spring.datasource.username");
+        String pass = properties.getProperty("spring.datasource.password");
+        String driver = properties.getProperty("spring.datasource.driver-class-name");
         String dialect = properties.getProperty("spring.jpa.database-platform");
         String hbm2ddl = properties.getProperty("spring.jpa.hibernate.ddl-auto");
 
@@ -52,7 +52,6 @@ public class KatalogService implements MediastoreServiceAPI {
         hibernateConfig.setProperty("hibernate.connection.password", pass);
         hibernateConfig.setProperty("hibernate.dialect", dialect);
         hibernateConfig.setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
-
 
 
         // 2) Annotated Entity-Klassen registrieren
@@ -109,8 +108,7 @@ public class KatalogService implements MediastoreServiceAPI {
         if (pattern == null) {
             List<Produkt> allProducts = produktRepository.findAll();
             return allProducts;
-        }
-        else {
+        } else {
             List<Produkt> produkteByPattern = produktRepository.findProductByPattern(pattern);
             if (produkteByPattern == null || produkteByPattern.isEmpty()) {
                 throw new IllegalArgumentException("Keine Produkte gefunden.");
@@ -132,9 +130,15 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
-    public List<Produkt> getTopProducts(int limit) {
-        // Implementiere die Logik, um die Top-Produkte zu erhalten
-        return null; // Platzhalter, implementiere die Logik hier
+    public List<Produkt> getTopProducts(int lim) {
+        if (lim <= 0) {
+            throw new IllegalArgumentException("Limit muss größer als 0 sein.");
+        }
+        List<Produkt> topProducts = produktRepository.findTopProducts(lim);
+        if (topProducts == null || topProducts.isEmpty()) {
+            throw new IllegalArgumentException("Keine Top-Produkte gefunden.");
+        }
+        return topProducts;
     }
 
     @Override

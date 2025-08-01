@@ -34,6 +34,10 @@ public class ProduktController {
         return katalogService.getProducts(pattern);
     }
 
+    @GetMapping("/getTopProdukte")
+    public List<Produkt> getTopProdukte(@RequestParam int lim) {
+        return katalogService.getTopProducts(lim);
+    }
 
 
 
