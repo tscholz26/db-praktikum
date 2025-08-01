@@ -6,14 +6,15 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Properties;
 
+@Service
 public class KatalogService implements MediastoreServiceAPI {
 
     private SessionFactory sessionFactory;
-
 
     @Override
     public void init(Properties properties) {
