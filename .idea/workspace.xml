@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page">
-      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/CorsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/CorsConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

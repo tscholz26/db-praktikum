@@ -5,7 +5,6 @@
   const router = useRouter();
 
   function init() {
-    alert("init")
     router.push('/shop');
   }
 
