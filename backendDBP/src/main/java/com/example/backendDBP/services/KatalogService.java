@@ -106,11 +106,17 @@ public class KatalogService implements MediastoreServiceAPI {
 
     @Override
     public List<Produkt> getProducts(String pattern) {
-        List<Produkt> produktliste = produktRepository.findProductByPattern(pattern);
-        if (produktliste == null || produktliste.isEmpty()) {
-            throw new IllegalArgumentException("Keine Produkte gefunden.");
+        if (pattern == null) {
+            List<Produkt> allProducts = produktRepository.findAll();
+            return allProducts;
         }
-        return produktliste;
+        else {
+            List<Produkt> produkteByPattern = produktRepository.findProductByPattern(pattern);
+            if (produkteByPattern == null || produkteByPattern.isEmpty()) {
+                throw new IllegalArgumentException("Keine Produkte gefunden.");
+            }
+            return produkteByPattern;
+        }
     }
 
     @Override

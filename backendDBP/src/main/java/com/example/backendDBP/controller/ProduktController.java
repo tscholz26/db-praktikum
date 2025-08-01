@@ -3,10 +3,7 @@ package com.example.backendDBP.controller;
 import com.example.backendDBP.models.Produkt;
 import com.example.backendDBP.services.KatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,15 +23,19 @@ public class ProduktController {
         return katalogService.HelloWorld();
     }
 
-    @GetMapping("/getProdukt/{pnr}")
-    public Produkt getProdukt(@PathVariable String pnr) {
+    @GetMapping("/getProdukt")
+    public Produkt getProdukt(@RequestParam String pnr) {
         return katalogService.getProduct(pnr);
     }
 
-    @GetMapping("/getProdukte/{pattern}")
-    public List<Produkt> getProdukte(@PathVariable String pattern) {
+
+    @GetMapping("/getProdukte")
+    public List<Produkt> getProdukte(@RequestParam(required = false) String pattern) {
         return katalogService.getProducts(pattern);
     }
+
+
+
 
 
 }
