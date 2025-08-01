@@ -2,19 +2,30 @@ package com.example.backendDBP.services;
 
 import com.example.backendDBP.api.MediastoreServiceAPI;
 import com.example.backendDBP.models.*;
+import com.example.backendDBP.repositories.ProduktRepository;
+import lombok.NoArgsConstructor;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Properties;
 
+@NoArgsConstructor
 @Service
 public class KatalogService implements MediastoreServiceAPI {
 
     private SessionFactory sessionFactory;
+    private ProduktRepository produktRepository;
+
+
+    @Autowired
+    public KatalogService(ProduktRepository produktRepository) {
+        this.produktRepository = produktRepository;
+    }
 
     @Override
     public String HelloWorld() {
@@ -86,8 +97,11 @@ public class KatalogService implements MediastoreServiceAPI {
 
     @Override
     public Produkt getProduct(String pnr) {
-        // Implementiere die Logik, um ein Produkt anhand der Produktnummer (pnr) zu erhalten
-        return null; // Platzhalter, implementiere die Logik hier
+        Produkt produkt = produktRepository.findProduktByPnr(pnr);
+        if (produkt == null) {
+            throw new IllegalArgumentException("Produkt mit PNR " + pnr + " nicht gefunden.");
+        }
+        return produkt;
     }
 
     @Override

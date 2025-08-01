@@ -1,6 +1,7 @@
 package com.example.backendDBP;
 
 import com.example.backendDBP.services.KatalogService;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

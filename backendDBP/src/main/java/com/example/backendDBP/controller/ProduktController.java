@@ -4,6 +4,7 @@ import com.example.backendDBP.models.Produkt;
 import com.example.backendDBP.services.KatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ public class ProduktController {
     }
 
     @GetMapping("/getProdukt/{pnr}")
-    public Produkt getProdukt(String pnr) {
+    public Produkt getProdukt(@PathVariable String pnr) {
         return katalogService.getProduct(pnr);
     }
 
@@ -27,5 +28,6 @@ public class ProduktController {
     public String HelloWorld() {
         return katalogService.HelloWorld();
     }
+
 
 }
