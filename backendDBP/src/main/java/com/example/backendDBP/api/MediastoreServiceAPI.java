@@ -17,7 +17,7 @@ public interface MediastoreServiceAPI {
     List<Kategorie> getCategorieTree(String pnr);
 
     List<Produkt> getProductsByCategoryPath(List<Kategorie> kategoriePath);
-    List<Produkt> getTopProducts(int limit);
+    List<Produkt> getTopProducts(int lim);
     List<Produkt> getSimilarCheaperProducts(String pnr);
     List<Rezension> getProductReviews(String pnr);
     void addNewReview(String pnr, String nutzername, int bewertung, String rezension);

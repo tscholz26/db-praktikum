@@ -39,6 +39,11 @@ public class ProduktController {
         return katalogService.getTopProducts(lim);
     }
 
+    @GetMapping("/getBilligereProdukte")
+    public List<Produkt> getBilligereProdukte(@RequestParam String pnr) {
+        return katalogService.getSimilarCheaperProducts(pnr);
+    }
+
 
 
 
