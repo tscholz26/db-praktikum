@@ -15,6 +15,17 @@ const apiClient = axios.create({
 ----GET MAPPINGS----GET MAPPINGS----GET MAPPINGS----GET MAPPINGS
 --------------------------------------------------------------*/
 
+// Hello World
+export const getTestMessage = async () => {
+    try {
+        const response = await apiClient.get(`${API_URL}/test`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching Hello World:", error);
+        throw error;
+    }
+};
+
 // Get all persons
 export const getPersons = async () => {
     try {

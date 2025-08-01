@@ -17,6 +17,11 @@ public class KatalogService implements MediastoreServiceAPI {
     private SessionFactory sessionFactory;
 
     @Override
+    public String HelloWorld() {
+        return "Hello World!";
+    }
+
+    @Override
     public void init(Properties properties) {
         // 1) Hibernate-Konfiguration anlegen
         Configuration hibernateConfig = new Configuration();

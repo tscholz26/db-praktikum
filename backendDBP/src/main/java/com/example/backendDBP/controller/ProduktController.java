@@ -23,4 +23,9 @@ public class ProduktController {
         return katalogService.getProduct(pnr);
     }
 
+    @GetMapping("/test")
+    public String HelloWorld() {
+        return katalogService.HelloWorld();
+    }
+
 }
