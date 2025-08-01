@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping
 public class ProduktController {
@@ -19,14 +21,19 @@ public class ProduktController {
         this.katalogService = katalogService;
     }
 
+    @GetMapping("/test")
+    public String HelloWorld() {
+        return katalogService.HelloWorld();
+    }
+
     @GetMapping("/getProdukt/{pnr}")
     public Produkt getProdukt(@PathVariable String pnr) {
         return katalogService.getProduct(pnr);
     }
 
-    @GetMapping("/test")
-    public String HelloWorld() {
-        return katalogService.HelloWorld();
+    @GetMapping("/getProdukte/{pattern}")
+    public List<Produkt> getProdukte(@PathVariable String pattern) {
+        return katalogService.getProducts(pattern);
     }
 
 
