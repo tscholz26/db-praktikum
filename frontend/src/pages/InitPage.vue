@@ -1,9 +1,15 @@
 <script setup>
+  import { useRouter } from 'vue-router';
+  const router = useRouter();
 
+  function init() {
+    alert("init")
+    router.push('/shop');
+  }
 </script>
 
 <template>
-  <h1>InitPage</h1>
+  <button @click="init()">Init</button>
 </template>
 
 <style scoped>
