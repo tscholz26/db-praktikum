@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- add api.js and .env to start connecting frontend and backend">
-      <change afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/CorsConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/api/MediastoreServiceAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/api/MediastoreServiceAPI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/controller/ProduktController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/controller/ProduktController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/services/KatalogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/services/KatalogService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
+    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page">
+      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/CorsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/CorsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +115,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754048733351</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page">
+      <option name="closed" value="true" />
+      <created>1754050254353</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1754050254353</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,6 +145,7 @@
     <MESSAGE value="- init frontend: install vue using npm" />
     <MESSAGE value="- remove devtools footer, init first page, link to shop page" />
     <MESSAGE value="- add api.js and .env to start connecting frontend and backend" />
-    <option name="LAST_COMMIT_MESSAGE" value="- add api.js and .env to start connecting frontend and backend" />
+    <MESSAGE value="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page" />
+    <option name="LAST_COMMIT_MESSAGE" value="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page" />
   </component>
 </project>
