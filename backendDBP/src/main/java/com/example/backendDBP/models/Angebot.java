@@ -23,8 +23,8 @@ public class Angebot {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "pnr", nullable = false)
-    private Produkt pnr;
+    @JoinColumn(name = "pnr", insertable = false, updatable = false)
+    private Produkt produkt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

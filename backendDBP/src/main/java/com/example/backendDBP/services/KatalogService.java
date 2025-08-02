@@ -141,19 +141,19 @@ public class KatalogService implements MediastoreServiceAPI {
         return topProducts;
     }
 
+//    @Override
+//    public List<Produkt> getSimilarCheaperProducts(String pnr) {
+//        return null;
+//    }
     @Override
     public List<Produkt> getSimilarCheaperProducts(String pnr) {
         Produkt produkt = produktRepository.findProduktByPnr(pnr);
         if (produkt == null) {
             throw new IllegalArgumentException("Produkt mit PNR " + pnr + " nicht gefunden.");
         }
-        List<String> similarCheaperPNRs = produktRepository.findSimilarCheaperProducts(pnr);
-        if (similarCheaperPNRs == null || similarCheaperPNRs.isEmpty()) {
-            throw new IllegalArgumentException("Keine ähnlichen, günstigeren Produkte gefunden.");
-        }
-        List<Produkt> similarCheaperProducts = produktRepository.findProdukteByPnrs(similarCheaperPNRs);
+        List<Produkt> similarCheaperProducts = produktRepository.findSimilarCheaperProducts(pnr);
         if (similarCheaperProducts == null || similarCheaperProducts.isEmpty()) {
-            throw new IllegalArgumentException("Fehler bei der Umwandlung von PNRs in Produktliste.");
+            throw new IllegalArgumentException("Keine ähnlichen Produkte, die günstiger sind, gefunden.");
         }
         return similarCheaperProducts;
     }

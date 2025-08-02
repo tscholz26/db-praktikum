@@ -18,12 +18,12 @@ public class ProduktAehnlichkeit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pnr1", nullable = false)
-    private Produkt pnr1;
+    private Produkt produkt1;
 
     @MapsId("pnr2")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pnr2", nullable = false)
-    private Produkt pnr2;
+    private Produkt produkt2;
 
 }
