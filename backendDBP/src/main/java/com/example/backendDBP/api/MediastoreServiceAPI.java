@@ -1,5 +1,6 @@
 package com.example.backendDBP.api;
 
+import com.example.backendDBP.DTOs.RezensionDTO;
 import com.example.backendDBP.models.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface MediastoreServiceAPI {
     List<Produkt> getProductsByCategoryPath(List<Kategorie> kategoriePath);
     List<Produkt> getTopProducts(int lim);
     List<Produkt> getSimilarCheaperProducts(String pnr);
-    List<Rezension> getProductReviews(String pnr);
+    List<RezensionDTO> getProductReviews(String pnr);
     void addNewReview(String pnr, String nutzername, int bewertung, String rezension);
     List<Kunde> getTrolls(double grenzwertRating);
     List<Angebot> getOffers(String pnr);

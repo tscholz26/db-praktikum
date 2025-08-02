@@ -1,8 +1,10 @@
 package com.example.backendDBP.services;
 
+import com.example.backendDBP.DTOs.RezensionDTO;
 import com.example.backendDBP.api.MediastoreServiceAPI;
 import com.example.backendDBP.models.*;
 import com.example.backendDBP.repositories.ProduktRepository;
+import com.example.backendDBP.repositories.RezensionRepository;
 import lombok.NoArgsConstructor;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -20,10 +22,12 @@ public class KatalogService implements MediastoreServiceAPI {
 
     private SessionFactory sessionFactory;
     private ProduktRepository produktRepository;
+    private RezensionRepository rezensionRepository;
 
 
     @Autowired
-    public KatalogService(ProduktRepository produktRepository) {
+    public KatalogService(ProduktRepository produktRepository, RezensionRepository rezensionRepository) {
+        this.rezensionRepository = rezensionRepository;
         this.produktRepository = produktRepository;
     }
 
@@ -159,9 +163,22 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
-    public List<Rezension> getProductReviews(String pnr) {
-        // Implementiere die Logik, um Rezensionen für ein Produkt zu erhalten
-        return null; // Platzhalter, implementiere die Logik hier
+    public List<RezensionDTO> getProductReviews(String pnr) {
+        List<Rezension> reviewsPerProduct = rezensionRepository.findAllByPnr(pnr);
+        if (reviewsPerProduct == null || reviewsPerProduct.isEmpty()) {
+            throw new IllegalArgumentException("Keine Rezensionen für das Produkt mit PNR " + pnr + " gefunden.");
+        }
+        // Konvertiere Rezensionen in RezensionDTOs
+        List<RezensionDTO> reviewsPerProductDTO = reviewsPerProduct.stream()
+                .map(rezension -> new RezensionDTO(
+                        rezension.getId(),
+                        rezension.getProdukt().getPnr(),
+                        rezension.getProdukt().getTitel(),
+                        rezension.getKunde().getNutzername(),
+                        rezension.getBewertung(),
+                        rezension.getRezension()))
+                .toList();
+        return reviewsPerProductDTO;
     }
 
     @Override

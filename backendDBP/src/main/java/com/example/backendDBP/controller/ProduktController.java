@@ -1,6 +1,7 @@
 package com.example.backendDBP.controller;
 
 import com.example.backendDBP.models.Produkt;
+import com.example.backendDBP.models.Rezension;
 import com.example.backendDBP.services.KatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
