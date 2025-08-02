@@ -113,7 +113,7 @@ public class KatalogService implements MediastoreServiceAPI {
             List<Produkt> allProducts = produktRepository.findAll();
             return allProducts;
         } else {
-            List<Produkt> produkteByPattern = produktRepository.findProductByPattern(pattern);
+            List<Produkt> produkteByPattern = produktRepository.findProductsByPattern(pattern);
             if (produkteByPattern == null || produkteByPattern.isEmpty()) {
                 throw new IllegalArgumentException("Keine Produkte gefunden.");
             }
