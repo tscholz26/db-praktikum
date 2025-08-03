@@ -1,5 +1,6 @@
 package com.example.backendDBP.services;
 
+import com.example.backendDBP.DTOs.KundeDTO;
 import com.example.backendDBP.DTOs.RezensionDTO;
 import com.example.backendDBP.api.MediastoreServiceAPI;
 import com.example.backendDBP.models.*;
@@ -14,6 +15,7 @@ import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -205,9 +207,21 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
-    public List<Kunde> getTrolls(double grenzwertRating) {
-        // Implementiere die Logik, um Troll-Kunden zu erhalten
-        return null; // Platzhalter, implementiere die Logik hier
+    public List<KundeDTO> getTrolls(double grenzwertRating) {
+        List<Object> resultQuery = kundeRepository.findTrollsKunden(grenzwertRating);
+        List<KundeDTO> trolls = new ArrayList<>();
+        for (Object obj : resultQuery) {
+            Object[] row = (Object[]) obj;
+            Kunde kunde = (Kunde) row[0];
+            Double durchschnittlichesRating = (Double) row[1];
+            KundeDTO kundeDTO = new KundeDTO(kunde.getNutzername(), durchschnittlichesRating);
+            trolls.add(kundeDTO);
+        }
+        if (trolls.isEmpty()) {
+            throw new IllegalArgumentException("Keine Kunden gefunden mit durchschnittlichen Bewertungen unter " + grenzwertRating);
+        } else {
+            return trolls;
+        }
     }
 
     @Override
