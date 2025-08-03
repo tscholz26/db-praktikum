@@ -23,13 +23,13 @@ public class Angebot {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "pnr", insertable = false, updatable = false)
+    @JoinColumn(name = "pnr", nullable = false)
     private Produkt produkt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "filialeid", nullable = false)
-    private Filiale filialeid;
+    private Filiale filiale;
 
     @Column(name = "zustand", nullable = false, length = 20)
     private String zustand;

@@ -1,9 +1,11 @@
 package com.example.backendDBP.services;
 
+import com.example.backendDBP.DTOs.AngebotDTO;
 import com.example.backendDBP.DTOs.KundeDTO;
 import com.example.backendDBP.DTOs.RezensionDTO;
 import com.example.backendDBP.api.MediastoreServiceAPI;
 import com.example.backendDBP.models.*;
+import com.example.backendDBP.repositories.AngebotRepository;
 import com.example.backendDBP.repositories.KundeRepository;
 import com.example.backendDBP.repositories.ProduktRepository;
 import com.example.backendDBP.repositories.RezensionRepository;
@@ -27,11 +29,13 @@ public class KatalogService implements MediastoreServiceAPI {
     private ProduktRepository produktRepository;
     private RezensionRepository rezensionRepository;
     private KundeRepository kundeRepository;
+    private AngebotRepository angebotRepository;
 
 
     @Autowired
     public KatalogService(ProduktRepository produktRepository, RezensionRepository rezensionRepository,
-                          KundeRepository kundeRepository) {
+                          KundeRepository kundeRepository, AngebotRepository angebotRepository) {
+        this.angebotRepository = angebotRepository;
         this.kundeRepository = kundeRepository;
         this.rezensionRepository = rezensionRepository;
         this.produktRepository = produktRepository;
@@ -225,9 +229,27 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
-    public List<Angebot> getOffers(String pnr) {
-        // Implementiere die Logik, um Angebote für ein Produkt zu erhalten
-        return null; // Platzhalter, implementiere die Logik hier
+    public List<AngebotDTO> getOffers(String pnr) {
+        Produkt produkt = produktRepository.findProduktByPnr(pnr);
+        if (produkt == null) {
+            throw new IllegalArgumentException("Produkt mit PNR " + pnr + " nicht gefunden.");
+        }
+        List<Angebot> angebote = angebotRepository.findOffersByPnr(pnr);
+        if (angebote == null || angebote.isEmpty()) {
+            throw new IllegalArgumentException("Keine Angebote für das Produkt mit PNR " + pnr + " gefunden.");
+        }
+        // Konvertiere Angebote in AngebotDTOs
+        List<AngebotDTO> angeboteDTO = angebote.stream()
+                .map(angebot -> new AngebotDTO(
+                        angebot.getId(),
+                        angebot.getProdukt().getPnr(),
+                        angebot.getFiliale().getId(),
+                        angebot.getZustand(),
+                        angebot.getPreis(),
+                        angebot.getWaehrung()
+                        ))
+                .toList();
+        return angeboteDTO;
     }
 
 }
