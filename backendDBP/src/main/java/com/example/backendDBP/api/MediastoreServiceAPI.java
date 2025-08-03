@@ -21,7 +21,7 @@ public interface MediastoreServiceAPI {
     List<Produkt> getTopProducts(int lim);
     List<Produkt> getSimilarCheaperProducts(String pnr);
     List<RezensionDTO> getProductReviews(String pnr);
-    void addNewReview(String pnr, String nutzername, int bewertung, String rezension);
+    Rezension addNewReview(RezensionDTO rezensionDTO);
     List<Kunde> getTrolls(double grenzwertRating);
     List<Angebot> getOffers(String pnr);
 

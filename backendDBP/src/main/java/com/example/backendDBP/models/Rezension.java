@@ -15,18 +15,19 @@ import org.hibernate.annotations.OnDeleteAction;
 })
 public class Rezension {
     @Id
-    @ColumnDefault("nextval('rezension_rezensionsid_seq')")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rezension_seq")
+    @SequenceGenerator(name = "rezension_seq", sequenceName = "rezension_rezensionsid_seq", allocationSize = 1)
     @Column(name = "rezensionsid", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "pnr", insertable = false, updatable = false)
+    @JoinColumn(name = "pnr")
     private Produkt produkt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "nutzername", insertable = false, updatable = false)
+    @JoinColumn(name = "nutzername")
     private Kunde kunde;
 
     @Column(name = "bewertung")

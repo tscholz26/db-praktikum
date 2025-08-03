@@ -5,10 +5,7 @@ import com.example.backendDBP.DTOs.RezensionDTO;
 import com.example.backendDBP.models.Rezension;
 import com.example.backendDBP.services.KatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +23,10 @@ public class RezensionController {
     @GetMapping("/getProduktRezensionen")
     public List<RezensionDTO> getProduktRezensionen(@RequestParam String pnr) {
         return katalogService.getProductReviews(pnr);
+    }
+
+    @PostMapping("/addRezension")
+    public Rezension addRezension(@RequestBody RezensionDTO rezensionDTO) {
+        return katalogService.addNewReview(rezensionDTO);
     }
 }

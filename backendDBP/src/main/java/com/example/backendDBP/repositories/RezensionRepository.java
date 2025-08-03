@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface RezensionRepository extends JpaRepository<Rezension, Integer> {
+
     @Query("SELECT r FROM Rezension r WHERE r.produkt.pnr = :pnr")
     List<Rezension> findAllByPnr(@Param("pnr") String pnr);
 }

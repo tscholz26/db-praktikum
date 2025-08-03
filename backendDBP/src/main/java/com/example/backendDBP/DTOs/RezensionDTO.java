@@ -19,6 +19,13 @@ public class RezensionDTO {
     private Integer bewertung;
     private String rezension;
 
+    public RezensionDTO(String pnr, String nutzername, String bewertung, String rezension) {
+        this.pnr = pnr;
+        this.nutzername = nutzername;
+        this.bewertung = Integer.parseInt(bewertung);
+        this.rezension = rezension;
+    }
+
 }
 
 

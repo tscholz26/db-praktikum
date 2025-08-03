@@ -3,6 +3,7 @@ package com.example.backendDBP.services;
 import com.example.backendDBP.DTOs.RezensionDTO;
 import com.example.backendDBP.api.MediastoreServiceAPI;
 import com.example.backendDBP.models.*;
+import com.example.backendDBP.repositories.KundeRepository;
 import com.example.backendDBP.repositories.ProduktRepository;
 import com.example.backendDBP.repositories.RezensionRepository;
 import lombok.NoArgsConstructor;
@@ -23,10 +24,13 @@ public class KatalogService implements MediastoreServiceAPI {
     private SessionFactory sessionFactory;
     private ProduktRepository produktRepository;
     private RezensionRepository rezensionRepository;
+    private KundeRepository kundeRepository;
 
 
     @Autowired
-    public KatalogService(ProduktRepository produktRepository, RezensionRepository rezensionRepository) {
+    public KatalogService(ProduktRepository produktRepository, RezensionRepository rezensionRepository,
+                          KundeRepository kundeRepository) {
+        this.kundeRepository = kundeRepository;
         this.rezensionRepository = rezensionRepository;
         this.produktRepository = produktRepository;
     }
@@ -182,9 +186,22 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
-    public void addNewReview(String pnr, String nutzername, int bewertung, String rezension) {
-        // Implementiere die Logik, um eine neue Rezension hinzuzufügen
-        // Hier sollte die Logik zum Hinzufügen einer Rezension implementiert werden
+    public Rezension addNewReview(RezensionDTO rezensionDTO) {
+        Produkt produkt = produktRepository.findProduktByPnr(rezensionDTO.getPnr());
+        if (produkt == null) {
+            throw new IllegalArgumentException("Produkt mit PNR " + rezensionDTO.getPnr() + " nicht gefunden.");
+        }
+        Kunde kunde = kundeRepository.findKundeByNutzername(rezensionDTO.getNutzername());
+        if (kunde == null) {
+            throw new IllegalArgumentException("Kunde mit Nutzername " + rezensionDTO.getNutzername() + " nicht gefunden.");
+        }
+        Rezension newRezension = new Rezension();
+        newRezension.setProdukt(produkt);
+        newRezension.setKunde(kunde);
+        newRezension.setBewertung(rezensionDTO.getBewertung());
+        newRezension.setRezension(rezensionDTO.getRezension());
+        rezensionRepository.save(newRezension);
+        return newRezension;
     }
 
     @Override
