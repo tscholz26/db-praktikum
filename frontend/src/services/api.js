@@ -14,7 +14,7 @@ const apiClient = axios.create({
 // Hello World
 export const getTestMessage = async () => {
     try {
-        const response = await apiClient.get(`${API_URL}/test`);
+        const response = await apiClient.get('/test');
         return response.data;
     } catch (error) {
         console.error("Error fetching Hello World:", error);
@@ -48,10 +48,54 @@ export const getProdukt = async (pnr) => {
     }
 };
 
-export function getRezensionen(pnr) {
-    return axios.get('/getRezensionen', { params: { pnr } });
-}
+// Get reviews for a product
+export const getRezensionen = async (pnr) => {
+    try {
+        const response = await apiClient.get('/getRezensionen', {
+            params: { pnr }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching reviews:", error);
+        throw error;
+    }
+};
 
-export function addRezension(rezension) {
-    return axios.post('/addRezension', rezension);
-}
+// Add a new review
+export const addRezension = async (rezension) => {
+    try {
+        const response = await apiClient.post('/addRezension', rezension);
+        return response.data;
+    } catch (error) {
+        console.error("Error adding review:", error);
+        throw error;
+    }
+};
+
+// Get offers for a product
+export const getAngebote = async (pnr) => {
+    try {
+        const response = await apiClient.get('/getAngebote', {
+            params: { pnr }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching offers:", error);
+        throw error;
+    }
+};
+
+export const getTopProdukte = async (lim) => {
+    try {
+        //const response = await apiClient.get('/getTopProdukte', {
+        //    params: { lim }
+        //});
+        const response = await apiClient.get('/getTopProdukte', {
+            params: { lim: lim }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching top products:", error);
+        throw error;
+    }
+};

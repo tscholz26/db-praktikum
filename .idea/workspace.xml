@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page">
+    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- add functionality to ItemOverview.vue: add list of all items including images, pnr, title&#10;- add corresponding mappings in api.js&#10;- change width of #app to 100% vw">
       <change afterPath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -113,7 +109,7 @@
       <workItem from="1751814197033" duration="1248000" />
       <workItem from="1752751373677" duration="585000" />
       <workItem from="1754041463562" duration="860000" />
-      <workItem from="1754312258431" duration="4651000" />
+      <workItem from="1754312258431" duration="6752000" />
     </task>
     <task id="LOCAL-00001" summary="- remove devtools footer, init first page, link to shop page">
       <option name="closed" value="true" />
@@ -139,7 +135,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754050254353</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="- add functionality to ItemOverview.vue: add list of all items including images, pnr, title&#10;- add corresponding mappings in api.js&#10;- change width of #app to 100% vw">
+      <option name="closed" value="true" />
+      <created>1754327123070</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1754327123070</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,6 +166,7 @@
     <MESSAGE value="- remove devtools footer, init first page, link to shop page" />
     <MESSAGE value="- add api.js and .env to start connecting frontend and backend" />
     <MESSAGE value="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page" />
-    <option name="LAST_COMMIT_MESSAGE" value="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page" />
+    <MESSAGE value="- add functionality to ItemOverview.vue: add list of all items including images, pnr, title&#10;- add corresponding mappings in api.js&#10;- change width of #app to 100% vw" />
+    <option name="LAST_COMMIT_MESSAGE" value="- add functionality to ItemOverview.vue: add list of all items including images, pnr, title&#10;- add corresponding mappings in api.js&#10;- change width of #app to 100% vw" />
   </component>
 </project>
