@@ -21,18 +21,16 @@
       <table>
         <thead>
         <tr>
-          <th>Zustand</th>
           <th>Preis</th>
-          <th>Währung</th>
+          <th>Zustand</th>
           <th>Filiale</th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="angebot in angebote" :key="angebot.id">
+          <td>{{ angebot.preis }} {{angebot.waehrung }}</td>
           <td>{{ angebot.zustand }}</td>
-          <td>{{ angebot.preis }}</td>
-          <td>{{ angebot.waehrung }}</td>
-          <td>{{ angebot.filialeId }}</td>
+          <td>{{ angebot.filialeid }}</td>
         </tr>
         </tbody>
       </table>
