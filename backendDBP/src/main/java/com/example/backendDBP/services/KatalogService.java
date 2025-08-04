@@ -2,14 +2,12 @@ package com.example.backendDBP.services;
 
 import com.example.backendDBP.BackendDbpApplication;
 import com.example.backendDBP.DTOs.AngebotDTO;
+import com.example.backendDBP.DTOs.KategorieDTO;
 import com.example.backendDBP.DTOs.KundeDTO;
 import com.example.backendDBP.DTOs.RezensionDTO;
 import com.example.backendDBP.api.MediastoreServiceAPI;
 import com.example.backendDBP.models.*;
-import com.example.backendDBP.repositories.AngebotRepository;
-import com.example.backendDBP.repositories.KundeRepository;
-import com.example.backendDBP.repositories.ProduktRepository;
-import com.example.backendDBP.repositories.RezensionRepository;
+import com.example.backendDBP.repositories.*;
 import lombok.NoArgsConstructor;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -22,7 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Service
@@ -33,15 +34,17 @@ public class KatalogService implements MediastoreServiceAPI {
     private RezensionRepository rezensionRepository;
     private KundeRepository kundeRepository;
     private AngebotRepository angebotRepository;
+    private KategorieRepository kategorieRepository;
 
 
     @Autowired
     public KatalogService(ProduktRepository produktRepository, RezensionRepository rezensionRepository,
-                          KundeRepository kundeRepository, AngebotRepository angebotRepository) {
+                          KundeRepository kundeRepository, AngebotRepository angebotRepository, KategorieRepository kategorieRepository) {
         this.angebotRepository = angebotRepository;
         this.kundeRepository = kundeRepository;
         this.rezensionRepository = rezensionRepository;
         this.produktRepository = produktRepository;
+        this.kategorieRepository = kategorieRepository;
     }
 
     @Override
@@ -159,9 +162,34 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
-    public List<Kategorie> getCategorieTree(String pnr) {
-        // Implementiere die Logik, um den Kategoriebaum für ein Produkt zu erhalten
-        return null; // Platzhalter, implementiere die Logik hier
+    public List<KategorieDTO> getCategorieTree(String pnr) {
+        // 1. Hole alle relevanten Kategorien per CTE-Native-Query
+        List<Kategorie> flatList = kategorieRepository.findCategoryTreeForProduct(pnr);
+
+        // 2. Wandle jede Entity in ein KategorieDTO um und speichere in Map
+        Map<Integer, KategorieDTO> dtoMap = flatList.stream()
+                .map(cat -> new KategorieDTO(cat.getId(), cat.getName()))
+                .collect(Collectors.toMap(
+                        KategorieDTO::getKategorieid,
+                        Function.identity(),
+                        (existing, duplicate) -> existing));
+
+        // 3. Füge jedes DTO seinem Eltern-Knoten hinzu (sofern dieser auch im Ergebnis ist)
+        List<KategorieDTO> roots = new ArrayList<>();
+        for (Kategorie kat : flatList) {
+            KategorieDTO node = dtoMap.get(kat.getId());
+            Kategorie parent = kat.getOberkategorieid();
+            if (parent != null && dtoMap.containsKey(parent.getId())) {
+                dtoMap.get(parent.getId()).getChildren().add(node);
+            } else {
+                // Keine Oberkategorie oder Oberkategorie nicht im Ergebnis → Wurzel
+                roots.add(node);
+            }
+        }
+
+        return roots.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -182,10 +210,6 @@ public class KatalogService implements MediastoreServiceAPI {
         return topProducts;
     }
 
-//    @Override
-//    public List<Produkt> getSimilarCheaperProducts(String pnr) {
-//        return null;
-//    }
     @Override
     public List<Produkt> getSimilarCheaperProducts(String pnr) {
         Produkt produkt = produktRepository.findProduktByPnr(pnr);
