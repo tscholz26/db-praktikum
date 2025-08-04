@@ -1,5 +1,6 @@
 package com.example.backendDBP.services;
 
+import com.example.backendDBP.BackendDbpApplication;
 import com.example.backendDBP.DTOs.AngebotDTO;
 import com.example.backendDBP.DTOs.KundeDTO;
 import com.example.backendDBP.DTOs.RezensionDTO;
@@ -17,6 +18,8 @@ import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -47,8 +50,28 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
-    public void init(Properties properties) {
-        // 1) Hibernate-Konfiguration anlegen
+    public void init() {
+        if (this.sessionFactory != null && !this.sessionFactory.isClosed()) {
+            throw new IllegalStateException("Es existiert bereits eine offene Session");
+        }
+
+        // application.properties ins Properties-Objekt laden
+        Properties properties = new Properties();
+        try (InputStream in = BackendDbpApplication.class
+                .getClassLoader()
+                .getResourceAsStream("application.properties")) {
+            if (in == null) {
+                System.err.println("ERROR: application.properties nicht gefunden im Classpath!");
+                System.exit(1);
+            }
+            properties.load(in);
+        } catch (IOException e) {
+            System.err.println("ERROR beim Laden der application.properties: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        // Hibernate-Konfiguration anlegen
         Configuration hibernateConfig = new Configuration();
 
         // Lese die Konfigurationseigenschaften aus dem Properties-Objekt
@@ -68,7 +91,7 @@ public class KatalogService implements MediastoreServiceAPI {
         hibernateConfig.setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
 
 
-        // 2) Annotated Entity-Klassen registrieren
+        // Annotated Entity-Klassen registrieren
         hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Produkt.class);
         hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Kategorie.class);
         hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Rezension.class);
@@ -92,21 +115,25 @@ public class KatalogService implements MediastoreServiceAPI {
         hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.ProduktKategorie.class);
         hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Song.class);
 
-        // 3) ServiceRegistry aufbauen
+        //  ServiceRegistry aufbauen
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .applySettings(hibernateConfig.getProperties())
                 .build();
 
-        // 4) SessionFactory erzeugen
+        //  Session erzeugen
         this.sessionFactory = hibernateConfig.buildSessionFactory(registry);
+        System.out.println("[INFO] Session erzeugt");
     }
 
-    @Override
     public void finish() {
-        if (this.sessionFactory != null) {
-            this.sessionFactory.close();
+        if (sessionFactory != null && !sessionFactory.isClosed()) {
+            sessionFactory.close();
+            System.out.println("[INFO] Session wurde erfolgreich geschlossen.");
+        } else {
+            System.out.println("[INFO] Session war bereits geschlossen oder nicht initialisiert.");
         }
     }
+
 
     @Override
     public Produkt getProduct(String pnr) {

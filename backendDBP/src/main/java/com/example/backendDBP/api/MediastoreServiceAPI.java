@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Properties;
 
 public interface MediastoreServiceAPI {
-   void init(Properties properties);
+   void init();
    void finish();
 
     String HelloWorld();
