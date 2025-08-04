@@ -1,17 +1,29 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getProdukte } from '../services/api.js'
+import { getProdukte, getTopProdukte } from '../services/api.js'
 
 const router = useRouter()
 const produkte = ref([])
 const pattern = ref('')
 const asinInput = ref('')
 const titleInput = ref('')
+const ratingInput = ref('')
 
 const fetchProdukte = async () => {
   try {
     const data = await getProdukte(pattern.value)
+    produkte.value = data
+  } catch (error) {
+    console.error('Fehler beim Laden der Produkte:', error)
+    produkte.value = []
+  }
+}
+
+const fetchTopRatings = async () => {
+  try {
+    const limit = ratingInput.value.trim()
+    const data = await getTopProdukte(limit)
     produkte.value = data
   } catch (error) {
     console.error('Fehler beim Laden der Produkte:', error)
@@ -25,7 +37,7 @@ const goToDetail = (pnr) => {
   router.push(`/shop/${pnr}`)
 }
 
-const handleAsinFilter = () => {
+const searchByPnr = () => {
   if (asinInput.value.trim()) {
     router.push(`/shop/${asinInput.value.trim()}`)
   }
@@ -47,17 +59,21 @@ const truncateTitle = (title) => {
   <div class="page-wrapper">
     <header class="header">
       <div class="filter-group">
-        <input v-model="asinInput" placeholder="PNR eingeben" />
-        <button @click="handleAsinFilter">Filter: asin</button>
+        <input v-model="asinInput" placeholder="PNR" />
+        <button @click="searchByPnr">PNR suchen</button>
       </div>
 
       <div class="filter-group">
-        <input v-model="titleInput" placeholder="Titel eingeben" />
-        <button @click="handleTitleFilter">Filter: title</button>
+        <input v-model="titleInput" placeholder="Titel" />
+        <button @click="handleTitleFilter">Titel filtern</button>
+      </div>
+
+      <div class="filter-group">
+        <input v-model="ratingInput" placeholder="k" />
+        <button @click="fetchTopRatings">Top k Produkte anzeigen</button>
       </div>
 
       <button disabled>Filter: category</button>
-      <button disabled>Filter: Rating</button>
       <button disabled>getTrolls</button>
       <button disabled>Finish</button>
     </header>
