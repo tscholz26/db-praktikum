@@ -11,10 +11,6 @@ const apiClient = axios.create({
     //},
 });
 
-/*--------------------------------------------------------------
-----GET MAPPINGS----GET MAPPINGS----GET MAPPINGS----GET MAPPINGS
---------------------------------------------------------------*/
-
 // Hello World
 export const getTestMessage = async () => {
     try {
@@ -26,88 +22,36 @@ export const getTestMessage = async () => {
     }
 };
 
-// Get all persons
-export const getPersons = async () => {
+// Get list of products (optionally with pattern filter)
+export const getProdukte = async (pattern = '') => {
     try {
-        const response = await apiClient.get(`${API_URL}/personen/all`);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching persons:", error);
-        throw error;
-    }
-};
-
-
-
-export const getOrders = async (groupID,date) => {
-    try {
-        console.log("Getting orders for group with ID " + groupID + " and date " + date)
-        const response = await fetch(`${API_URL}/bestellungen/group/${groupID}/date/${date}`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            }
+        const response = await apiClient.get('/getProdukte', {
+            params: pattern ? { pattern } : {}
         });
-        return response;
+        return response.data;
     } catch (error) {
+        console.error("Error fetching products:", error);
         throw error;
     }
 };
 
-
-/*------------------------------------------------------------------
-----POST MAPPINGS----POST MAPPINGS----POST MAPPINGS----POST MAPPINGS
-------------------------------------------------------------------*/
-
-export const addPerson = async (id, na, rl, gi, sn) => {
+// Get single product by PNR
+export const getProdukt = async (pnr) => {
     try {
-        const dataToSend = {
-            personID: id,
-            name: na,
-            rolle: rl,
-            gruppeID: gi,
-            standortName: sn
-        };
-        console.log('Data to send: ', dataToSend);
-
-        const response = await apiClient.post(`${API_URL}/personen/add`, dataToSend, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+        const response = await apiClient.get('/getProdukt', {
+            params: { pnr }
         });
-        // Handle the successful response if needed
         return response.data;
     } catch (error) {
-        console.error('Error sending data to backend:', error);
+        console.error("Error fetching product:", error);
         throw error;
     }
 };
 
+export function getRezensionen(pnr) {
+    return axios.get('/getRezensionen', { params: { pnr } });
+}
 
-/*--------------------------------------------------------------
-----PUT MAPPINGS----PUT MAPPINGS----PUT MAPPINGS----PUT MAPPINGS
---------------------------------------------------------------*/
-
-export const updatePerson = async (id, na, rl, gi, sn) => {
-    try {
-        const dataToSend = {
-            personID: id,
-            name: na,
-            rolle: rl,
-            gruppeID: gi,
-            standortName: sn
-        };
-
-        console.log('Sending data to backend:', dataToSend);
-
-        const response = await apiClient.put(
-            `${API_URL}/personen/update/${id}`, // ID in the URL
-            dataToSend, // Payload
-            { headers: { 'Content-Type': 'application/json' } }
-        );
-        return response.data;
-    } catch (error) {
-        console.error('Error sending data to backend:', error);
-        throw error; // Let the caller handle errors
-    }
-};
-
+export function addRezension(rezension) {
+    return axios.post('/addRezension', rezension);
+}

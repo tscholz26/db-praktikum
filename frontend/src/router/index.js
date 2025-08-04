@@ -17,6 +17,11 @@ const router = createRouter({
       name: 'itemOverwiev',
       component: ItemOverview,
     },
+    {
+      path: '/shop/:pnr',
+      name: 'ProductDetail',
+      component: () => import('../pages/ProductDetailView.vue')
+    }
   ],
 })
 

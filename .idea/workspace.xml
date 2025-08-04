@@ -5,10 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page">
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Vue Composition API Component" />
         <option value="package.json" />
+        <option value="Vue Composition API Component" />
       </list>
     </option>
   </component>
@@ -64,6 +68,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -76,6 +81,14 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Daten\Programmierung\dbpraktikum\frontend\src\services" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="dbpraktikum" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -100,6 +113,7 @@
       <workItem from="1751814197033" duration="1248000" />
       <workItem from="1752751373677" duration="585000" />
       <workItem from="1754041463562" duration="860000" />
+      <workItem from="1754312258431" duration="4651000" />
     </task>
     <task id="LOCAL-00001" summary="- remove devtools footer, init first page, link to shop page">
       <option name="closed" value="true" />
