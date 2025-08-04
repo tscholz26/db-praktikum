@@ -1,6 +1,7 @@
 package com.example.backendDBP.api;
 
 import com.example.backendDBP.DTOs.AngebotDTO;
+import com.example.backendDBP.DTOs.KategorieDTO;
 import com.example.backendDBP.DTOs.KundeDTO;
 import com.example.backendDBP.DTOs.RezensionDTO;
 import com.example.backendDBP.models.*;
@@ -17,7 +18,7 @@ public interface MediastoreServiceAPI {
     Produkt getProduct(String pnr);
     List<Produkt> getProducts(String pattern);
 
-    List<Kategorie> getCategorieTree(String pnr);
+    List<KategorieDTO> getCategorieTree(String pnr);
 
     List<Produkt> getProductsByCategoryPath(List<Kategorie> kategoriePath);
     List<Produkt> getTopProducts(int lim);
