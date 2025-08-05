@@ -19,6 +19,17 @@ export const initDB = async () => {
     }
 };
 
+// Finish DB Connection
+export const finishDB = async () => {
+    try {
+        const response = await apiClient.post('/finish');
+        return response.data;
+    } catch (error) {
+        console.error("Error terminating connection to DB:", error);
+        throw error;
+    }
+};
+
 // Hello World
 export const getTestMessage = async () => {
     try {

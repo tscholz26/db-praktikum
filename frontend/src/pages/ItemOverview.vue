@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getProdukte, getTopProdukte } from '../services/api.js'
+import { getProdukte, getTopProdukte, finishDB } from '../services/api.js'
 
 const router = useRouter()
 const produkte = ref([])
@@ -9,6 +9,15 @@ const pattern = ref('')
 const asinInput = ref('')
 const titleInput = ref('')
 const ratingInput = ref('')
+
+async function finish() {
+  try {
+    await finishDB();
+    router.push('/');
+  } catch (error) {
+    alert("Error terminating database connection: " + error);
+  }
+}
 
 const fetchProdukte = async () => {
   try {
@@ -75,7 +84,7 @@ const truncateTitle = (title) => {
 
       <button disabled>Filter: category</button>
       <button disabled>getTrolls</button>
-      <button disabled>Finish</button>
+      <button @click="finish()">Finish</button>
     </header>
 
     <main class="content">
