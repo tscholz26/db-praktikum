@@ -36,6 +36,13 @@
       </table>
     </section>
 
+    <section v-if="kategorieTree.length" class="kategorien">
+      <h2>Kategorien</h2>
+      <ul>
+        <CategoryNode v-for="node in kategorieTree" :key="node.kategorieid" :node="node" />
+      </ul>
+    </section>
+
     <section v-if="!produkt && !loading">
       <p>Produkt nicht gefunden.</p>
     </section>
@@ -43,33 +50,38 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import {
-  getProdukt,
-  getRezensionen,
-  getAngebote
-} from '../services/api.js';
+  import { onMounted, ref } from 'vue';
+  import { useRoute } from 'vue-router';
+  import {
+    getProdukt,
+    getRezensionen,
+    getAngebote,
+    getCategoryForItem
+  } from '../services/api.js';
+  import CategoryNode from '../components/CategoryNode.vue';
 
-const route = useRoute();
-const pnr = route.params.pnr;
 
-const produkt = ref(null);
-const rezensionen = ref([]);
-const angebote = ref([]);
-const loading = ref(true);
+  const route = useRoute();
+  const pnr = route.params.pnr;
 
-onMounted(async () => {
-  try {
-    produkt.value = await getProdukt(pnr);
-    rezensionen.value = await getRezensionen(pnr);
-    angebote.value = await getAngebote(pnr);
-  } catch (error) {
-    console.error("Fehler beim Laden der Produktdaten:", error);
-  } finally {
-    loading.value = false;
-  }
-});
+  const produkt = ref(null);
+  const rezensionen = ref([]);
+  const angebote = ref([]);
+  const loading = ref(true);
+  const kategorieTree = ref([]);
+
+  onMounted(async () => {
+    try {
+      produkt.value = await getProdukt(pnr);
+      rezensionen.value = await getRezensionen(pnr);
+      angebote.value = await getAngebote(pnr);
+      kategorieTree.value = await getCategoryForItem(pnr);
+    } catch (error) {
+      console.error("Fehler beim Laden der Produktdaten:", error);
+    } finally {
+      loading.value = false;
+    }
+  });
 </script>
 
 <style scoped>

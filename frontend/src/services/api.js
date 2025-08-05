@@ -118,3 +118,15 @@ export const getTopProdukte = async (lim) => {
         throw error;
     }
 };
+
+export const getCategoryForItem = async (pnr) => {
+    try {
+        const response = await apiClient.get('/getKategorieBaum', {
+            params: { pnr }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching category tree for item:", error);
+        throw error;
+    }
+};
