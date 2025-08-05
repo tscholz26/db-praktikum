@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- add categoryTree section to product detail page&#10;- add corresponding mapping to get category tree in api.js&#10;- create new component CategoryNode.vue">
+    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- add checkbox for &quot;reviewing as guest&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +114,7 @@
       <workItem from="1754041463562" duration="860000" />
       <workItem from="1754312258431" duration="6752000" />
       <workItem from="1754380262483" duration="916000" />
-      <workItem from="1754381205019" duration="3243000" />
+      <workItem from="1754381205019" duration="4032000" />
     </task>
     <task id="LOCAL-00001" summary="- remove devtools footer, init first page, link to shop page">
       <option name="closed" value="true" />
@@ -181,7 +180,23 @@
       <option name="project" value="LOCAL" />
       <updated>1754382794723</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="- add basic functionality to add reviews on product detail page&#10;- add corresponding post-mapping in api.js&#10;- TODO: add possibility to review as guest">
+      <option name="closed" value="true" />
+      <created>1754384632285</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1754384632285</updated>
+    </task>
+    <task id="LOCAL-00010" summary="- add checkbox for &quot;reviewing as guest&quot;">
+      <option name="closed" value="true" />
+      <created>1754385098390</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1754385098390</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -209,6 +224,8 @@
     <MESSAGE value="- add post mapping initDB to api.js&#10;- add logic to InitPage that tries to connect to backend by using init mapping&#10;- remove test DB connection Button" />
     <MESSAGE value="- do the same for finishDB()" />
     <MESSAGE value="- add categoryTree section to product detail page&#10;- add corresponding mapping to get category tree in api.js&#10;- create new component CategoryNode.vue" />
-    <option name="LAST_COMMIT_MESSAGE" value="- add categoryTree section to product detail page&#10;- add corresponding mapping to get category tree in api.js&#10;- create new component CategoryNode.vue" />
+    <MESSAGE value="- add basic functionality to add reviews on product detail page&#10;- add corresponding post-mapping in api.js&#10;- TODO: add possibility to review as guest" />
+    <MESSAGE value="- add checkbox for &quot;reviewing as guest&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="- add checkbox for &quot;reviewing as guest&quot;" />
   </component>
 </project>

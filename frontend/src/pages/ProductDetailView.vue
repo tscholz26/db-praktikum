@@ -26,6 +26,7 @@ const newRezension = ref({
   rezension: ''
 });
 const reviewAsGuest = ref(false);
+const hoverRating = ref(0);
 
 const submitRezension = async () => {
   if (!reviewAsGuest.value && !newRezension.value.nutzername) {
@@ -81,17 +82,47 @@ onMounted(async () => {
       <p><strong>Rating:</strong> {{ produkt.rating ?? 'Keine Bewertung' }}</p>
     </section>
 
-    <section v-if="rezensionen.length" class="rezensionen">
-      <h2>Rezensionen</h2>
-      <div v-for="rez in rezensionen" :key="rez.id" class="rezension">
-        <p><strong>{{ rez.nutzername }}</strong> ({{ rez.bewertung }}/5)</p>
-        <p v-html="rez.rezension"></p>
-      </div>
+    <section v-if="angebote.length" class="angebote">
+      <h2>Angebote</h2>
+      <table>
+        <thead>
+        <tr>
+          <th>Preis</th>
+          <th>Zustand</th>
+          <th>Filiale</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="angebot in angebote" :key="angebot.id">
+          <td>{{ angebot.preis }} {{angebot.waehrung }}</td>
+          <td>{{ angebot.zustand }}</td>
+          <td>{{ angebot.filialeid }}</td>
+        </tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="rezension-form">
       <h2>Rezension schreiben</h2>
       <form @submit.prevent="submitRezension">
+
+        <div class="form-group">
+          <label>Bewertung</label>
+          <div class="star-rating">
+            <span
+                v-for="n in 5"
+                :key="n"
+                class="star"
+                :class="{ filled: n <= newRezension.bewertung }"
+                @click="newRezension.bewertung = n"
+                @mouseover="hoverRating = n"
+                @mouseleave="hoverRating = 0"
+            >
+              ★
+            </span>
+          </div>
+        </div>
+
         <div class="form-group name-group">
           <label for="nutzername">Nutzername</label>
           <div class="name-input-container">
@@ -112,13 +143,6 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="bewertung">Bewertung (1-5)</label>
-          <select id="bewertung" v-model.number="newRezension.bewertung" required>
-            <option disabled value="">Bitte wählen</option>
-            <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
-          </select>
-        </div>
 
         <div class="form-group">
           <label for="rezension">Rezension</label>
@@ -134,25 +158,14 @@ onMounted(async () => {
       </form>
     </section>
 
-    <section v-if="angebote.length" class="angebote">
-      <h2>Angebote</h2>
-      <table>
-        <thead>
-        <tr>
-          <th>Preis</th>
-          <th>Zustand</th>
-          <th>Filiale</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="angebot in angebote" :key="angebot.id">
-          <td>{{ angebot.preis }} {{angebot.waehrung }}</td>
-          <td>{{ angebot.zustand }}</td>
-          <td>{{ angebot.filialeid }}</td>
-        </tr>
-        </tbody>
-      </table>
+    <section v-if="rezensionen.length" class="rezensionen">
+      <h2>Rezensionen anderer Kunden</h2>
+      <div v-for="rez in rezensionen" :key="rez.id" class="rezension">
+        <p><strong>{{ rez.nutzername }}</strong> ({{ rez.bewertung }}/5)</p>
+        <p v-html="rez.rezension"></p>
+      </div>
     </section>
+
 
     <section v-if="kategorieTree.length" class="kategorien">
       <h2>Kategorien</h2>
@@ -242,5 +255,26 @@ button {
   cursor: pointer;
 }
 
+.star-rating {
+  font-size: 2rem;
+  color: #ddd;
+  display: flex;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.star-rating .star.filled,
+.star-rating .star:hover,
+.star-rating .star:hover ~ .star {
+  color: gold;
+}
+
+.star-rating .star {
+  transition: color 0.2s;
+}
+
+.star-rating .star:hover ~ .star {
+  color: #ddd !important;
+}
 
 </style>
