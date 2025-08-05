@@ -19,6 +19,7 @@ public interface MediastoreServiceAPI {
     List<Produkt> getProducts(String pattern);
 
     List<KategorieDTO> getCategorieTree(String pnr);
+    List<KategorieDTO> getFullCategoryTree();
 
     List<Produkt> getProductsByCategoryPath(List<Kategorie> kategoriePath);
     List<Produkt> getTopProducts(int lim);

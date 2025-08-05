@@ -28,4 +28,16 @@ public interface KategorieRepository extends JpaRepository<Kategorie, Integer> {
                     "FROM cat_tree                                                \n"
             , nativeQuery = true)
     List<Kategorie> findCategoryTreeForProduct(@Param("pnr") String pnr);
+
+    @Query(value =
+            "WITH RECURSIVE cat_tree AS (                                   \n" +
+                    "  SELECT * FROM kategorie WHERE oberkategorieid IS NULL        \n" +
+                    "  UNION ALL                                                    \n" +
+                    "  SELECT k.*                                                   \n" +
+                    "  FROM kategorie k                                             \n" +
+                    "  JOIN cat_tree ct ON k.oberkategorieid = ct.kategorieid       \n" +
+                    ")                                                              \n" +
+                    "SELECT * FROM cat_tree                                         \n",
+            nativeQuery = true)
+    List<Kategorie> findFullCategoryTree();
 }

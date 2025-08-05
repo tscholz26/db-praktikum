@@ -144,6 +144,15 @@ export const getCategoryForItem = async (pnr) => {
     }
 };
 
+export const getFullCategoryTree = async () => {
+    try {
+        const response = await apiClient.get('/getKompletterKategorieBaum');
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching full category tree:", error);
+        throw error;
+    }
+};
 
 export const getCheaperSimilarProducts = async (pnr) => {
     try {

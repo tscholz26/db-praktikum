@@ -193,6 +193,36 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
+    public List<KategorieDTO> getFullCategoryTree() {
+        //baum berechnen
+        List<Kategorie> flatList = kategorieRepository.findFullCategoryTree();
+
+        //kategorien auf dtos mappen (wie oben)
+        Map<Integer, KategorieDTO> dtoMap = flatList.stream()
+                .map(cat -> new KategorieDTO(cat.getId(), cat.getName()))
+                .collect(Collectors.toMap(
+                        KategorieDTO::getKategorieid,
+                        Function.identity(),
+                        (existing, duplicate) -> existing));
+
+        //baumstruktur bauen (wie oben)
+        List<KategorieDTO> roots = new ArrayList<>();
+        for (Kategorie kat : flatList) {
+            KategorieDTO node = dtoMap.get(kat.getId());
+            Kategorie parent = kat.getOberkategorieid();
+            if (parent != null && dtoMap.containsKey(parent.getId())) {
+                dtoMap.get(parent.getId()).getChildren().add(node);
+            } else {
+                roots.add(node);
+            }
+        }
+
+        return roots.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Produkt> getProductsByCategoryPath(List<Kategorie> kategoriePath) {
         // Implementiere die Logik, um Produkte anhand eines Kategoriepfads zu erhalten
         return null; // Platzhalter, implementiere die Logik hier

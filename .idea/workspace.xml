@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- make some cosmetic modifications to main.css and Initpage&#10;- change loading order of ProductDetailView.vue">
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/CategoryNodeClickable.vue" afterDir="false" />
+    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- add functionality to filter category button: add popup window that shows category tree&#10;- create component CategoryNodeClickable.vue to allow navigation through category tree&#10;- add functionality to get path from a clicked category and call a filtering method based on the selected path&#10;- add dummy mapping in api.js that filters products by path (not in use yet, backend mapping is not existent yet)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/api/MediastoreServiceAPI.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/api/MediastoreServiceAPI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/controller/KategorieController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/controller/KategorieController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/repositories/KategorieRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/repositories/KategorieRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/services/KatalogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backendDBP/src/main/java/com/example/backendDBP/services/KatalogService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
     </list>
@@ -116,7 +119,7 @@
       <workItem from="1754041463562" duration="860000" />
       <workItem from="1754312258431" duration="6752000" />
       <workItem from="1754380262483" duration="916000" />
-      <workItem from="1754381205019" duration="12828000" />
+      <workItem from="1754381205019" duration="14521000" />
     </task>
     <task id="LOCAL-00001" summary="- remove devtools footer, init first page, link to shop page">
       <option name="closed" value="true" />
@@ -230,7 +233,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754389259449</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="- add functionality to filter category button: add popup window that shows category tree&#10;- create component CategoryNodeClickable.vue to allow navigation through category tree&#10;- add functionality to get path from a clicked category and call a filtering method based on the selected path&#10;- add dummy mapping in api.js that filters products by path (not in use yet, backend mapping is not existent yet)">
+      <option name="closed" value="true" />
+      <created>1754394963746</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1754394963746</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,6 +275,7 @@
     <MESSAGE value="- add functionality to view cheaper similar products&#10;- add corresponding api call in api.js" />
     <MESSAGE value="ADD LOGIC TO SHOW TROLLS&#10;- create new page trolls.vue&#10;- connect getTrolls button to new page via router&#10;- add corresponding mapping in api.js&#10;- add table that fetches data and displays trolls on trolls.vue" />
     <MESSAGE value="- make some cosmetic modifications to main.css and Initpage&#10;- change loading order of ProductDetailView.vue" />
-    <option name="LAST_COMMIT_MESSAGE" value="- make some cosmetic modifications to main.css and Initpage&#10;- change loading order of ProductDetailView.vue" />
+    <MESSAGE value="- add functionality to filter category button: add popup window that shows category tree&#10;- create component CategoryNodeClickable.vue to allow navigation through category tree&#10;- add functionality to get path from a clicked category and call a filtering method based on the selected path&#10;- add dummy mapping in api.js that filters products by path (not in use yet, backend mapping is not existent yet)" />
+    <option name="LAST_COMMIT_MESSAGE" value="- add functionality to filter category button: add popup window that shows category tree&#10;- create component CategoryNodeClickable.vue to allow navigation through category tree&#10;- add functionality to get path from a clicked category and call a filtering method based on the selected path&#10;- add dummy mapping in api.js that filters products by path (not in use yet, backend mapping is not existent yet)" />
   </component>
 </project>

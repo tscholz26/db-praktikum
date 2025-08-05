@@ -29,4 +29,9 @@ public class KategorieController {
         }
         return katalogService.getCategorieTree(pnr);
     }
+
+    @GetMapping("/getKompletterKategorieBaum")
+    public List<KategorieDTO> getKompletterKategorieBaum(){
+        return katalogService.getFullCategoryTree();
+    }
 }
