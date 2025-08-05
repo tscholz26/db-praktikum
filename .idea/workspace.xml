@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- add functionality to ItemOverview.vue: add list of all items including images, pnr, title&#10;- add corresponding mappings in api.js&#10;- change width of #app to 100% vw">
-      <change afterPath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" afterDir="false" />
+    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- add categoryTree section to product detail page&#10;- add corresponding mapping to get category tree in api.js&#10;- create new component CategoryNode.vue">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,29 +49,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "E:/Daten/Programmierung/dbpraktikum/backendDBP",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Daten/Programmierung/dbpraktikum/backendDBP&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "vue.recent.templates": [
-      "Vue Composition API Component"
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Daten\Programmierung\dbpraktikum\frontend\src\services" />
@@ -84,6 +83,11 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="dbpraktikum" />
+      <option name="filePath" />
+      <method v="2" />
     </configuration>
   </component>
   <component name="SharedIndexes">
@@ -110,6 +114,8 @@
       <workItem from="1752751373677" duration="585000" />
       <workItem from="1754041463562" duration="860000" />
       <workItem from="1754312258431" duration="6752000" />
+      <workItem from="1754380262483" duration="916000" />
+      <workItem from="1754381205019" duration="3243000" />
     </task>
     <task id="LOCAL-00001" summary="- remove devtools footer, init first page, link to shop page">
       <option name="closed" value="true" />
@@ -143,7 +149,39 @@
       <option name="project" value="LOCAL" />
       <updated>1754327123070</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="- fix typo to correctly display Filiale in ProductDetailView.vue">
+      <option name="closed" value="true" />
+      <created>1754331232594</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1754331232594</updated>
+    </task>
+    <task id="LOCAL-00006" summary="- add post mapping initDB to api.js&#10;- add logic to InitPage that tries to connect to backend by using init mapping&#10;- remove test DB connection Button">
+      <option name="closed" value="true" />
+      <created>1754380932415</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1754380932415</updated>
+    </task>
+    <task id="LOCAL-00007" summary="- do the same for finishDB()">
+      <option name="closed" value="true" />
+      <created>1754381579593</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1754381579593</updated>
+    </task>
+    <task id="LOCAL-00008" summary="- add categoryTree section to product detail page&#10;- add corresponding mapping to get category tree in api.js&#10;- create new component CategoryNode.vue">
+      <option name="closed" value="true" />
+      <created>1754382794723</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1754382794723</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,6 +205,10 @@
     <MESSAGE value="- add api.js and .env to start connecting frontend and backend" />
     <MESSAGE value="CONNECT FRONTEND AND BACKEND:&#10;- add CorsConfig.java to backend&#10;- add HelloWorld method to backend to test connection&#10;- install axios package for frontend&#10;- add test button to InitPage.vue&#10;- create getTestMessage method in api.js, cann it from the new button on the start page" />
     <MESSAGE value="- add functionality to ItemOverview.vue: add list of all items including images, pnr, title&#10;- add corresponding mappings in api.js&#10;- change width of #app to 100% vw" />
-    <option name="LAST_COMMIT_MESSAGE" value="- add functionality to ItemOverview.vue: add list of all items including images, pnr, title&#10;- add corresponding mappings in api.js&#10;- change width of #app to 100% vw" />
+    <MESSAGE value="- fix typo to correctly display Filiale in ProductDetailView.vue" />
+    <MESSAGE value="- add post mapping initDB to api.js&#10;- add logic to InitPage that tries to connect to backend by using init mapping&#10;- remove test DB connection Button" />
+    <MESSAGE value="- do the same for finishDB()" />
+    <MESSAGE value="- add categoryTree section to product detail page&#10;- add corresponding mapping to get category tree in api.js&#10;- create new component CategoryNode.vue" />
+    <option name="LAST_COMMIT_MESSAGE" value="- add categoryTree section to product detail page&#10;- add corresponding mapping to get category tree in api.js&#10;- create new component CategoryNode.vue" />
   </component>
 </project>

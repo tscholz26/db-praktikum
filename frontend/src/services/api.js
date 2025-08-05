@@ -130,3 +130,27 @@ export const getCategoryForItem = async (pnr) => {
         throw error;
     }
 };
+
+
+export async function addRezensionApi(dto_pnr, dto_produktname, dto_nutzername, dto_bewertung, dto_rezension) {
+    try {
+        const dataToSend = {
+            pnr: dto_pnr,
+            produktname: dto_produktname,
+            nutzername: dto_nutzername,
+            bewertung: dto_bewertung,
+            rezension: dto_rezension
+        };
+
+        const response = await apiClient.post(`${API_URL}/addRezension`, dataToSend, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        // Handle the successful response if needed
+        return response.data;
+    } catch (error) {
+        console.error('Error adding rezension:', error);
+        throw error;
+    }
+};
