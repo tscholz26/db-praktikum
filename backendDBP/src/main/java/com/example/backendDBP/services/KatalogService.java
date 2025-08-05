@@ -280,7 +280,10 @@ public class KatalogService implements MediastoreServiceAPI {
         }
         Kunde kunde = kundeRepository.findKundeByNutzername(rezensionDTO.getNutzername());
         if (kunde == null) {
-            throw new IllegalArgumentException("Kunde mit Nutzername " + rezensionDTO.getNutzername() + " nicht gefunden.");
+            Kunde newKunde = new Kunde();
+            newKunde.setNutzername(rezensionDTO.getNutzername());
+            kundeRepository.save(newKunde);
+            kunde = newKunde; // Setze den neuen Kunden als aktuellen Kunden
         }
         Rezension newRezension = new Rezension();
         newRezension.setProdukt(produkt);
