@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- add checkbox for &quot;reviewing as guest&quot;">
+    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="ADD LOGIC TO SHOW TROLLS&#10;- create new page trolls.vue&#10;- connect getTrolls button to new page via router&#10;- add corresponding mapping in api.js&#10;- add table that fetches data and displays trolls on trolls.vue">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -114,7 +116,7 @@
       <workItem from="1754041463562" duration="860000" />
       <workItem from="1754312258431" duration="6752000" />
       <workItem from="1754380262483" duration="916000" />
-      <workItem from="1754381205019" duration="4032000" />
+      <workItem from="1754381205019" duration="7792000" />
     </task>
     <task id="LOCAL-00001" summary="- remove devtools footer, init first page, link to shop page">
       <option name="closed" value="true" />
@@ -196,7 +198,31 @@
       <option name="project" value="LOCAL" />
       <updated>1754385098390</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="- add stars for rating system, change order of layout sections to make website more intuitive">
+      <option name="closed" value="true" />
+      <created>1754385405004</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1754385405004</updated>
+    </task>
+    <task id="LOCAL-00012" summary="- add functionality to view cheaper similar products&#10;- add corresponding api call in api.js">
+      <option name="closed" value="true" />
+      <created>1754387113980</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1754387113980</updated>
+    </task>
+    <task id="LOCAL-00013" summary="ADD LOGIC TO SHOW TROLLS&#10;- create new page trolls.vue&#10;- connect getTrolls button to new page via router&#10;- add corresponding mapping in api.js&#10;- add table that fetches data and displays trolls on trolls.vue">
+      <option name="closed" value="true" />
+      <created>1754388171631</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1754388171631</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -226,6 +252,9 @@
     <MESSAGE value="- add categoryTree section to product detail page&#10;- add corresponding mapping to get category tree in api.js&#10;- create new component CategoryNode.vue" />
     <MESSAGE value="- add basic functionality to add reviews on product detail page&#10;- add corresponding post-mapping in api.js&#10;- TODO: add possibility to review as guest" />
     <MESSAGE value="- add checkbox for &quot;reviewing as guest&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="- add checkbox for &quot;reviewing as guest&quot;" />
+    <MESSAGE value="- add stars for rating system, change order of layout sections to make website more intuitive" />
+    <MESSAGE value="- add functionality to view cheaper similar products&#10;- add corresponding api call in api.js" />
+    <MESSAGE value="ADD LOGIC TO SHOW TROLLS&#10;- create new page trolls.vue&#10;- connect getTrolls button to new page via router&#10;- add corresponding mapping in api.js&#10;- add table that fetches data and displays trolls on trolls.vue" />
+    <option name="LAST_COMMIT_MESSAGE" value="ADD LOGIC TO SHOW TROLLS&#10;- create new page trolls.vue&#10;- connect getTrolls button to new page via router&#10;- add corresponding mapping in api.js&#10;- add table that fetches data and displays trolls on trolls.vue" />
   </component>
 </project>

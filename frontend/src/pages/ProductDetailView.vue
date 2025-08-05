@@ -70,10 +70,10 @@ const goToProduct = (pnr) => {
 onMounted(async () => {
   try {
     produkt.value = await getProdukt(pnr);
-    rezensionen.value = await getRezensionen(pnr);
     angebote.value = await getAngebote(pnr);
-    similarCheaperProducts.value = await getCheaperSimilarProducts(pnr);
     kategorieTree.value = await getCategoryForItem(pnr);
+    rezensionen.value = await getRezensionen(pnr);
+    similarCheaperProducts.value = await getCheaperSimilarProducts(pnr);
   } catch (error) {
     console.error("Fehler beim Laden der Produktdaten:", error);
   } finally {
@@ -89,8 +89,13 @@ onMounted(async () => {
       <h1>{{ produkt.titel }}</h1>
       <img :src="produkt.bild" alt="Produktbild" />
       <p><strong>PNR:</strong> {{ produkt.pnr }}</p>
-      <p><strong>Verkaufsrang:</strong> {{ produkt.verkaufsrang }}</p>
+      <p><strong>Verkaufsrang:</strong> {{ produkt.verkaufsrang ?? 'unbekannt'}}</p>
       <p><strong>Rating:</strong> {{ produkt.rating ?? 'Keine Bewertung' }}</p>
+    </section>
+
+    <section class="details">
+      <h2>Detailinformationen</h2>
+      <p>---Platzhalter---</p>
     </section>
 
     <section v-if="angebote.length" class="angebote">
