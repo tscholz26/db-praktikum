@@ -25,9 +25,15 @@ const newRezension = ref({
   bewertung: '',
   rezension: ''
 });
+const reviewAsGuest = ref(false);
 
 const submitRezension = async () => {
-  if (!newRezension.value.nutzername || !newRezension.value.bewertung || !newRezension.value.rezension) {
+  if (!reviewAsGuest.value && !newRezension.value.nutzername) {
+    alert("Bitte entweder einen Namen eingeben oder 'Als Gast bewerten' auswählen.");
+    return;
+  }
+
+  if (!newRezension.value.bewertung || !newRezension.value.rezension) {
     alert("Bitte alle Felder ausfüllen.");
     return;
   }
@@ -36,7 +42,7 @@ const submitRezension = async () => {
     const dto = {
       pnr: pnr,
       produktname: produkt.value?.titel || '',
-      nutzername: newRezension.value.nutzername,
+      nutzername: reviewAsGuest.value ? 'guest' : newRezension.value.nutzername,
       bewertung: newRezension.value.bewertung,
       rezension: newRezension.value.rezension
     };
@@ -44,7 +50,6 @@ const submitRezension = async () => {
     await addRezensionApi(dto.pnr, dto.produktname, dto.nutzername, dto.bewertung, dto.rezension);
 
     alert("Rezension erfolgreich abgeschickt.");
-
   } catch (err) {
     console.error("Fehler beim Absenden der Rezension:", err);
     alert("Es gab einen Fehler beim Absenden der Rezension.");
@@ -87,9 +92,24 @@ onMounted(async () => {
     <section class="rezension-form">
       <h2>Rezension schreiben</h2>
       <form @submit.prevent="submitRezension">
-        <div class="form-group">
-          <label for="nutzername">Name</label>
-          <input id="nutzername" v-model="newRezension.nutzername" required />
+        <div class="form-group name-group">
+          <label for="nutzername">Nutzername</label>
+          <div class="name-input-container">
+            <input
+                id="nutzername"
+                v-model="newRezension.nutzername"
+                :disabled="reviewAsGuest"
+                placeholder="Ihr Nutzername"
+                required
+            />
+            <label class="guest-label">
+              <input
+                  type="checkbox"
+                  v-model="reviewAsGuest"
+              />
+              Als Gast bewerten
+            </label>
+          </div>
         </div>
 
         <div class="form-group">
@@ -193,6 +213,20 @@ onMounted(async () => {
 .form-group label {
   font-weight: bold;
   margin-bottom: 0.25rem;
+}
+
+.name-input-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.guest-label {
+  font-weight: normal;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 input, select, textarea {
