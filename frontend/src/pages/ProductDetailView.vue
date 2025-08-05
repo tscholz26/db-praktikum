@@ -198,7 +198,17 @@ onMounted(async () => {
     <section class="rezensionen">
       <h2>Rezensionen anderer Kunden</h2>
       <div  v-if="rezensionen.length" v-for="rez in rezensionen" :key="rez.id" class="rezension">
-        <p><strong>{{ rez.nutzername }}</strong> ({{ rez.bewertung }}/5)</p>
+        <div class="review">
+          <span class="username">{{ rez.nutzername }}</span>
+          <span class="star-rating">
+            <span
+                v-for="n in 5"
+                :key="n"
+                class="star-small"
+                :class="{ filled: n <= rez.bewertung }"
+            >★</span>
+          </span>
+        </div>
         <p v-html="rez.rezension"></p>
       </div>
       <div v-else>
@@ -351,6 +361,31 @@ h2 {
   margin-top: 2rem;
   font-weight: bold;
 }
+.review {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
 
+.username {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.star-rating {
+  display: flex;
+}
+
+.star-small {
+  color: #ccc; /* empty star */
+  font-size: 1.2rem;
+}
+
+.star-small.filled {
+  color: #f5c518; /* filled star (gold) */
+}
 
 </style>
