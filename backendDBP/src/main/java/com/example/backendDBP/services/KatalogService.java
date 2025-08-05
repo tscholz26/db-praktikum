@@ -257,7 +257,7 @@ public class KatalogService implements MediastoreServiceAPI {
     public List<RezensionDTO> getProductReviews(String pnr) {
         List<Rezension> reviewsPerProduct = rezensionRepository.findAllByPnr(pnr);
         if (reviewsPerProduct == null || reviewsPerProduct.isEmpty()) {
-            throw new IllegalArgumentException("Keine Rezensionen für das Produkt mit PNR " + pnr + " gefunden.");
+            return new ArrayList<>(); // Keine Rezensionen gefunden, leere Liste zurückgeben
         }
         // Konvertiere Rezensionen in RezensionDTOs
         List<RezensionDTO> reviewsPerProductDTO = reviewsPerProduct.stream()
