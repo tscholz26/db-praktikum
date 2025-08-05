@@ -90,7 +90,7 @@ onMounted(async () => {
       <img :src="produkt.bild" alt="Produktbild" />
       <p><strong>PNR:</strong> {{ produkt.pnr }}</p>
       <p><strong>Verkaufsrang:</strong> {{ produkt.verkaufsrang ?? 'unbekannt'}}</p>
-      <p><strong>Rating:</strong> {{ produkt.rating ?? 'Keine Bewertung' }}</p>
+      <p><strong>Rating:</strong> {{ produkt.rating ?? 'Keine Bewertungen vorhanden' }}</p>
     </section>
 
     <section class="details">
@@ -98,9 +98,9 @@ onMounted(async () => {
       <p>---Platzhalter---</p>
     </section>
 
-    <section v-if="angebote.length" class="angebote">
+    <section class="angebote">
       <h2>Angebote</h2>
-      <table>
+      <table v-if="angebote.length">
         <thead>
         <tr>
           <th>Preis</th>
@@ -112,15 +112,16 @@ onMounted(async () => {
         <tr v-for="angebot in angebote" :key="angebot.id">
           <td>{{ angebot.preis }} {{angebot.waehrung }}</td>
           <td>{{ angebot.zustand }}</td>
-          <td>{{ angebot.filialeid }}</td>
+          <td>{{ angebot.filialeName }}</td>
         </tr>
         </tbody>
       </table>
+      <p v-else>Keine Angebote gefunden.</p>
     </section>
 
-    <section v-if="similarCheaperProducts.length" class="similar-products">
+    <section class="similar-products">
       <h2>Ähnliche, günstigere Produkte</h2>
-      <div class="similar-list">
+      <div  v-if="similarCheaperProducts.length" class="similar-list">
         <div
             class="similar-card"
             v-for="item in similarCheaperProducts"
@@ -132,6 +133,9 @@ onMounted(async () => {
           <p><strong>PNR:</strong> {{ item.pnr }}</p>
           <p><strong>Rating:</strong> {{ item.rating ?? 'Keine Bewertung' }}</p>
         </div>
+      </div>
+      <div v-else>
+        <p>Keine günstigeren ähnlichen Produkte gefunden.</p>
       </div>
     </section>
 
@@ -191,11 +195,14 @@ onMounted(async () => {
       </form>
     </section>
 
-    <section v-if="rezensionen.length" class="rezensionen">
+    <section class="rezensionen">
       <h2>Rezensionen anderer Kunden</h2>
-      <div v-for="rez in rezensionen" :key="rez.id" class="rezension">
+      <div  v-if="rezensionen.length" v-for="rez in rezensionen" :key="rez.id" class="rezension">
         <p><strong>{{ rez.nutzername }}</strong> ({{ rez.bewertung }}/5)</p>
         <p v-html="rez.rezension"></p>
+      </div>
+      <div v-else>
+        <p>Keine Rezensionen gefunden.</p>
       </div>
     </section>
 
@@ -338,6 +345,11 @@ button {
   max-width: 100%;
   height: auto;
   margin-bottom: 0.5rem;
+}
+
+h2 {
+  margin-top: 2rem;
+  font-weight: bold;
 }
 
 
