@@ -303,7 +303,7 @@ public class KatalogService implements MediastoreServiceAPI {
             trolls.add(kundeDTO);
         }
         if (trolls.isEmpty()) {
-            throw new IllegalArgumentException("Keine Kunden gefunden mit durchschnittlichen Bewertungen unter " + grenzwertRating);
+            return new ArrayList<>(); // Keine Troll-Kunden gefunden, leere Liste zurückgeben
         } else {
             return trolls;
         }
