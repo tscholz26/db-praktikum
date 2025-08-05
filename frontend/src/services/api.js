@@ -6,10 +6,18 @@ const API_URL = import.meta.env.VITE_BACKEND_URL;
 // Create an axios instance with default configurations
 const apiClient = axios.create({
     baseURL: API_URL,
-    //headers: {
-    //    'Content-Type': 'application/json',
-    //},
 });
+
+// Init DB Connection
+export const initDB = async () => {
+    try {
+        const response = await apiClient.post('/init');
+        return response.data;
+    } catch (error) {
+        console.error("Error connecting to DB:", error);
+        throw error;
+    }
+};
 
 // Hello World
 export const getTestMessage = async () => {
