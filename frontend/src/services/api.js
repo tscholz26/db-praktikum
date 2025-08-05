@@ -143,6 +143,17 @@ export const getCheaperSimilarProducts = async (pnr) => {
     }
 };
 
+export const getTrolls = async (threshold) => {
+    try {
+        const response = await apiClient.get('/TrollsKunden', {
+            params: { grenzwertRating: threshold  }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching trolls", error);
+        throw error;
+    }
+};
 
 export async function addRezensionApi(dto_pnr, dto_produktname, dto_nutzername, dto_bewertung, dto_rezension) {
     try {

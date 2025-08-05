@@ -83,7 +83,7 @@ const truncateTitle = (title) => {
       </div>
 
       <button disabled>Filter: category</button>
-      <button disabled>getTrolls</button>
+      <button @click="router.push(`/trolls`)">Trolls anzeigen</button>
       <button @click="finish()">Finish</button>
     </header>
 
