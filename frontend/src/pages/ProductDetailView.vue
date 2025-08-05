@@ -1,22 +1,25 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import {
   getProdukt,
   getRezensionen,
   getAngebote,
   getCategoryForItem,
-  addRezensionApi
+  addRezensionApi,
+  getCheaperSimilarProducts
 } from '../services/api.js';
 import CategoryNode from '../components/CategoryNode.vue';
 
 
 const route = useRoute();
+const router = useRouter();
 const pnr = route.params.pnr;
 
 const produkt = ref(null);
 const rezensionen = ref([]);
 const angebote = ref([]);
+const similarCheaperProducts = ref([]);
 const loading = ref(true);
 const kategorieTree = ref([]);
 
@@ -57,11 +60,19 @@ const submitRezension = async () => {
   }
 };
 
+const goToProduct = (pnr) => {
+  router.push(`/shop/${pnr}`).then(() => {
+    window.location.reload(); // forces full reload
+  });
+};
+
+
 onMounted(async () => {
   try {
     produkt.value = await getProdukt(pnr);
     rezensionen.value = await getRezensionen(pnr);
     angebote.value = await getAngebote(pnr);
+    similarCheaperProducts.value = await getCheaperSimilarProducts(pnr);
     kategorieTree.value = await getCategoryForItem(pnr);
   } catch (error) {
     console.error("Fehler beim Laden der Produktdaten:", error);
@@ -100,6 +111,23 @@ onMounted(async () => {
         </tr>
         </tbody>
       </table>
+    </section>
+
+    <section v-if="similarCheaperProducts.length" class="similar-products">
+      <h2>Ähnliche, günstigere Produkte</h2>
+      <div class="similar-list">
+        <div
+            class="similar-card"
+            v-for="item in similarCheaperProducts"
+            :key="item.pnr"
+            @click="goToProduct(item.pnr)"
+        >
+          <img :src="item.bild" alt="Produktbild" />
+          <h3>{{ item.titel }}</h3>
+          <p><strong>PNR:</strong> {{ item.pnr }}</p>
+          <p><strong>Rating:</strong> {{ item.rating ?? 'Keine Bewertung' }}</p>
+        </div>
+      </div>
     </section>
 
     <section class="rezension-form">
@@ -276,5 +304,36 @@ button {
 .star-rating .star:hover ~ .star {
   color: #ddd !important;
 }
+
+.similar-products {
+  margin-top: 2rem;
+}
+
+.similar-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.similar-card {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  width: 180px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.similar-card:hover {
+  transform: scale(1.05);
+  border-color: #aaa;
+}
+
+.similar-card img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
 
 </style>

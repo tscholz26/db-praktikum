@@ -131,6 +131,18 @@ export const getCategoryForItem = async (pnr) => {
     }
 };
 
+export const getCheaperSimilarProducts = async (pnr) => {
+    try {
+        const response = await apiClient.get('/getBilligereProdukte', {
+            params: { pnr }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching cheaper similar products for item:", error);
+        throw error;
+    }
+};
+
 
 export async function addRezensionApi(dto_pnr, dto_produktname, dto_nutzername, dto_bewertung, dto_rezension) {
     try {
