@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getProdukte, getProductsByCategoryPath, getFullCategoryTree, getTopProdukte, finishDB } from '../services/api.js'
+import { getProdukte, getProductsByCategoryPath, getFullCategoryTree, getAngebote, getTopProdukte, finishDB } from '../services/api.js'
 import CategoryNodeClickable from '../components/CategoryNodeClickable.vue'
 
 
@@ -30,6 +30,18 @@ const fetchProdukte = async () => {
     produkte.value = []
   }
 }
+
+const fetchAvailableProducts = async () => {
+  let tempData = produkte.value;
+  produkte.value = []
+  for (const item in tempData) {
+    const angebote = await getAngebote(tempData[item].pnr)
+    if (angebote.length > 0) {
+      produkte.value.push(tempData[item])
+    }
+  }
+}
+
 
 const fetchTopRatings = async () => {
   try {
@@ -135,10 +147,11 @@ const handleCategorySelection = (id) => {
 
       <div class="filter-group">
         <input v-model="ratingInput" placeholder="k" />
-        <button @click="fetchTopRatings">Top k Produkte anzeigen</button>
+        <button @click="fetchTopRatings">Top k Produkte</button>
       </div>
 
-      <button @click="showCategoryModal = true">Filter: Kategorie</button>
+      <button @click="showCategoryModal = true">Kategorien</button>
+      <button @click="fetchAvailableProducts()">Nur verfügbare</button>
       <button @click="router.push(`/trolls`)">Trolls anzeigen</button>
       <button @click="finish()">Finish</button>
     </header>
