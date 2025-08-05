@@ -317,7 +317,7 @@ public class KatalogService implements MediastoreServiceAPI {
         }
         List<Angebot> angebote = angebotRepository.findOffersByPnr(pnr);
         if (angebote == null || angebote.isEmpty()) {
-            throw new IllegalArgumentException("Keine Angebote für das Produkt mit PNR " + pnr + " gefunden.");
+            return new ArrayList<>(); // Keine Angebote gefunden, leere Liste zurückgeben
         }
         // Konvertiere Angebote in AngebotDTOs
         List<AngebotDTO> angeboteDTO = angebote.stream()

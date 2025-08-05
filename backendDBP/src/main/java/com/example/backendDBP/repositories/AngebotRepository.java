@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface AngebotRepository extends JpaRepository<Angebot, Integer> {
 
-    @Query("SELECT a FROM Angebot a WHERE a.produkt.pnr = :pnr")
+    @Query("SELECT a FROM Angebot a WHERE a.produkt.pnr = :pnr AND a.preis > 0.00")
     List<Angebot> findOffersByPnr(String pnr);
 }
