@@ -54,6 +54,19 @@ export const getProdukte = async (pattern = '') => {
     }
 };
 
+export const getProductsByCategoryPath = async (path) => {
+    console.log("Filtering products by category path:", path);
+    //TODO: USE ACTUAL CATEGORY FILTER HERE
+    const pattern = path ? path : '';
+    try {
+        const response = await apiClient.get('/getProdukte');
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching products by category path:", error);
+        throw error;
+    }
+};
+
 // Get single product by PNR
 export const getProdukt = async (pnr) => {
     try {
@@ -130,6 +143,7 @@ export const getCategoryForItem = async (pnr) => {
         throw error;
     }
 };
+
 
 export const getCheaperSimilarProducts = async (pnr) => {
     try {

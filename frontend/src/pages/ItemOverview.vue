@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getProdukte, getTopProdukte, finishDB } from '../services/api.js'
+import { getProdukte, getProductsByCategoryPath, getTopProdukte, finishDB } from '../services/api.js'
+import CategoryNodeClickable from '../components/CategoryNodeClickable.vue'
+
 
 const router = useRouter()
 const produkte = ref([])
@@ -40,6 +42,16 @@ const fetchTopRatings = async () => {
   }
 }
 
+const fetchByPath = async (path) => {
+  try {
+    const data = await getProductsByCategoryPath(path)
+    produkte.value = data
+  } catch (error) {
+    console.error('Fehler beim Laden der Produkte:', error)
+    produkte.value = []
+  }
+}
+
 onMounted(fetchProdukte)
 
 const goToDetail = (pnr) => {
@@ -62,6 +74,272 @@ const truncateTitle = (title) => {
   if (!title) return ''
   return title.length > 50 ? title.slice(0, 47) + '...' : title
 }
+
+const showCategoryModal = ref(false)
+const expandedNodes = ref(new Set())
+
+const categoryTree = ref([
+  {
+    "kategorieid": 2604,
+    "kategorienName": "Shops",
+    "children": [
+      {
+        "kategorieid": 2638,
+        "kategorienName": "Best Price Neuheiten",
+        "children": []
+      },
+      {
+        "kategorieid": 2651,
+        "kategorienName": "Deutsche Grammophon, Decca",
+        "children": [
+          {
+            "kategorieid": 2685,
+            "kategorienName": "Pavarotti, Luciano& Philips",
+            "children": []
+          }
+        ]
+      },
+      {
+        "kategorieid": 2841,
+        "kategorienName": "Verdi-Loge",
+        "children": [
+          {
+            "kategorieid": 2843,
+            "kategorienName": "Einzelne Opern",
+            "children": [
+              {
+                "kategorieid": 181,
+                "kategorienName": "Rigoletto",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kategorieid": 2824,
+        "kategorienName": "Sony Music Nice Price",
+        "children": [
+          {
+            "kategorieid": 664,
+            "kategorienName": "Interpreten",
+            "children": [
+              {
+                "kategorieid": 2020,
+                "kategorienName": "Sängerinnen",
+                "children": [
+                  {
+                    "kategorieid": 2027,
+                    "kategorienName": "Allgemein& Sänger",
+                    "children": []
+                  },
+                  {
+                    "kategorieid": 2089,
+                    "kategorienName": "Tenor",
+                    "children": [
+                      {
+                        "kategorieid": 2101,
+                        "kategorienName": "Pavarotti, Luciano& Sänger",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kategorieid": 2864,
+        "kategorienName": "Über 3.000 DVDs unter 10 EUR",
+        "children": [
+          {
+            "kategorieid": 408,
+            "kategorienName": "Dokumentationen",
+            "children": [
+              {
+                "kategorieid": 334,
+                "kategorienName": "Musik",
+                "children": [
+                  {
+                    "kategorieid": 231,
+                    "kategorienName": "Klassik",
+                    "children": [
+                      {
+                        "kategorieid": 339,
+                        "kategorienName": "Allgemein",
+                        "children": []
+                      },
+                      {
+                        "kategorieid": 1279,
+                        "kategorienName": "Bestsellerategorien",
+                        "children": []
+                      },
+                      {
+                        "kategorieid": 2177,
+                        "kategorienName": "Populäre Klassik",
+                        "children": [
+                          {
+                            "kategorieid": 2207,
+                            "kategorienName": "Crossoverk",
+                            "children": []
+                          },
+                          {
+                            "kategorieid": 2189,
+                            "kategorienName": "Orchestermusik",
+                            "children": [
+                              {
+                                "kategorieid": 1487,
+                                "kategorienName": "Barock",
+                                "children": [
+                                  {
+                                    "kategorieid": 1612,
+                                    "kategorienName": "Corelli, Arcangelo",
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kategorieid": 819,
+                        "kategorienName": "Gattungen",
+                        "children": [
+                          {
+                            "kategorieid": 1547,
+                            "kategorienName": "Operette",
+                            "children": [
+                              {
+                                "kategorieid": 159,
+                                "kategorienName": "Oper (Überblick)",
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kategorieid": 415,
+                        "kategorienName": "Beethoven, Ludwig van",
+                        "children": [
+                          {
+                            "kategorieid": 420,
+                            "kategorienName": "Kammermusik",
+                            "children": [
+                              {
+                                "kategorieid": 1407,
+                                "kategorienName": "Romantik",
+                                "children": [
+                                  {
+                                    "kategorieid": 1712,
+                                    "kategorienName": "Franck, Césarik",
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kategorieid": 549,
+                        "kategorienName": "Mozart, Wolfgang Amadeus",
+                        "children": [
+                          {
+                            "kategorieid": 493,
+                            "kategorienName": "Streichquartette",
+                            "children": [
+                              {
+                                "kategorieid": 1403,
+                                "kategorienName": "Schubert, Franz",
+                                "children": [
+                                  {
+                                    "kategorieid": 1277,
+                                    "kategorienName": "Bestsellerk",
+                                    "children": []
+                                  }
+                                ]
+                              },
+                              {
+                                "kategorieid": 200,
+                                "kategorienName": "Tschaikowsky, Peter",
+                                "children": [
+                                  {
+                                    "kategorieid": 1145,
+                                    "kategorienName": "Lieder",
+                                    "children": [
+                                      {
+                                        "kategorieid": 1317,
+                                        "kategorienName": "Verschiedene Lieder",
+                                        "children": []
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kategorieid": 1330,
+                                    "kategorienName": "Chormusik",
+                                    "children": [
+                                      {
+                                        "kategorieid": 1368,
+                                        "kategorienName": "Vokalmusik (allg.)",
+                                        "children": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+])
+
+const toggleCategory = (id) => {
+  if (expandedNodes.value.has(id)) {
+    expandedNodes.value.delete(id)
+  } else {
+    expandedNodes.value.add(id)
+  }
+}
+
+// rekursives "zusammenbauen" des kategorienpfades mittels Tiefensuche
+const getPathToCategory = (tree, id, path = []) => {
+  for (const node of tree) {
+    const currentPath = [...path, node.kategorienName]
+    if (node.kategorieid === id) {
+      //wenn tiefensuche erfolgreich: getesteten pfad returnen
+      return currentPath
+    }
+    if (node.children?.length) {
+      const result = getPathToCategory(node.children, id, currentPath)
+      if (result) return result
+    }
+  }
+  return null
+}
+
+const handleCategorySelection = (id) => {
+  const fullPath = getPathToCategory(categoryTree.value, id)
+  if (fullPath) {
+    const path = fullPath.join('/');
+    fetchByPath(path);
+    showCategoryModal.value = false
+  }
+}
+
 </script>
 
 <template>
@@ -82,7 +360,7 @@ const truncateTitle = (title) => {
         <button @click="fetchTopRatings">Top k Produkte anzeigen</button>
       </div>
 
-      <button disabled>Filter: category</button>
+      <button @click="showCategoryModal = true">Filter: Kategorie</button>
       <button @click="router.push(`/trolls`)">Trolls anzeigen</button>
       <button @click="finish()">Finish</button>
     </header>
@@ -118,6 +396,23 @@ const truncateTitle = (title) => {
       </div>
       <p v-else class="no-products">Keine Produkte gefunden.</p>
     </main>
+
+    <!-- Category Filter Modal -->
+    <div v-if="showCategoryModal" class="modal-backdrop" @click.self="showCategoryModal = false">
+      <div class="modal">
+        <h2>Kategorien</h2>
+        <ul class="category-list">
+          <CategoryNodeClickable
+              v-for="node in categoryTree"
+              :key="node.kategorieid"
+              :node="node"
+              :expanded="expandedNodes"
+              @toggle="toggleCategory"
+              @select="handleCategorySelection"
+          />
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -239,4 +534,62 @@ button:disabled {
   margin-top: 2rem;
   color: #666;
 }
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.category-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.category-list.nested {
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+}
+
+.category-node {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.3rem;
+  gap: 0.5rem;
+}
+
+.expand-toggle {
+  cursor: pointer;
+  font-weight: bold;
+  user-select: none;
+}
+
+.category-name {
+  cursor: pointer;
+  user-select: none;
+}
+
+.close-btn {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+
 </style>

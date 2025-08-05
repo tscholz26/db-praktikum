@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="ADD LOGIC TO SHOW TROLLS&#10;- create new page trolls.vue&#10;- connect getTrolls button to new page via router&#10;- add corresponding mapping in api.js&#10;- add table that fetches data and displays trolls on trolls.vue">
+    <list default="true" id="8417a901-3db2-41ad-9466-76fdef1b218d" name="Changes" comment="- make some cosmetic modifications to main.css and Initpage&#10;- change loading order of ProductDetailView.vue">
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/CategoryNodeClickable.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/InitPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ProductDetailView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/ItemOverview.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +116,7 @@
       <workItem from="1754041463562" duration="860000" />
       <workItem from="1754312258431" duration="6752000" />
       <workItem from="1754380262483" duration="916000" />
-      <workItem from="1754381205019" duration="7792000" />
+      <workItem from="1754381205019" duration="12828000" />
     </task>
     <task id="LOCAL-00001" summary="- remove devtools footer, init first page, link to shop page">
       <option name="closed" value="true" />
@@ -222,7 +222,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754388171631</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="- make some cosmetic modifications to main.css and Initpage&#10;- change loading order of ProductDetailView.vue">
+      <option name="closed" value="true" />
+      <created>1754389259449</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1754389259449</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -255,6 +263,7 @@
     <MESSAGE value="- add stars for rating system, change order of layout sections to make website more intuitive" />
     <MESSAGE value="- add functionality to view cheaper similar products&#10;- add corresponding api call in api.js" />
     <MESSAGE value="ADD LOGIC TO SHOW TROLLS&#10;- create new page trolls.vue&#10;- connect getTrolls button to new page via router&#10;- add corresponding mapping in api.js&#10;- add table that fetches data and displays trolls on trolls.vue" />
-    <option name="LAST_COMMIT_MESSAGE" value="ADD LOGIC TO SHOW TROLLS&#10;- create new page trolls.vue&#10;- connect getTrolls button to new page via router&#10;- add corresponding mapping in api.js&#10;- add table that fetches data and displays trolls on trolls.vue" />
+    <MESSAGE value="- make some cosmetic modifications to main.css and Initpage&#10;- change loading order of ProductDetailView.vue" />
+    <option name="LAST_COMMIT_MESSAGE" value="- make some cosmetic modifications to main.css and Initpage&#10;- change loading order of ProductDetailView.vue" />
   </component>
 </project>
