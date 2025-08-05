@@ -35,6 +35,7 @@ public interface ProduktRepository extends JpaRepository<Produkt, String> {
                SELECT MIN(a1.preis)
                FROM   Angebot a1
                WHERE  a1.produkt = p1
+               AND a1.preis > 0.00
              )
         AND a2.preis > 0.00
     """)
