@@ -248,7 +248,7 @@ public class KatalogService implements MediastoreServiceAPI {
         }
         List<Produkt> similarCheaperProducts = produktRepository.findSimilarCheaperProducts(pnr);
         if (similarCheaperProducts == null || similarCheaperProducts.isEmpty()) {
-            throw new IllegalArgumentException("Keine ähnlichen Produkte, die günstiger sind, gefunden.");
+            return new ArrayList<>(); // Keine ähnlichen, günstigeren Produkte gefunden, leere Liste zurückgeben
         }
         return similarCheaperProducts;
     }

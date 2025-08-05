@@ -36,6 +36,7 @@ public interface ProduktRepository extends JpaRepository<Produkt, String> {
                FROM   Angebot a1
                WHERE  a1.produkt = p1
              )
+        AND a2.preis > 0.00
     """)
     List<Produkt> findSimilarCheaperProducts(@Param("pnr") String pnr);
 }
