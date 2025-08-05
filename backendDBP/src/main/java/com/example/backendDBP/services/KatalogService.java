@@ -325,6 +325,7 @@ public class KatalogService implements MediastoreServiceAPI {
                         angebot.getId(),
                         angebot.getProdukt().getPnr(),
                         angebot.getFiliale().getId(),
+                        angebot.getFiliale().getName(),
                         angebot.getZustand(),
                         angebot.getPreis(),
                         angebot.getWaehrung()

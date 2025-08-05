@@ -14,6 +14,7 @@ public class AngebotDTO {
     private Integer angebotid;
     private String pnr;
     private Integer filialeid;
+    private String filialeName;
     private String zustand;
     private BigDecimal preis;
     private String waehrung;
