@@ -87,7 +87,7 @@ onMounted(async () => {
   <div class="product-detail">
     <section v-if="produkt" class="product-info">
       <h1>{{ produkt.titel }}</h1>
-      <img :src="produkt.bild" alt="Produktbild" />
+      <img :src="produkt.bild" alt="- kein Produktbild verfügbar -" />
       <p><strong>PNR:</strong> {{ produkt.pnr }}</p>
       <p><strong>Verkaufsrang:</strong> {{ produkt.verkaufsrang ?? 'unbekannt'}}</p>
       <p><strong>Rating:</strong> {{ produkt.rating ?? 'Keine Bewertungen vorhanden' }}</p>
