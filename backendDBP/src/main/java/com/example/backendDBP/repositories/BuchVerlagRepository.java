@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface BuchVerlagRepository extends JpaRepository<BuchVerlag, BuchVerlagId> {
 
-    @Query("SELECT bv.id.verlag FROM BuchVerlag bv WHERE bv.pnr.pnr = :pnr")
+    @Query("SELECT bv.id.verlag FROM BuchVerlag bv WHERE bv.buch.pnr = :pnr")
     List<String> findVerlagByPnr(String pnr);
 }
 

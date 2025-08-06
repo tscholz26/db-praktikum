@@ -1,6 +1,7 @@
 package com.example.backendDBP.controller;
 
 import com.example.backendDBP.DTOs.KategorieDTO;
+import com.example.backendDBP.DTOs.ProduktDTO;
 import com.example.backendDBP.models.Kategorie;
 import com.example.backendDBP.services.KatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,13 @@ public class KategorieController {
     @GetMapping("/getKompletterKategorieBaum")
     public List<KategorieDTO> getKompletterKategorieBaum(){
         return katalogService.getFullCategoryTree();
+    }
+
+    @GetMapping("/getProdukteInKategorie")
+    public List<ProduktDTO> getProdukteInKategorie(@RequestParam String kategoriePfad) {
+        if (kategoriePfad == null || kategoriePfad.isEmpty()) {
+            throw new IllegalArgumentException("Kategorie-Pfad darf nicht leer sein.");
+        }
+        return katalogService.getProductsByCategoryPath(kategoriePfad);
     }
 }

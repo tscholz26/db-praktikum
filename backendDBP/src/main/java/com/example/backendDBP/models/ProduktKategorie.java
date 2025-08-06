@@ -27,6 +27,6 @@ public class ProduktKategorie {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "kategorieid", nullable = false)
-    private Kategorie kategorieid;
+    private Kategorie kategorie;
 
 }

@@ -40,4 +40,9 @@ public interface KategorieRepository extends JpaRepository<Kategorie, Integer> {
                     "SELECT * FROM cat_tree                                         \n",
             nativeQuery = true)
     List<Kategorie> findFullCategoryTree();
+
+    @Query("SELECT k FROM Kategorie k WHERE k.name = :kategorieName")
+    Kategorie findByKategorieName(String kategorieName);
+
+
 }

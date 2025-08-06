@@ -15,14 +15,14 @@ import java.util.List;
 @AllArgsConstructor
 public class MusikCdDTO extends ProduktDTO{
 
-    private List<String> kuenstler;
+    private List<String> künstler;
     private LocalDate erscheinungsdatum;
     private List<String> labels;
     private List<String> songs;
 
-    public MusikCdDTO(String pnr, String titel, Integer verkaufsrang, String bild, BigDecimal rating, List<String> kuenstler, LocalDate erscheinungsdatum, List<String> labels, List<String> songs) {
+    public MusikCdDTO(String pnr, String titel, Integer verkaufsrang, String bild, BigDecimal rating, List<String> künstler, LocalDate erscheinungsdatum, List<String> labels, List<String> songs) {
         super(pnr, titel, verkaufsrang, bild, rating);
-        this.kuenstler = kuenstler;
+        this.künstler = künstler;
         this.erscheinungsdatum = erscheinungsdatum;
         this.labels = labels;
         this.songs = songs;

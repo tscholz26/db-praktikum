@@ -4,10 +4,7 @@ import com.example.backendDBP.DTOs.BuchDTO;
 import com.example.backendDBP.DTOs.DvdDTO;
 import com.example.backendDBP.DTOs.MusikCdDTO;
 import com.example.backendDBP.DTOs.ProduktDTO;
-import com.example.backendDBP.models.Buch;
-import com.example.backendDBP.models.Dvd;
-import com.example.backendDBP.models.MusikCd;
-import com.example.backendDBP.models.Produkt;
+import com.example.backendDBP.models.*;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -47,4 +44,7 @@ public interface ProduktRepository extends JpaRepository<Produkt, String> {
         AND a2.preis > 0.00
     """)
     List<Produkt> findSimilarCheaperProducts(@Param("pnr") String pnr);
+
+    @Query("SELECT pk.pnr FROM ProduktKategorie pk WHERE pk.kategorie = :kategorie ")
+    List<Produkt> findProdukteByKategorie(@Param("kategorie") Kategorie kategorie);
 }

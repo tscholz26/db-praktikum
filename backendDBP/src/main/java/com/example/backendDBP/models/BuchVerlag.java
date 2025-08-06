@@ -18,6 +18,6 @@ public class BuchVerlag {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "pnr", nullable = false)
-    private Buch pnr;
+    private Buch buch;
 
 }

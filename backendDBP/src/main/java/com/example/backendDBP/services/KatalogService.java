@@ -184,7 +184,7 @@ public class KatalogService implements MediastoreServiceAPI {
             musikcddto.setVerkaufsrang(musikcd.getProdukt().getVerkaufsrang());
             musikcddto.setBild(musikcd.getProdukt().getBild());
             musikcddto.setRating(musikcd.getProdukt().getRating());
-            musikcddto.setKuenstler(kuenstlerRepository.findKuenstlerByPnr(pnr));
+            musikcddto.setKünstler(kuenstlerRepository.findKuenstlerByPnr(pnr));
             musikcddto.setErscheinungsdatum(musikcd.getErscheinungsdatum());
             musikcddto.setLabels(labelRepository.findLabelNameByPnr(pnr));
             musikcddto.setSongs(songRepository.findSongNameByPnr(pnr));
@@ -295,9 +295,37 @@ public class KatalogService implements MediastoreServiceAPI {
     }
 
     @Override
-    public List<Produkt> getProductsByCategoryPath(List<Kategorie> kategoriePath) {
-        // Implementiere die Logik, um Produkte anhand eines Kategoriepfads zu erhalten
-        return null; // Platzhalter, implementiere die Logik hier
+    public List<ProduktDTO> getProductsByCategoryPath(String kategoriePath) {
+        if (kategoriePath == null || kategoriePath.isEmpty()) {
+            throw new IllegalArgumentException("Kategorie-Pfad darf nicht leer sein.");
+        }
+        // Konvertiere den Pfad in eine Liste von Kategorien
+        String[] pathParts = kategoriePath.split("/");
+        String kategorieName = pathParts[pathParts.length - 1];
+
+        // 1. Hole die Kategorie anhand des Pfades
+        Kategorie kategorie = kategorieRepository.findByKategorieName(kategorieName);
+        if (kategorie == null) {
+            throw new IllegalArgumentException("Kategorie mit Pfad " + kategoriePath + " nicht gefunden.");
+        }
+
+        // 2. Hole alle Produkte in dieser Kategorie
+        List<Produkt> produkte = produktRepository.findProdukteByKategorie(kategorie);
+        if (produkte == null || produkte.isEmpty()) {
+            return new ArrayList<>(); // Keine Produkte gefunden, leere Liste zurückgeben
+        }
+
+        // 3. Konvertiere Produkte in ProduktDTOs
+        List<ProduktDTO> produktDTOs = produkte.stream()
+                .map(produkt -> new ProduktDTO(
+                        produkt.getPnr(),
+                        produkt.getTitel(),
+                        produkt.getVerkaufsrang(),
+                        produkt.getBild(),
+                        produkt.getRating()))
+                .toList();
+
+        return produktDTOs;
     }
 
     @Override
