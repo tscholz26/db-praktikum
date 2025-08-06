@@ -56,10 +56,10 @@ export const getProdukte = async (pattern = '') => {
 
 export const getProductsByCategoryPath = async (path) => {
     console.log("Filtering products by category path:", path);
-    //TODO: USE ACTUAL CATEGORY FILTER HERE
-    const pattern = path ? path : '';
     try {
-        const response = await apiClient.get('/getProdukte');
+        const response = await apiClient.get('/getProdukteInKategorie', {
+            params: { kategoriePfad : path }
+        });
         return response.data;
     } catch (error) {
         console.error("Error fetching products by category path:", error);
