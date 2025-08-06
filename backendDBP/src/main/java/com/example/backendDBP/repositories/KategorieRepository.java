@@ -1,48 +1,72 @@
 package com.example.backendDBP.repositories;
 
 import com.example.backendDBP.models.Kategorie;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import java.util.List;
 
-@Repository
-public interface KategorieRepository extends JpaRepository<Kategorie, Integer> {
+public class KategorieRepository {
+    private final SessionFactory sessionFactory;
 
-    @Query(value =
-            "WITH RECURSIVE cat_tree AS (                                       \n" +
-                    "  SELECT k.*                                                    \n" +
-                    "  FROM produkt_kategorie pk                            \n" +
-                    "  JOIN kategorie k                                     \n" +
-                    "    ON pk.kategorieid = k.kategorieid                         \n" +
-                    "  WHERE pk.pnr = :pnr                                         \n" +
-                    "  UNION                                                    \n" +
-                    "  SELECT parent.*                                              \n" +
-                    "  FROM kategorie parent                                \n" +
-                    "  JOIN cat_tree ct                                            \n" +
-                    "    ON ct.oberkategorieid = parent.kategorieid                \n" +
-                    ")                                                              \n" +
-                    "SELECT *                                                      \n" +
-                    "FROM cat_tree                                                \n"
-            , nativeQuery = true)
-    List<Kategorie> findCategoryTreeForProduct(@Param("pnr") String pnr);
+    public KategorieRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-    @Query(value =
-            "WITH RECURSIVE cat_tree AS (                                   \n" +
-                    "  SELECT * FROM kategorie WHERE oberkategorieid IS NULL        \n" +
-                    "  UNION ALL                                                    \n" +
-                    "  SELECT k.*                                                   \n" +
-                    "  FROM kategorie k                                             \n" +
-                    "  JOIN cat_tree ct ON k.oberkategorieid = ct.kategorieid       \n" +
-                    ")                                                              \n" +
-                    "SELECT * FROM cat_tree                                         \n",
-            nativeQuery = true)
-    List<Kategorie> findFullCategoryTree();
+    @SuppressWarnings("unchecked")
+    public List<Kategorie> findCategoryTreeForProduct(String pnr) {
+        try (Session session = sessionFactory.openSession()) {
+            String sql = """
+                WITH RECURSIVE cat_tree AS (
+                    SELECT k.*
+                    FROM produkt_kategorie pk
+                    JOIN kategorie k
+                        ON pk.kategorieid = k.kategorieid
+                    WHERE pk.pnr = :pnr
+                    UNION
+                    SELECT parent.*
+                    FROM kategorie parent
+                    JOIN cat_tree ct
+                        ON ct.oberkategorieid = parent.kategorieid
+                )
+                SELECT * FROM cat_tree
+            """;
+            Query<Kategorie> query = session.createNativeQuery(sql, Kategorie.class);
+            query.setParameter("pnr", pnr);
+            return query.list();
+        }
+    }
 
-    @Query("SELECT k FROM Kategorie k WHERE k.name = :kategorieName")
-    Kategorie findByKategorieName(String kategorieName);
+    @SuppressWarnings("unchecked")
+    public List<Kategorie> findFullCategoryTree() {
+        try (Session session = sessionFactory.openSession()) {
+            String sql = """
+                WITH RECURSIVE cat_tree AS (
+                    SELECT * FROM kategorie WHERE oberkategorieid IS NULL
+                    UNION ALL
+                    SELECT k.*
+                    FROM kategorie k
+                    JOIN cat_tree ct ON k.oberkategorieid = ct.kategorieid
+                )
+                SELECT * FROM cat_tree
+            """;
+            Query<Kategorie> query = session.createNativeQuery(sql, Kategorie.class);
+            return query.list();
+        }
+    }
 
+    public Kategorie findByKategorieName(String kategorieName) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Kategorie> query = session.createQuery("FROM Kategorie k WHERE k.name = :kategorieName", Kategorie.class);
+            query.setParameter("kategorieName", kategorieName);
+            return query.uniqueResult();
+        }
+    }
 
+    public List<Kategorie> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Kategorie> query = session.createQuery("FROM Kategorie", Kategorie.class);
+            return query.list();
+        }
+    }
 }

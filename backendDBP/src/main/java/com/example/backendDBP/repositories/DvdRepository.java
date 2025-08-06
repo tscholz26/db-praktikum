@@ -1,13 +1,31 @@
 package com.example.backendDBP.repositories;
 
 import com.example.backendDBP.models.Dvd;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
-@Repository
-public interface DvdRepository extends JpaRepository<Dvd, String> {
+import java.util.List;
 
-    @Query("SELECT d FROM Dvd d WHERE d.produkt.pnr = :pnr")
-    Dvd findDvdByPnr(String pnr);
+public class DvdRepository {
+    private final SessionFactory sessionFactory;
+
+    public DvdRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public Dvd findDvdByPnr(String pnr) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Dvd> query = session.createQuery("FROM Dvd d WHERE d.produkt.pnr = :pnr", Dvd.class);
+            query.setParameter("pnr", pnr);
+            return query.uniqueResult();
+        }
+    }
+
+    public List<Dvd> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Dvd> query = session.createQuery("FROM Dvd", Dvd.class);
+            return query.list();
+        }
+    }
 }

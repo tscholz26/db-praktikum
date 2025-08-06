@@ -2,15 +2,31 @@ package com.example.backendDBP.repositories;
 
 import com.example.backendDBP.models.Label;
 import com.example.backendDBP.models.LabelId;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
-@Repository
-public interface LabelRepository extends JpaRepository<Label, LabelId> {
+public class LabelRepository {
+    private final SessionFactory sessionFactory;
 
-    @Query("SELECT l.id.labelname FROM Label l WHERE l.pnr.pnr = :pnr")
-    List<String> findLabelNameByPnr(String pnr);
+    public LabelRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public List<String> findLabelNameByPnr(String pnr) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<String> query = session.createQuery("SELECT l.id.labelname FROM Label l WHERE l.pnr.pnr = :pnr", String.class);
+            query.setParameter("pnr", pnr);
+            return query.list();
+        }
+    }
+
+    public List<Label> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Label> query = session.createQuery("FROM Label", Label.class);
+            return query.list();
+        }
+    }
 }

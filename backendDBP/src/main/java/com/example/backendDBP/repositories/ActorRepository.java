@@ -2,15 +2,31 @@ package com.example.backendDBP.repositories;
 
 import com.example.backendDBP.models.Actor;
 import com.example.backendDBP.models.ActorId;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
-@Repository
-public interface ActorRepository extends JpaRepository<Actor, ActorId> {
+public class ActorRepository {
+    private final SessionFactory sessionFactory;
 
-    @Query("SELECT a.id.name FROM Actor a WHERE a.pnr.pnr = :pnr")
-    List<String> findActorNameByPnr(String pnr);
+    public ActorRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public List<String> findActorNameByPnr(String pnr) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<String> query = session.createQuery("SELECT a.id.name FROM Actor a WHERE a.pnr.pnr = :pnr", String.class);
+            query.setParameter("pnr", pnr);
+            return query.list();
+        }
+    }
+
+    public List<Actor> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Actor> query = session.createQuery("FROM Actor", Actor.class);
+            return query.list();
+        }
+    }
 }

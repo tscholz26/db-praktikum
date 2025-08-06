@@ -1,14 +1,31 @@
 package com.example.backendDBP.repositories;
 
 import com.example.backendDBP.models.MusikCd;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
-@Repository
-public interface MusikCdRepository extends JpaRepository<MusikCd, String> {
+import java.util.List;
 
-    @Query("SELECT m FROM MusikCd m WHERE m.produkt.pnr = :pnr")
-    MusikCd findMusikCdByPnr(@Param("pnr") String pnr);
+public class MusikCdRepository {
+    private final SessionFactory sessionFactory;
+
+    public MusikCdRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public MusikCd findMusikCdByPnr(String pnr) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<MusikCd> query = session.createQuery("FROM MusikCd m WHERE m.produkt.pnr = :pnr", MusikCd.class);
+            query.setParameter("pnr", pnr);
+            return query.uniqueResult();
+        }
+    }
+
+    public List<MusikCd> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<MusikCd> query = session.createQuery("FROM MusikCd", MusikCd.class);
+            return query.list();
+        }
+    }
 }
