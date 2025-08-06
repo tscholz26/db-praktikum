@@ -68,6 +68,9 @@ const goToProduct = (pnr) => {
   });
 };
 
+const goHome = () => {
+  router.push('/shop');
+};
 
 onMounted(async () => {
   try {
@@ -88,6 +91,8 @@ onMounted(async () => {
 
 
 <template>
+
+
   <div v-if="loadingSuccess" class="product-detail">
     <section v-if="produkt" class="product-info">
       <h1>{{ produkt.titel }}</h1>
@@ -233,15 +238,17 @@ onMounted(async () => {
     </section>
   </div>
   <div v-else>
-    <h1>Fehler: Produkt mit PNR {{ pnr }} wurde nicht gefunden.</h1>
+    <h1 class="errormsg" >Fehler: Produkt mit PNR {{ pnr }} wurde nicht gefunden.</h1>
   </div>
+
+  <button class="home-button" @click="goHome">🏠 Zur Startseite</button>
 </template>
 
 
 <style scoped>
 .product-detail {
-  padding: 1rem;
-  max-width: 800px;
+  padding: 0rem 1rem 1rem 1rem;
+  width: 50%;
   margin: auto;
 }
 
@@ -394,5 +401,30 @@ h2 {
 .star-small.filled {
   color: #f5c518; /* filled star (gold) */
 }
+
+.home-button {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  background-color: #f2f2f2; /* light neutral */
+  color: #333; /* dark text */
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+  background-color: #e6e6e6;
+}
+
+.errormsg {
+  padding-top: 2.5rem;
+}
+
 
 </style>

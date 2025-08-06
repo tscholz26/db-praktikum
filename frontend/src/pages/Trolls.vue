@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { getTrolls } from '../services/api.js'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const threshold = ref('')
 const trolls = ref([])
@@ -13,9 +16,14 @@ const printTrolls = async () => {
     console.error('Fehler beim Laden der Trolls:', error)
   }
 }
+const goHome = () => {
+  router.push('/shop');
+};
+
 </script>
 
 <template>
+  <button class="home-button" @click="goHome">🏠 Zur Startseite</button>
   <div class="container">
     <h1 class="title">Troll-Kunden mit niedrigen Bewertungen</h1>
 
@@ -125,4 +133,25 @@ button:disabled {
   color: #6c757d;
   font-style: italic;
 }
+
+.home-button {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  background-color: #f2f2f2; /* light neutral */
+  color: #333; /* dark text */
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+  background-color: #e6e6e6;
+}
+
 </style>
