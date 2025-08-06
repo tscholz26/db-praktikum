@@ -16,6 +16,8 @@ const route = useRoute();
 const router = useRouter();
 const pnr = route.params.pnr;
 
+const loadingSuccess = ref(true);
+
 const produkt = ref(null);
 const rezensionen = ref([]);
 const angebote = ref([]);
@@ -74,8 +76,10 @@ onMounted(async () => {
     kategorieTree.value = await getCategoryForItem(pnr);
     rezensionen.value = await getRezensionen(pnr);
     similarCheaperProducts.value = await getCheaperSimilarProducts(pnr);
+    loadingSuccess.value = true;
   } catch (error) {
     console.error("Fehler beim Laden der Produktdaten:", error);
+    loadingSuccess.value = false;
   } finally {
     loading.value = false;
   }
@@ -84,7 +88,7 @@ onMounted(async () => {
 
 
 <template>
-  <div class="product-detail">
+  <div v-if="loadingSuccess" class="product-detail">
     <section v-if="produkt" class="product-info">
       <h1>{{ produkt.titel }}</h1>
       <img :src="produkt.bild" alt="- kein Produktbild verfügbar -" />
@@ -227,6 +231,9 @@ onMounted(async () => {
     <section v-if="!produkt && !loading">
       <p>Produkt nicht gefunden.</p>
     </section>
+  </div>
+  <div v-else>
+    <h1>Fehler: Produkt mit PNR {{ pnr }} wurde nicht gefunden.</h1>
   </div>
 </template>
 
