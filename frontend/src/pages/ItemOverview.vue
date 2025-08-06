@@ -125,7 +125,6 @@ const handleCategorySelection = (id) => {
   if (fullPath) {
     const path = fullPath.join('/');
     fetchByPath(path);
-    alert("Filter Produkte nach Pfad: " + path)
     showCategoryModal.value = false
   }
 }
