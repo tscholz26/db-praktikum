@@ -55,7 +55,6 @@ export const getProdukte = async (pattern = '') => {
 };
 
 export const getProductsByCategoryPath = async (path) => {
-    console.log("Filtering products by category path:", path);
     try {
         const response = await apiClient.get('/getProdukteInKategorie', {
             params: { kategoriePfad : path }
