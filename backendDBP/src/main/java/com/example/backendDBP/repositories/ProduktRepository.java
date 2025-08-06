@@ -1,5 +1,12 @@
 package com.example.backendDBP.repositories;
 
+import com.example.backendDBP.DTOs.BuchDTO;
+import com.example.backendDBP.DTOs.DvdDTO;
+import com.example.backendDBP.DTOs.MusikCdDTO;
+import com.example.backendDBP.DTOs.ProduktDTO;
+import com.example.backendDBP.models.Buch;
+import com.example.backendDBP.models.Dvd;
+import com.example.backendDBP.models.MusikCd;
 import com.example.backendDBP.models.Produkt;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;

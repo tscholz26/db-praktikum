@@ -1,10 +1,7 @@
 package com.example.backendDBP.services;
 
 import com.example.backendDBP.BackendDbpApplication;
-import com.example.backendDBP.DTOs.AngebotDTO;
-import com.example.backendDBP.DTOs.KategorieDTO;
-import com.example.backendDBP.DTOs.KundeDTO;
-import com.example.backendDBP.DTOs.RezensionDTO;
+import com.example.backendDBP.DTOs.*;
 import com.example.backendDBP.api.MediastoreServiceAPI;
 import com.example.backendDBP.models.*;
 import com.example.backendDBP.repositories.*;
@@ -18,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,16 +29,42 @@ public class KatalogService implements MediastoreServiceAPI {
     private KundeRepository kundeRepository;
     private AngebotRepository angebotRepository;
     private KategorieRepository kategorieRepository;
+    private BuchRepository buchRepository;
+    private AutorRepository autorRepository;
+    private BuchVerlagRepository buchVerlagRepository;
+    private MusikCdRepository musikCdRepository;
+    private KuenstlerRepository kuenstlerRepository;
+    private LabelRepository labelRepository;
+    private SongRepository songRepository;
+    private DvdRepository dvdRepository;
+    private CreatorRepository creatorRepository;
+    private DirectorRepository directorRepository;
+    private ActorRepository actorRepository;
+
 
 
     @Autowired
     public KatalogService(ProduktRepository produktRepository, RezensionRepository rezensionRepository,
-                          KundeRepository kundeRepository, AngebotRepository angebotRepository, KategorieRepository kategorieRepository) {
+                          KundeRepository kundeRepository, AngebotRepository angebotRepository, KategorieRepository kategorieRepository,
+                          BuchRepository buchRepository, BuchVerlagRepository buchVerlagRepository, AutorRepository autorRepository,
+                          MusikCdRepository musikCdRepository, KuenstlerRepository kuenstlerRepository, LabelRepository labelRepository, SongRepository songRepository,
+                          DvdRepository dvdRepository, DirectorRepository directorRepository, CreatorRepository creatorRepository, ActorRepository actorRepository) {
         this.angebotRepository = angebotRepository;
         this.kundeRepository = kundeRepository;
         this.rezensionRepository = rezensionRepository;
         this.produktRepository = produktRepository;
         this.kategorieRepository = kategorieRepository;
+        this.buchRepository = buchRepository;
+        this.buchVerlagRepository = buchVerlagRepository;
+        this.autorRepository = autorRepository;
+        this.musikCdRepository = musikCdRepository;
+        this.kuenstlerRepository = kuenstlerRepository;
+        this.labelRepository = labelRepository;
+        this.songRepository = songRepository;
+        this.dvdRepository = dvdRepository;
+        this.creatorRepository = creatorRepository;
+        this.directorRepository = directorRepository;
+        this.actorRepository = actorRepository;
     }
 
     @Override
@@ -139,12 +159,64 @@ public class KatalogService implements MediastoreServiceAPI {
 
 
     @Override
-    public Produkt getProduct(String pnr) {
+    public ProduktDTO getProduct(String pnr) {
+        Buch buch = buchRepository.findBuchByPnr(pnr);
+        if (buch != null) {
+            BuchDTO buchdto = new BuchDTO();
+            buchdto.setPnr(buch.getPnr());
+            buchdto.setTitel(buch.getProdukt().getTitel());
+            buchdto.setVerkaufsrang(buch.getProdukt().getVerkaufsrang());
+            buchdto.setBild(buch.getProdukt().getBild());
+            buchdto.setRating(buch.getProdukt().getRating());
+            buchdto.setIsbn(buch.getIsbn());
+            buchdto.setSeitenzahl(buch.getSeitenzahl());
+            buchdto.setErscheinungsdatum(buch.getErscheinungsdatum());
+            buchdto.setAuflage(buch.getAuflage());
+            buchdto.setAutoren(autorRepository.findAutorNameByPnr(pnr));
+            buchdto.setVerlage(buchVerlagRepository.findVerlagByPnr(pnr));
+            return buchdto;
+        }
+        MusikCd musikcd = musikCdRepository.findMusikCdByPnr(pnr);
+        if (musikcd != null) {
+            MusikCdDTO musikcddto = new MusikCdDTO();
+            musikcddto.setPnr(musikcd.getPnr());
+            musikcddto.setTitel(musikcd.getProdukt().getTitel());
+            musikcddto.setVerkaufsrang(musikcd.getProdukt().getVerkaufsrang());
+            musikcddto.setBild(musikcd.getProdukt().getBild());
+            musikcddto.setRating(musikcd.getProdukt().getRating());
+            musikcddto.setKuenstler(kuenstlerRepository.findKuenstlerByPnr(pnr));
+            musikcddto.setErscheinungsdatum(musikcd.getErscheinungsdatum());
+            musikcddto.setLabels(labelRepository.findLabelNameByPnr(pnr));
+            musikcddto.setSongs(songRepository.findSongNameByPnr(pnr));
+            return musikcddto;
+        }
+        Dvd dvd = dvdRepository.findDvdByPnr(pnr);
+        if (dvd != null) {
+            DvdDTO dvdDTO = new DvdDTO();
+            dvdDTO.setPnr(dvd.getPnr());
+            dvdDTO.setTitel(dvd.getProdukt().getTitel());
+            dvdDTO.setVerkaufsrang(dvd.getProdukt().getVerkaufsrang());
+            dvdDTO.setBild(dvd.getProdukt().getBild());
+            dvdDTO.setRating(dvd.getProdukt().getRating());
+            dvdDTO.setRegioncode(dvd.getRegioncode());
+            dvdDTO.setFormat(dvd.getFormat());
+            dvdDTO.setLaufzeit(dvd.getLaufzeit());
+            dvdDTO.setDirectors(directorRepository.findDirectorNameByPnr(pnr));
+            dvdDTO.setCreators(creatorRepository.findCreatorNameByPnr(pnr));
+            dvdDTO.setActors(actorRepository.findActorNameByPnr(pnr));
+            return dvdDTO;
+        }
         Produkt produkt = produktRepository.findProduktByPnr(pnr);
         if (produkt == null) {
             throw new IllegalArgumentException("Produkt mit PNR " + pnr + " nicht gefunden.");
         }
-        return produkt;
+        ProduktDTO produktDTO = new ProduktDTO(
+                produkt.getPnr(),
+                produkt.getTitel(),
+                produkt.getVerkaufsrang(),
+                produkt.getBild(),
+                produkt.getRating());
+        return produktDTO;
     }
 
     @Override

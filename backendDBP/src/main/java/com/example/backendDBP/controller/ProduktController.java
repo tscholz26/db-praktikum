@@ -1,5 +1,6 @@
 package com.example.backendDBP.controller;
 
+import com.example.backendDBP.DTOs.ProduktDTO;
 import com.example.backendDBP.models.Produkt;
 import com.example.backendDBP.models.Rezension;
 import com.example.backendDBP.services.KatalogService;
@@ -25,7 +26,7 @@ public class ProduktController {
     }
 
     @GetMapping("/getProdukt")
-    public Produkt getProdukt(@RequestParam String pnr) {
+    public ProduktDTO getProdukt(@RequestParam String pnr) {
         return katalogService.getProduct(pnr);
     }
 
