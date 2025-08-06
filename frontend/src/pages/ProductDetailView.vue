@@ -464,7 +464,7 @@ h2 {
   padding-top: 2.5rem;
 }
 
-//Formatierungen für die Detailinformationen
+/*Formatierung der Detailinformationen*/
 h4 {
   font-size: 20px;
   font-style: oblique;
