@@ -24,6 +24,7 @@ const angebote = ref([]);
 const similarCheaperProducts = ref([]);
 const loading = ref(true);
 const kategorieTree = ref([]);
+const detaildaten = ref({});
 
 const newRezension = ref({
   nutzername: '',
@@ -80,6 +81,20 @@ onMounted(async () => {
     rezensionen.value = await getRezensionen(pnr);
     similarCheaperProducts.value = await getCheaperSimilarProducts(pnr);
     loadingSuccess.value = true;
+
+    //Funktionen zum extrahieren der Detaildaten
+    // Produktunabhaengige Felder ignorieren
+    const excludeFields = ['pnr', 'titel', 'verkaufsrang', 'bild', 'rating'];
+    const extracted = {};
+
+    for (const key in produkt.value) {
+      if (!excludeFields.includes(key)) {
+        extracted[key] = produkt.value[key];
+      }
+    }
+
+    detaildaten.value = extracted;
+
   } catch (error) {
     console.error("Fehler beim Laden der Produktdaten:", error);
     loadingSuccess.value = false;
@@ -87,6 +102,12 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+// Formatierung für Keys als Überschriften
+function formatDetailHeaders(key) {
+  return key.charAt(0).toUpperCase() + key.slice(1) + ':'
+}
+
 </script>
 
 
@@ -104,7 +125,24 @@ onMounted(async () => {
 
     <section class="details">
       <h2>Detailinformationen</h2>
-      <p>---Platzhalter---</p>
+      <div v-if="detaildaten.length === 0">
+        <p>Keine Detailinformationen verfügbar.</p>
+      </div>
+      <div
+          v-else
+          v-for="(value, key) in detaildaten"
+          :key="key"
+      >
+        <h4 class='detailkey'>{{ formatDetailHeaders(key) }}</h4>
+        <p v-if="Array.isArray(value)">
+        <span class='detailitem' v-for="(item, index) in value" :key="index">
+          {{ item }}<br>
+        </span>
+        </p>
+        <p v-else class='detailitem' >
+          {{ value }}
+        </p>
+      </div>
     </section>
 
     <section class="angebote">
@@ -426,5 +464,19 @@ h2 {
   padding-top: 2.5rem;
 }
 
+//Formatierungen für die Detailinformationen
+h4 {
+  font-size: 20px;
+  font-style: oblique;
+}
+
+.detailkey {
+  margin-left: 8px;
+}
+
+
+.detailitem {
+  margin-left: 20px;
+}
 
 </style>
