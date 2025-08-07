@@ -13,23 +13,22 @@ public class KategorieRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Kategorie> findCategoryTreeForProduct(String pnr) {
         try (Session session = sessionFactory.openSession()) {
             String sql = """
-                WITH RECURSIVE cat_tree AS (
+                WITH RECURSIVE katBaum AS (
                     SELECT k.*
                     FROM produkt_kategorie pk
                     JOIN kategorie k
                         ON pk.kategorieid = k.kategorieid
                     WHERE pk.pnr = :pnr
                     UNION
-                    SELECT parent.*
-                    FROM kategorie parent
-                    JOIN cat_tree ct
-                        ON ct.oberkategorieid = parent.kategorieid
+                    SELECT elternKat.*
+                    FROM kategorie elternKat
+                    JOIN katBaum kB
+                        ON kB.oberkategorieid = elternKat.kategorieid
                 )
-                SELECT * FROM cat_tree
+                SELECT * FROM katBaum
             """;
             Query<Kategorie> query = session.createNativeQuery(sql, Kategorie.class);
             query.setParameter("pnr", pnr);
@@ -37,18 +36,17 @@ public class KategorieRepository {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public List<Kategorie> findFullCategoryTree() {
         try (Session session = sessionFactory.openSession()) {
             String sql = """
-                WITH RECURSIVE cat_tree AS (
+                WITH RECURSIVE katBaum AS (
                     SELECT * FROM kategorie WHERE oberkategorieid IS NULL
                     UNION ALL
                     SELECT k.*
                     FROM kategorie k
-                    JOIN cat_tree ct ON k.oberkategorieid = ct.kategorieid
+                    JOIN katBaum kB ON k.oberkategorieid = kB.kategorieid
                 )
-                SELECT * FROM cat_tree
+                SELECT * FROM katBaum
             """;
             Query<Kategorie> query = session.createNativeQuery(sql, Kategorie.class);
             return query.list();
