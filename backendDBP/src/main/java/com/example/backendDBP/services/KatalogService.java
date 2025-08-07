@@ -95,15 +95,15 @@ public class KatalogService implements MediastoreServiceAPI {
             hibernateConfig.setProperty("hibernate.connection.url", properties.getProperty("spring.datasource.url"));
             hibernateConfig.setProperty("hibernate.connection.username", properties.getProperty("spring.datasource.username"));
             hibernateConfig.setProperty("hibernate.connection.password", properties.getProperty("spring.datasource.password"));
-            hibernateConfig.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-            hibernateConfig.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+            hibernateConfig.setProperty("hibernate.connection.driver_class", properties.getProperty("spring.datasource.driver-class-name"));
+            hibernateConfig.setProperty("hibernate.dialect", properties.getProperty("spring.jpa.properties.hibernate.dialect"));
+            hibernateConfig.setProperty("hibernate.hbm2ddl.auto", properties.getProperty("spring.jpa.hibernate.ddl-auto"));
 
             // Zusätzliche Hibernate-Eigenschaften
             hibernateConfig.setProperty("hibernate.connection.pool_size", "5");
             hibernateConfig.setProperty("hibernate.show_sql", "true");
             hibernateConfig.setProperty("hibernate.format_sql", "true");
             hibernateConfig.setProperty("hibernate.current_session_context_class", "thread");
-            hibernateConfig.setProperty("hibernate.hbm2ddl.auto", "validate");
             hibernateConfig.setProperty("hibernate.enable_lazy_load_no_trans", "true");
             hibernateConfig.setProperty("hibernate.jdbc.batch_size", "50");
             hibernateConfig.setProperty("hibernate.default_batch_fetch_size", "25");
@@ -367,7 +367,7 @@ public class KatalogService implements MediastoreServiceAPI {
             throw new IllegalArgumentException("Kategorie mit Pfad " + kategoriePath + " nicht gefunden.");
         }
 
-        // 2. Hole alle Produkte in dieser Kategorie
+        // 2. Hole alle Produkte in dieser Kategorie und allen Unterkategorien
         List<Produkt> produkte = produktRepository.findProdukteByKategorie(kategorie);
         if (produkte == null || produkte.isEmpty()) {
             return new ArrayList<>(); // Keine Produkte gefunden, leere Liste zurückgeben

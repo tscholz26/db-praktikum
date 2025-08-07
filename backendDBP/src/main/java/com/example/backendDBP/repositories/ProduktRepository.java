@@ -21,11 +21,9 @@ public class ProduktRepository {
 
     public Produkt findProduktByPnr(String pnr) {
         try (Session session = sessionFactory.openSession()) {
-            // Verwende JOIN FETCH für eager loading
             String hql = """
-                FROM Produkt p 
-                LEFT JOIN FETCH Angebot a ON a.produkt = p
-                LEFT JOIN FETCH Rezension r ON r.produkt = p
+                SELECT DISTINCT p
+                FROM Produkt p
                 WHERE p.pnr = :pnr
                 """;
             Query<Produkt> query = session.createQuery(hql, Produkt.class);
@@ -67,7 +65,14 @@ public class ProduktRepository {
 
     public List<Produkt> findSimilarCheaperProducts(String pnr) {
         try (Session session = sessionFactory.openSession()) {
-            String hql = "SELECT DISTINCT p2 FROM ProduktAehnlichkeit pa JOIN pa.produkt1 p1 JOIN pa.produkt2 p2 JOIN Angebot a2 ON a2.produkt = p2 WHERE p1.pnr = :pnr AND a2.preis < (SELECT MIN(a1.preis) FROM Angebot a1 WHERE a1.produkt = p1 AND a1.preis > 0.00) AND a2.preis > 0.00";
+            String hql = "SELECT DISTINCT p2 " +
+                    "FROM ProduktAehnlichkeit pa " +
+                    "JOIN pa.produkt1 p1 " +
+                    "JOIN pa.produkt2 p2 " +
+                    "JOIN Angebot a2 ON a2.produkt = p2 " +
+                    "WHERE p1.pnr = :pnr " +
+                    "AND a2.preis < " +
+                    "(SELECT MIN(a1.preis) FROM Angebot a1 WHERE a1.produkt = p1 AND a1.preis > 0.00) AND a2.preis > 0.00";
             Query<Produkt> query = session.createQuery(hql, Produkt.class);
             query.setParameter("pnr", pnr);
             return query.list();
@@ -79,23 +84,41 @@ public class ProduktRepository {
 
     public List<Produkt> findProdukteByKategorie(Kategorie kategorie) {
         try (Session session = sessionFactory.openSession()) {
-            String hql = "SELECT pk.pnr FROM ProduktKategorie pk WHERE pk.kategorie = :kategorie";
-            Query<Produkt> query = session.createQuery(hql, Produkt.class);
-            query.setParameter("kategorie", kategorie);
+            // Finde alle Produkte in der Kategorie und deren Unterkategorien
+            String sql = """
+                WITH RECURSIVE kategorie_tree AS (
+                    -- Basis: Die übergebene Kategorie
+                    SELECT kategorieid
+                    FROM kategorie
+                    WHERE kategorieid = :kategorieId
+                    
+                    UNION ALL
+                    
+                    -- Rekursion: Alle Unterkategorien
+                    SELECT k.kategorieid
+                    FROM kategorie k
+                    JOIN kategorie_tree kt ON k.oberkategorieid = kt.kategorieid
+                )
+                SELECT DISTINCT p.*
+                FROM kategorie_tree kt
+                JOIN produkt_kategorie pk ON kt.kategorieid = pk.kategorieid
+                JOIN produkt p ON pk.pnr = p.pnr
+                """;
+            Query<Produkt> query = session.createNativeQuery(sql, Produkt.class);
+            query.setParameter("kategorieId", kategorie.getId());
             return query.list();
         } catch (Exception e) {
-            log.error("Fehler beim Suchen von Produkten für Kategorie {}: {}", kategorie, e.getMessage());
+            log.error("Fehler beim Suchen von Produkten für Kategorie {} und deren Unterkategorien: {}", kategorie, e.getMessage());
             throw new RuntimeException("Fehler beim Suchen von Produkten: " + e.getMessage(), e);
         }
     }
 
     public List<Produkt> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            // Verwende JOIN FETCH für eager loading
             String hql = """
-                FROM Produkt p 
-                LEFT JOIN FETCH Angebot a ON a.produkt = p
-                LEFT JOIN FETCH Rezension r ON r.produkt = p
+                SELECT DISTINCT p
+                FROM Produkt p
+                ORDER BY p.titel
                 """;
             Query<Produkt> query = session.createQuery(hql, Produkt.class);
             return query.list();
