@@ -45,6 +45,21 @@ public interface ProduktRepository extends JpaRepository<Produkt, String> {
     """)
     List<Produkt> findSimilarCheaperProducts(@Param("pnr") String pnr);
 
-    @Query("SELECT pk.pnr FROM ProduktKategorie pk WHERE pk.kategorie = :kategorie ")
-    List<Produkt> findProdukteByKategorie(@Param("kategorie") Kategorie kategorie);
+    @Query(value =
+            "  WITH RECURSIVE kategorie_tree AS (                                       \n" +
+            "  SELECT kategorieid                                                   \n" +
+            "  FROM kategorie k                                                    \n" +
+            "  WHERE kategorieid = :kategorieId                                        \n" +
+            "  UNION                                                    \n" +
+            "  SELECT k.kategorieid                                              \n" +
+            "  FROM kategorie k                                \n" +
+            "  JOIN kategorie_tree kt                                            \n" +
+            "    ON k.oberkategorieid = kt.kategorieid                \n" +
+            ")                                                              \n" +
+            "SELECT distinct p.*                                                     \n" +
+            "FROM kategorie_tree kt                                                \n" +
+            "JOIN produkt_kategorie pk ON kt.kategorieid = pk.kategorieid \n" +
+            "JOIN produkt p ON pk.pnr = p.pnr                                   \n",
+            nativeQuery = true)
+    List<Produkt> findProdukteByKategorie(@Param("kategorieId") Integer kategorieId);
 }

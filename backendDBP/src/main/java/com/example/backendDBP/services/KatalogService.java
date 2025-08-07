@@ -308,9 +308,10 @@ public class KatalogService implements MediastoreServiceAPI {
         if (kategorie == null) {
             throw new IllegalArgumentException("Kategorie mit Pfad " + kategoriePath + " nicht gefunden.");
         }
+        Integer kategorieId = kategorie.getId();
 
-        // 2. Hole alle Produkte in dieser Kategorie
-        List<Produkt> produkte = produktRepository.findProdukteByKategorie(kategorie);
+        // 2. Hole alle Produkte in dieser Kategorie und aus allen Unterkategorien
+        List<Produkt> produkte = produktRepository.findProdukteByKategorie(kategorieId);
         if (produkte == null || produkte.isEmpty()) {
             return new ArrayList<>(); // Keine Produkte gefunden, leere Liste zurückgeben
         }
