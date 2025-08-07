@@ -44,12 +44,7 @@ public class KatalogService implements MediastoreServiceAPI {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(KatalogService.class);
 
     public KatalogService() {
-        // Leerer Konstruktor - Initialisierung erfolgt in init()
-    }
-
-    @Override
-    public String HelloWorld() {
-        return "Hello World!";
+        // Initialisierung in init
     }
 
     private void initializeRepositories() {
@@ -100,10 +95,10 @@ public class KatalogService implements MediastoreServiceAPI {
             hibernateConfig.setProperty("hibernate.connection.url", properties.getProperty("spring.datasource.url"));
             hibernateConfig.setProperty("hibernate.connection.username", properties.getProperty("spring.datasource.username"));
             hibernateConfig.setProperty("hibernate.connection.password", properties.getProperty("spring.datasource.password"));
-            hibernateConfig.setProperty("hibernate.connection.driver_class", properties.getProperty("spring.datasource.driver-class-name"));
+            hibernateConfig.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
+            hibernateConfig.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
             // Zusätzliche Hibernate-Eigenschaften
-            hibernateConfig.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
             hibernateConfig.setProperty("hibernate.connection.pool_size", "5");
             hibernateConfig.setProperty("hibernate.show_sql", "true");
             hibernateConfig.setProperty("hibernate.format_sql", "true");
@@ -118,7 +113,7 @@ public class KatalogService implements MediastoreServiceAPI {
             hibernateConfig.addAnnotatedClass(Kunde.class);
             hibernateConfig.addAnnotatedClass(Rezension.class);
             hibernateConfig.addAnnotatedClass(Angebot.class);
-            hibernateConfig.addAnnotatedClass(Filiale.class);  // Füge Filiale hinzu
+            hibernateConfig.addAnnotatedClass(Filiale.class);
             hibernateConfig.addAnnotatedClass(Kategorie.class);
             hibernateConfig.addAnnotatedClass(Buch.class);
             hibernateConfig.addAnnotatedClass(Autor.class);
@@ -131,6 +126,10 @@ public class KatalogService implements MediastoreServiceAPI {
             hibernateConfig.addAnnotatedClass(Creator.class);
             hibernateConfig.addAnnotatedClass(Director.class);
             hibernateConfig.addAnnotatedClass(Actor.class);
+            hibernateConfig.addAnnotatedClass(ProduktKategorie.class);
+            hibernateConfig.addAnnotatedClass(ProduktKategorieId.class);
+            hibernateConfig.addAnnotatedClass(ProduktAehnlichkeit.class);
+            hibernateConfig.addAnnotatedClass(ProduktAehnlichkeitId.class);
 
             // SessionFactory erstellen
             StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
@@ -145,10 +144,11 @@ public class KatalogService implements MediastoreServiceAPI {
             } catch (Exception e) {
                 StandardServiceRegistryBuilder.destroy(registry);
                 log.error("Fehler beim Initialisieren der Datenbankverbindung: {}", e.getMessage());
+                e.printStackTrace(); // Für detailliertere Fehleranalyse
                 if (e instanceof org.hibernate.exception.JDBCConnectionException) {
                     throw new IllegalStateException("Keine Verbindung zur Datenbank möglich: " + e.getMessage());
                 }
-                throw new IllegalStateException("Fehler beim Erstellen der SessionFactory: " + e.getMessage());
+                throw new IllegalStateException("Fehler beim Erstellen der SessionFactory: " + e.getMessage() + "\nUrsache: " + (e.getCause() != null ? e.getCause().getMessage() : "unbekannt"));
             }
         }
     }
@@ -219,7 +219,6 @@ public class KatalogService implements MediastoreServiceAPI {
             Buch buch = buchRepository.findBuchByPnr(pnr);
             if (buch != null) {
                 // Initialisiere alle benötigten Beziehungen
-                Hibernate.initialize(buch.getProdukt());
                 BuchDTO buchdto = new BuchDTO();
                 buchdto.setPnr(buch.getPnr());
                 buchdto.setTitel(buch.getProdukt().getTitel());

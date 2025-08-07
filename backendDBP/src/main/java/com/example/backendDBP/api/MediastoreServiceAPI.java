@@ -10,8 +10,6 @@ public interface MediastoreServiceAPI {
    void init();
    void finish();
 
-    String HelloWorld();
-
     ProduktDTO getProduct(String pnr);
     List<Produkt> getProducts(String pattern);
 

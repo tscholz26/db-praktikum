@@ -24,8 +24,8 @@ public class ProduktRepository {
             // Verwende JOIN FETCH für eager loading
             String hql = """
                 FROM Produkt p 
-                LEFT JOIN FETCH p.angebote 
-                LEFT JOIN FETCH p.rezensionen 
+                LEFT JOIN FETCH Angebot a ON a.produkt = p
+                LEFT JOIN FETCH Rezension r ON r.produkt = p
                 WHERE p.pnr = :pnr
                 """;
             Query<Produkt> query = session.createQuery(hql, Produkt.class);
@@ -79,7 +79,7 @@ public class ProduktRepository {
 
     public List<Produkt> findProdukteByKategorie(Kategorie kategorie) {
         try (Session session = sessionFactory.openSession()) {
-            String hql = "SELECT pk.produkt FROM ProduktKategorie pk WHERE pk.kategorie = :kategorie";
+            String hql = "SELECT pk.pnr FROM ProduktKategorie pk WHERE pk.kategorie = :kategorie";
             Query<Produkt> query = session.createQuery(hql, Produkt.class);
             query.setParameter("kategorie", kategorie);
             return query.list();
@@ -94,8 +94,8 @@ public class ProduktRepository {
             // Verwende JOIN FETCH für eager loading
             String hql = """
                 FROM Produkt p 
-                LEFT JOIN FETCH p.angebote 
-                LEFT JOIN FETCH p.rezensionen
+                LEFT JOIN FETCH Angebot a ON a.produkt = p
+                LEFT JOIN FETCH Rezension r ON r.produkt = p
                 """;
             Query<Produkt> query = session.createQuery(hql, Produkt.class);
             return query.list();
