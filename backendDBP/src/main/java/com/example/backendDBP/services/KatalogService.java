@@ -127,10 +127,7 @@ public class KatalogService implements MediastoreServiceAPI {
             hibernateConfig.addAnnotatedClass(Director.class);
             hibernateConfig.addAnnotatedClass(Actor.class);
             hibernateConfig.addAnnotatedClass(ProduktKategorie.class);
-            hibernateConfig.addAnnotatedClass(ProduktKategorieId.class);
             hibernateConfig.addAnnotatedClass(ProduktAehnlichkeit.class);
-            hibernateConfig.addAnnotatedClass(ProduktAehnlichkeitId.class);
-
             // SessionFactory erstellen
             StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                     .applySettings(hibernateConfig.getProperties())
