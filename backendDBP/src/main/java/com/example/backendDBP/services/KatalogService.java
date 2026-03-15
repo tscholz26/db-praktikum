@@ -5,12 +5,12 @@ import com.example.backendDBP.DTOs.*;
 import com.example.backendDBP.api.MediastoreServiceAPI;
 import com.example.backendDBP.models.*;
 import com.example.backendDBP.repositories.*;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor
 @Service
 public class KatalogService implements MediastoreServiceAPI {
 
@@ -41,182 +40,238 @@ public class KatalogService implements MediastoreServiceAPI {
     private DirectorRepository directorRepository;
     private ActorRepository actorRepository;
 
+    private static final Object LOCK = new Object();
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(KatalogService.class);
 
-
-    @Autowired
-    public KatalogService(ProduktRepository produktRepository, RezensionRepository rezensionRepository,
-                          KundeRepository kundeRepository, AngebotRepository angebotRepository, KategorieRepository kategorieRepository,
-                          BuchRepository buchRepository, BuchVerlagRepository buchVerlagRepository, AutorRepository autorRepository,
-                          MusikCdRepository musikCdRepository, KuenstlerRepository kuenstlerRepository, LabelRepository labelRepository, SongRepository songRepository,
-                          DvdRepository dvdRepository, DirectorRepository directorRepository, CreatorRepository creatorRepository, ActorRepository actorRepository) {
-        this.angebotRepository = angebotRepository;
-        this.kundeRepository = kundeRepository;
-        this.rezensionRepository = rezensionRepository;
-        this.produktRepository = produktRepository;
-        this.kategorieRepository = kategorieRepository;
-        this.buchRepository = buchRepository;
-        this.buchVerlagRepository = buchVerlagRepository;
-        this.autorRepository = autorRepository;
-        this.musikCdRepository = musikCdRepository;
-        this.kuenstlerRepository = kuenstlerRepository;
-        this.labelRepository = labelRepository;
-        this.songRepository = songRepository;
-        this.dvdRepository = dvdRepository;
-        this.creatorRepository = creatorRepository;
-        this.directorRepository = directorRepository;
-        this.actorRepository = actorRepository;
+    public KatalogService() {
+        // Initialisierung in init
     }
 
-    @Override
-    public String HelloWorld() {
-        return "Hello World!";
+    private void initializeRepositories() {
+        this.produktRepository = new ProduktRepository(sessionFactory);
+        this.rezensionRepository = new RezensionRepository(sessionFactory);
+        this.kundeRepository = new KundeRepository(sessionFactory);
+        this.angebotRepository = new AngebotRepository(sessionFactory);
+        this.kategorieRepository = new KategorieRepository(sessionFactory);
+        this.buchRepository = new BuchRepository(sessionFactory);
+        this.autorRepository = new AutorRepository(sessionFactory);
+        this.buchVerlagRepository = new BuchVerlagRepository(sessionFactory);
+        this.musikCdRepository = new MusikCdRepository(sessionFactory);
+        this.kuenstlerRepository = new KuenstlerRepository(sessionFactory);
+        this.labelRepository = new LabelRepository(sessionFactory);
+        this.songRepository = new SongRepository(sessionFactory);
+        this.dvdRepository = new DvdRepository(sessionFactory);
+        this.creatorRepository = new CreatorRepository(sessionFactory);
+        this.directorRepository = new DirectorRepository(sessionFactory);
+        this.actorRepository = new ActorRepository(sessionFactory);
     }
 
     @Override
     public void init() {
-        if (this.sessionFactory != null && !this.sessionFactory.isClosed()) {
-            throw new IllegalStateException("Es existiert bereits eine offene Session");
-        }
-
-        // application.properties ins Properties-Objekt laden
-        Properties properties = new Properties();
-        try (InputStream in = BackendDbpApplication.class
-                .getClassLoader()
-                .getResourceAsStream("application.properties")) {
-            if (in == null) {
-                System.err.println("ERROR: application.properties nicht gefunden im Classpath!");
-                System.exit(1);
+        synchronized (LOCK) {
+            log.info("Initialisiere Datenbankverbindung...");
+            if (this.sessionFactory != null && !this.sessionFactory.isClosed()) {
+                log.warn("Es existiert bereits eine offene Session");
+                throw new IllegalStateException("Es existiert bereits eine offene Session");
             }
-            properties.load(in);
-        } catch (IOException e) {
-            System.err.println("ERROR beim Laden der application.properties: " + e.getMessage());
-            e.printStackTrace();
-            System.exit(1);
+
+            // Properties laden
+            Properties properties = new Properties();
+            try (InputStream in = BackendDbpApplication.class
+                    .getClassLoader()
+                    .getResourceAsStream("application.properties")) {
+                if (in == null) {
+                    throw new IllegalStateException("application.properties nicht gefunden im Classpath!");
+                }
+                properties.load(in);
+            } catch (IOException e) {
+                throw new IllegalStateException("Fehler beim Laden der application.properties: " + e.getMessage(), e);
+            }
+
+            // Hibernate-Konfiguration
+            Configuration hibernateConfig = new Configuration();
+
+            // Datenbank-Eigenschaften setzen
+            hibernateConfig.setProperty("hibernate.connection.url", properties.getProperty("spring.datasource.url"));
+            hibernateConfig.setProperty("hibernate.connection.username", properties.getProperty("spring.datasource.username"));
+            hibernateConfig.setProperty("hibernate.connection.password", properties.getProperty("spring.datasource.password"));
+            hibernateConfig.setProperty("hibernate.connection.driver_class", properties.getProperty("spring.datasource.driver-class-name"));
+            hibernateConfig.setProperty("hibernate.dialect", properties.getProperty("spring.jpa.properties.hibernate.dialect"));
+            hibernateConfig.setProperty("hibernate.hbm2ddl.auto", properties.getProperty("spring.jpa.hibernate.ddl-auto"));
+
+            // Zusätzliche Hibernate-Eigenschaften
+            hibernateConfig.setProperty("hibernate.connection.pool_size", "5");
+            hibernateConfig.setProperty("hibernate.show_sql", "true");
+            hibernateConfig.setProperty("hibernate.format_sql", "true");
+            hibernateConfig.setProperty("hibernate.current_session_context_class", "thread");
+            hibernateConfig.setProperty("hibernate.enable_lazy_load_no_trans", "true");
+            hibernateConfig.setProperty("hibernate.jdbc.batch_size", "50");
+            hibernateConfig.setProperty("hibernate.default_batch_fetch_size", "25");
+
+            // Entity-Klassen registrieren
+            hibernateConfig.addAnnotatedClass(Produkt.class);
+            hibernateConfig.addAnnotatedClass(Kunde.class);
+            hibernateConfig.addAnnotatedClass(Rezension.class);
+            hibernateConfig.addAnnotatedClass(Angebot.class);
+            hibernateConfig.addAnnotatedClass(Filiale.class);
+            hibernateConfig.addAnnotatedClass(Kategorie.class);
+            hibernateConfig.addAnnotatedClass(Buch.class);
+            hibernateConfig.addAnnotatedClass(Autor.class);
+            hibernateConfig.addAnnotatedClass(BuchVerlag.class);
+            hibernateConfig.addAnnotatedClass(MusikCd.class);
+            hibernateConfig.addAnnotatedClass(Kuenstler.class);
+            hibernateConfig.addAnnotatedClass(Label.class);
+            hibernateConfig.addAnnotatedClass(Song.class);
+            hibernateConfig.addAnnotatedClass(Dvd.class);
+            hibernateConfig.addAnnotatedClass(Creator.class);
+            hibernateConfig.addAnnotatedClass(Director.class);
+            hibernateConfig.addAnnotatedClass(Actor.class);
+            hibernateConfig.addAnnotatedClass(ProduktKategorie.class);
+            hibernateConfig.addAnnotatedClass(ProduktAehnlichkeit.class);
+            // SessionFactory erstellen
+            StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                    .applySettings(hibernateConfig.getProperties())
+                    .build();
+
+            try {
+                this.sessionFactory = hibernateConfig.buildSessionFactory(registry);
+                // Nach erfolgreicher SessionFactory-Erstellung die Repositories initialisieren
+                initializeRepositories();
+                log.info("Datenbankverbindung erfolgreich initialisiert");
+            } catch (Exception e) {
+                StandardServiceRegistryBuilder.destroy(registry);
+                log.error("Fehler beim Initialisieren der Datenbankverbindung: {}", e.getMessage());
+                e.printStackTrace(); // Für detailliertere Fehleranalyse
+                if (e instanceof org.hibernate.exception.JDBCConnectionException) {
+                    throw new IllegalStateException("Keine Verbindung zur Datenbank möglich: " + e.getMessage());
+                }
+                throw new IllegalStateException("Fehler beim Erstellen der SessionFactory: " + e.getMessage() + "\nUrsache: " + (e.getCause() != null ? e.getCause().getMessage() : "unbekannt"));
+            }
         }
-
-        // Hibernate-Konfiguration anlegen
-        Configuration hibernateConfig = new Configuration();
-
-        // Lese die Konfigurationseigenschaften aus dem Properties-Objekt
-        String url = properties.getProperty("spring.datasource.url");
-        String user = properties.getProperty("spring.datasource.username");
-        String pass = properties.getProperty("spring.datasource.password");
-        String driver = properties.getProperty("spring.datasource.driver-class-name");
-        String dialect = properties.getProperty("spring.jpa.database-platform");
-        String hbm2ddl = properties.getProperty("spring.jpa.hibernate.ddl-auto");
-
-        // Setze die Konfigurationseigenschaften
-        hibernateConfig.setProperty("hibernate.connection.driver_class", driver);
-        hibernateConfig.setProperty("hibernate.connection.url", url);
-        hibernateConfig.setProperty("hibernate.connection.username", user);
-        hibernateConfig.setProperty("hibernate.connection.password", pass);
-        hibernateConfig.setProperty("hibernate.dialect", dialect);
-        hibernateConfig.setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
-
-
-        // Annotated Entity-Klassen registrieren
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Produkt.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Kategorie.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Rezension.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Kunde.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Angebot.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Actor.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Angebot.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Autor.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Dvd.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Buch.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.BuchVerlag.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Creator.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Director.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Errordata.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Filiale.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Kauf.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Kuenstler.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Label.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.MusikCd.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.ProduktAehnlichkeit.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.ProduktKategorie.class);
-        hibernateConfig.addAnnotatedClass(com.example.backendDBP.models.Song.class);
-
-        //  ServiceRegistry aufbauen
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .applySettings(hibernateConfig.getProperties())
-                .build();
-
-        //  Session erzeugen
-        this.sessionFactory = hibernateConfig.buildSessionFactory(registry);
-        System.out.println("[INFO] Session erzeugt");
     }
 
+    @Override
     public void finish() {
-        if (sessionFactory != null && !sessionFactory.isClosed()) {
-            sessionFactory.close();
-            System.out.println("[INFO] Session wurde erfolgreich geschlossen.");
-        } else {
-            System.out.println("[INFO] Session war bereits geschlossen oder nicht initialisiert.");
+        synchronized (LOCK) {
+            log.info("Beende Datenbankverbindung...");
+            if (sessionFactory != null) {
+                try {
+                    if (!sessionFactory.isClosed()) {
+                        sessionFactory.close();
+                        log.info("Datenbankverbindung erfolgreich geschlossen");
+                    } else {
+                        log.warn("SessionFactory war bereits geschlossen");
+                    }
+                } catch (Exception e) {
+                    log.error("Fehler beim Schließen der Datenbankverbindung: {}", e.getMessage());
+                    throw new IllegalStateException("Fehler beim Schließen der Datenbankverbindung: " + e.getMessage());
+                } finally {
+                    sessionFactory = null;
+                    // Repositories auf null setzen
+                    produktRepository = null;
+                    rezensionRepository = null;
+                    kundeRepository = null;
+                    angebotRepository = null;
+                    kategorieRepository = null;
+                    buchRepository = null;
+                    autorRepository = null;
+                    buchVerlagRepository = null;
+                    musikCdRepository = null;
+                    kuenstlerRepository = null;
+                    labelRepository = null;
+                    songRepository = null;
+                    dvdRepository = null;
+                    creatorRepository = null;
+                    directorRepository = null;
+                    actorRepository = null;
+                }
+            } else {
+                log.warn("Keine aktive SessionFactory vorhanden");
+            }
         }
     }
 
+    private <T> T executeInTransaction(Function<EntityManager, T> operation) {
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            T result = operation.apply(entityManager);
+            entityManager.getTransaction().commit();
+            return result;
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw new RuntimeException("Datenbankfehler: " + e.getMessage(), e);
+        } finally {
+            if (entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+    }
 
     @Override
     public ProduktDTO getProduct(String pnr) {
-        Buch buch = buchRepository.findBuchByPnr(pnr);
-        if (buch != null) {
-            BuchDTO buchdto = new BuchDTO();
-            buchdto.setPnr(buch.getPnr());
-            buchdto.setTitel(buch.getProdukt().getTitel());
-            buchdto.setVerkaufsrang(buch.getProdukt().getVerkaufsrang());
-            buchdto.setBild(buch.getProdukt().getBild());
-            buchdto.setRating(buch.getProdukt().getRating());
-            buchdto.setIsbn(buch.getIsbn());
-            buchdto.setSeitenzahl(buch.getSeitenzahl());
-            buchdto.setErscheinungsdatum(buch.getErscheinungsdatum());
-            buchdto.setAuflage(buch.getAuflage());
-            buchdto.setAutoren(autorRepository.findAutorNameByPnr(pnr));
-            buchdto.setVerlage(buchVerlagRepository.findVerlagByPnr(pnr));
-            return buchdto;
-        }
-        MusikCd musikcd = musikCdRepository.findMusikCdByPnr(pnr);
-        if (musikcd != null) {
-            MusikCdDTO musikcddto = new MusikCdDTO();
-            musikcddto.setPnr(musikcd.getPnr());
-            musikcddto.setTitel(musikcd.getProdukt().getTitel());
-            musikcddto.setVerkaufsrang(musikcd.getProdukt().getVerkaufsrang());
-            musikcddto.setBild(musikcd.getProdukt().getBild());
-            musikcddto.setRating(musikcd.getProdukt().getRating());
-            musikcddto.setKünstler(kuenstlerRepository.findKuenstlerByPnr(pnr));
-            musikcddto.setErscheinungsdatum(musikcd.getErscheinungsdatum());
-            musikcddto.setLabels(labelRepository.findLabelNameByPnr(pnr));
-            musikcddto.setSongs(songRepository.findSongNameByPnr(pnr));
-            return musikcddto;
-        }
-        Dvd dvd = dvdRepository.findDvdByPnr(pnr);
-        if (dvd != null) {
-            DvdDTO dvdDTO = new DvdDTO();
-            dvdDTO.setPnr(dvd.getPnr());
-            dvdDTO.setTitel(dvd.getProdukt().getTitel());
-            dvdDTO.setVerkaufsrang(dvd.getProdukt().getVerkaufsrang());
-            dvdDTO.setBild(dvd.getProdukt().getBild());
-            dvdDTO.setRating(dvd.getProdukt().getRating());
-            dvdDTO.setRegioncode(dvd.getRegioncode());
-            dvdDTO.setFormat(dvd.getFormat());
-            dvdDTO.setLaufzeit(dvd.getLaufzeit());
-            dvdDTO.setDirectors(directorRepository.findDirectorNameByPnr(pnr));
-            dvdDTO.setCreators(creatorRepository.findCreatorNameByPnr(pnr));
-            dvdDTO.setActors(actorRepository.findActorNameByPnr(pnr));
-            return dvdDTO;
-        }
-        Produkt produkt = produktRepository.findProduktByPnr(pnr);
-        if (produkt == null) {
-            throw new IllegalArgumentException("Produkt mit PNR " + pnr + " nicht gefunden.");
-        }
-        ProduktDTO produktDTO = new ProduktDTO(
-                produkt.getPnr(),
-                produkt.getTitel(),
-                produkt.getVerkaufsrang(),
-                produkt.getBild(),
-                produkt.getRating());
-        return produktDTO;
+        return executeInTransaction(session -> {
+            Buch buch = buchRepository.findBuchByPnr(pnr);
+            if (buch != null) {
+                // Initialisiere alle benötigten Beziehungen
+                BuchDTO buchdto = new BuchDTO();
+                buchdto.setPnr(buch.getPnr());
+                buchdto.setTitel(buch.getProdukt().getTitel());
+                buchdto.setVerkaufsrang(buch.getProdukt().getVerkaufsrang());
+                buchdto.setBild(buch.getProdukt().getBild());
+                buchdto.setRating(buch.getProdukt().getRating());
+                buchdto.setIsbn(buch.getIsbn());
+                buchdto.setSeitenzahl(buch.getSeitenzahl());
+                buchdto.setErscheinungsdatum(buch.getErscheinungsdatum());
+                buchdto.setAuflage(buch.getAuflage());
+                buchdto.setAutoren(autorRepository.findAutorNameByPnr(pnr));
+                buchdto.setVerlage(buchVerlagRepository.findVerlagByPnr(pnr));
+                return buchdto;
+            }
+            MusikCd musikcd = musikCdRepository.findMusikCdByPnr(pnr);
+            if (musikcd != null) {
+                MusikCdDTO musikcddto = new MusikCdDTO();
+                musikcddto.setPnr(musikcd.getPnr());
+                musikcddto.setTitel(musikcd.getProdukt().getTitel());
+                musikcddto.setVerkaufsrang(musikcd.getProdukt().getVerkaufsrang());
+                musikcddto.setBild(musikcd.getProdukt().getBild());
+                musikcddto.setRating(musikcd.getProdukt().getRating());
+                musikcddto.setKünstler(kuenstlerRepository.findKuenstlerByPnr(pnr));
+                musikcddto.setErscheinungsdatum(musikcd.getErscheinungsdatum());
+                musikcddto.setLabels(labelRepository.findLabelNameByPnr(pnr));
+                musikcddto.setSongs(songRepository.findSongNameByPnr(pnr));
+                return musikcddto;
+            }
+            Dvd dvd = dvdRepository.findDvdByPnr(pnr);
+            if (dvd != null) {
+                DvdDTO dvdDTO = new DvdDTO();
+                dvdDTO.setPnr(dvd.getPnr());
+                dvdDTO.setTitel(dvd.getProdukt().getTitel());
+                dvdDTO.setVerkaufsrang(dvd.getProdukt().getVerkaufsrang());
+                dvdDTO.setBild(dvd.getProdukt().getBild());
+                dvdDTO.setRating(dvd.getProdukt().getRating());
+                dvdDTO.setRegioncode(dvd.getRegioncode());
+                dvdDTO.setFormat(dvd.getFormat());
+                dvdDTO.setLaufzeit(dvd.getLaufzeit());
+                dvdDTO.setDirectors(directorRepository.findDirectorNameByPnr(pnr));
+                dvdDTO.setCreators(creatorRepository.findCreatorNameByPnr(pnr));
+                dvdDTO.setActors(actorRepository.findActorNameByPnr(pnr));
+                return dvdDTO;
+            }
+            Produkt produkt = produktRepository.findProduktByPnr(pnr);
+            if (produkt == null) {
+                throw new IllegalArgumentException("Produkt mit PNR " + pnr + " nicht gefunden.");
+            }
+            ProduktDTO produktDTO = new ProduktDTO(
+                    produkt.getPnr(),
+                    produkt.getTitel(),
+                    produkt.getVerkaufsrang(),
+                    produkt.getBild(),
+                    produkt.getRating());
+            return produktDTO;
+        });
     }
 
     @Override
@@ -310,8 +365,8 @@ public class KatalogService implements MediastoreServiceAPI {
         }
         Integer kategorieId = kategorie.getId();
 
-        // 2. Hole alle Produkte in dieser Kategorie und aus allen Unterkategorien
-        List<Produkt> produkte = produktRepository.findProdukteByKategorie(kategorieId);
+        // 2. Hole alle Produkte in dieser Kategorie und allen Unterkategorien
+        List<Produkt> produkte = produktRepository.findProdukteByKategorie(kategorie);
         if (produkte == null || produkte.isEmpty()) {
             return new ArrayList<>(); // Keine Produkte gefunden, leere Liste zurückgeben
         }
@@ -397,20 +452,17 @@ public class KatalogService implements MediastoreServiceAPI {
 
     @Override
     public List<KundeDTO> getTrolls(double grenzwertRating) {
-        List<Object> resultQuery = kundeRepository.findTrollsKunden(grenzwertRating);
+        List<Object[]> resultQuery = kundeRepository.findTrollsKunden(grenzwertRating);
         List<KundeDTO> trolls = new ArrayList<>();
-        for (Object obj : resultQuery) {
-            Object[] row = (Object[]) obj;
+
+        for (Object[] row : resultQuery) {
             Kunde kunde = (Kunde) row[0];
-            Double durchschnittlichesRating = (Double) row[1];
+            Double durchschnittlichesRating = ((Number) row[1]).doubleValue();
             KundeDTO kundeDTO = new KundeDTO(kunde.getNutzername(), durchschnittlichesRating);
             trolls.add(kundeDTO);
         }
-        if (trolls.isEmpty()) {
-            return new ArrayList<>(); // Keine Troll-Kunden gefunden, leere Liste zurückgeben
-        } else {
-            return trolls;
-        }
+
+        return trolls.isEmpty() ? new ArrayList<>() : trolls;
     }
 
     @Override
@@ -433,9 +485,13 @@ public class KatalogService implements MediastoreServiceAPI {
                         angebot.getZustand(),
                         angebot.getPreis(),
                         angebot.getWaehrung()
-                        ))
+                ))
                 .toList();
         return angeboteDTO;
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
 }

@@ -1,14 +1,31 @@
 package com.example.backendDBP.repositories;
 
 import com.example.backendDBP.models.Buch;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
-@Repository
-public interface BuchRepository extends JpaRepository<Buch, String> {
+import java.util.List;
 
-    @Query("SELECT b FROM Buch b WHERE b.produkt.pnr = :pnr")
-    Buch findBuchByPnr(@Param("pnr") String pnr);
+public class BuchRepository {
+    private final SessionFactory sessionFactory;
+
+    public BuchRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public Buch findBuchByPnr(String pnr) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Buch> query = session.createQuery("FROM Buch b WHERE b.produkt.pnr = :pnr", Buch.class);
+            query.setParameter("pnr", pnr);
+            return query.uniqueResult();
+        }
+    }
+
+    public List<Buch> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Buch> query = session.createQuery("FROM Buch", Buch.class);
+            return query.list();
+        }
+    }
 }

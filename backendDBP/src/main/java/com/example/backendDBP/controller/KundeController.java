@@ -1,13 +1,10 @@
 package com.example.backendDBP.controller;
 
 import com.example.backendDBP.DTOs.KundeDTO;
-import com.example.backendDBP.models.Kunde;
 import com.example.backendDBP.services.KatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,9 +19,21 @@ public class KundeController {
         this.katalogService = katalogService;
     }
 
-    @GetMapping("/TrollsKunden")
-    public List<KundeDTO> getTrollsKunden(@RequestParam double grenzwertRating) {
-        return katalogService.getTrolls(grenzwertRating);
+    private void checkDatabaseConnection() {
+        if (katalogService.getSessionFactory() == null || katalogService.getSessionFactory().isClosed()) {
+            throw new IllegalStateException("Datenbank ist nicht initialisiert. Bitte zuerst /init aufrufen.");
+        }
     }
 
+    @GetMapping("/TrollsKunden")
+    public ResponseEntity<?> getTrollsKunden(@RequestParam double grenzwertRating) {
+        try {
+            checkDatabaseConnection();
+            return ResponseEntity.ok(katalogService.getTrolls(grenzwertRating));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Fehler beim Abrufen der Troll-Kunden: " + e.getMessage());
+        }
+    }
 }

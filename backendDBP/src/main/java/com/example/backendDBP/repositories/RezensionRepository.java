@@ -1,16 +1,46 @@
 package com.example.backendDBP.repositories;
 
 import com.example.backendDBP.models.Rezension;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 
-@Repository
-public interface RezensionRepository extends JpaRepository<Rezension, Integer> {
+public class RezensionRepository {
+    private final SessionFactory sessionFactory;
 
-    @Query("SELECT r FROM Rezension r WHERE r.produkt.pnr = :pnr")
-    List<Rezension> findAllByPnr(@Param("pnr") String pnr);
+    public RezensionRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public List<Rezension> findAllByPnr(String pnr) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Rezension> query = session.createQuery("FROM Rezension r WHERE r.produkt.pnr = :pnr", Rezension.class);
+            query.setParameter("pnr", pnr);
+            return query.list();
+        }
+    }
+
+    public Rezension save(Rezension rezension) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                session.persist(rezension);
+                transaction.commit();
+                return rezension;
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
+        }
+    }
+
+    public List<Rezension> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Rezension> query = session.createQuery("FROM Rezension", Rezension.class);
+            return query.list();
+        }
+    }
 }

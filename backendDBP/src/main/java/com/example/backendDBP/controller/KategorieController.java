@@ -1,16 +1,10 @@
 package com.example.backendDBP.controller;
 
-import com.example.backendDBP.DTOs.KategorieDTO;
-import com.example.backendDBP.DTOs.ProduktDTO;
-import com.example.backendDBP.models.Kategorie;
+
 import com.example.backendDBP.services.KatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping
@@ -23,24 +17,51 @@ public class KategorieController {
         this.katalogService = katalogService;
     }
 
-    @GetMapping("/getKategorieBaum")
-    public List<KategorieDTO> getKategorieBaum(@RequestParam String pnr){
-        if (pnr == null || pnr.isEmpty()) {
-            throw new IllegalArgumentException("Produktnummer (pnr) darf nicht leer sein.");
+    private void checkDatabaseConnection() {
+        if (katalogService.getSessionFactory() == null || katalogService.getSessionFactory().isClosed()) {
+            throw new IllegalStateException("Datenbank ist nicht initialisiert. Bitte zuerst /init aufrufen.");
         }
-        return katalogService.getCategorieTree(pnr);
+    }
+
+    @GetMapping("/getKategorieBaum")
+    public ResponseEntity<?> getKategorieBaum(@RequestParam String pnr) {
+        try {
+            checkDatabaseConnection();
+            if (pnr == null || pnr.isEmpty()) {
+                return ResponseEntity.badRequest().body("Produktnummer (pnr) darf nicht leer sein.");
+            }
+            return ResponseEntity.ok(katalogService.getCategorieTree(pnr));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Fehler beim Abrufen des Kategoriebaums: " + e.getMessage());
+        }
     }
 
     @GetMapping("/getKompletterKategorieBaum")
-    public List<KategorieDTO> getKompletterKategorieBaum(){
-        return katalogService.getFullCategoryTree();
+    public ResponseEntity<?> getKompletterKategorieBaum() {
+        try {
+            checkDatabaseConnection();
+            return ResponseEntity.ok(katalogService.getFullCategoryTree());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Fehler beim Abrufen des kompletten Kategoriebaums: " + e.getMessage());
+        }
     }
 
     @GetMapping("/getProdukteInKategorie")
-    public List<ProduktDTO> getProdukteInKategorie(@RequestParam String kategoriePfad) {
-        if (kategoriePfad == null || kategoriePfad.isEmpty()) {
-            throw new IllegalArgumentException("Kategorie-Pfad darf nicht leer sein.");
+    public ResponseEntity<?> getProdukteInKategorie(@RequestParam String kategoriePfad) {
+        try {
+            checkDatabaseConnection();
+            if (kategoriePfad == null || kategoriePfad.isEmpty()) {
+                return ResponseEntity.badRequest().body("Kategorie-Pfad darf nicht leer sein.");
+            }
+            return ResponseEntity.ok(katalogService.getProductsByCategoryPath(kategoriePfad));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Fehler beim Abrufen der Produkte in der Kategorie: " + e.getMessage());
         }
-        return katalogService.getProductsByCategoryPath(kategoriePfad);
     }
 }
