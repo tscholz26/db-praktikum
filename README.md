@@ -1,9 +1,4 @@
-# DBPraktikum MediaStore
-
-## Anmeldung u. Präsenzveranstaltungen
-- Einführungsveranstaltung: Moodle-Kurs
-- Gruppenzuweisung im Moodle
-- Betreuer: Martin Franke, Lucas Lange, Christopher Rost, Victor Christen
+# DBPraktikum MediaStore, Sommersemester 2025, Uni Leipzig
 
 ## Übersicht
 
